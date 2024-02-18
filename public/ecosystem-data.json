@@ -41,6 +41,16 @@
       "twitterXUrl": "https://twitter.com/IQWIKI",
       "discordUrl": "https://discord.gg/x9EWvTcPXt",
       "telegramUrl": "https://t.me/everipedia"
+    },
+    {
+      "key": "galaxycash",
+      "name": "Galaxy Cash",
+      "url": "https://galaxycash.finance",
+      "description": "GalaxyCash is an innovative decentralized financial ecosystem designed to protect and grow your assets with its unique compound interest mechanism.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/galaxycash.png",
+      "twitterXUrl": "https://twitter.com/galaxy_cash",
+      "telegramUrl": "https://t.me/Galaxy_Cash"
     }
   ]
 }
