@@ -41,6 +41,16 @@
       "twitterXUrl": "https://twitter.com/IQWIKI",
       "discordUrl": "https://discord.gg/x9EWvTcPXt",
       "telegramUrl": "https://t.me/everipedia"
+    },
+    {
+      "key": "ra",
+      "name": "RA",
+      "url": "https://thera.exchange",
+      "description": "RA is The Next Generation of Concentrated Liquidity. Only on Fraxtal",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/ra.png",
+      "twitterXUrl": "https://twitter.com/exchange_RA",
+      "discordUrl": "https://discord.gg/PXadUNwMgB"
     }
   ]
 }
