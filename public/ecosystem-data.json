@@ -72,6 +72,17 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/ra.png",
       "twitterXUrl": "https://twitter.com/exchange_RA",
       "discordUrl": "https://discord.gg/PXadUNwMgB"
+    },
+    {
+      "key": "redstone",
+      "name": "RedStone Oracles",
+      "url": "https://redstone.finance/",
+      "description": "RedStone is a Modular Oracle specialising in yield-bearing collateral for lending markets, e.g. LSTs & LRTs. It offers gas-optimized data feeds across 50+ chains & all rollups. Trusted by Morpho, Venus, ether.fi & more.",
+      "tags": ["DeFi", "Infra"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/redstone.png",
+      "twitterXUrl": "https://twitter.com/redstone_defi",
+      "discordUrl": "https://discord.com/invite/PVxBZKFr46",
+      "telegramUrl": "https://t.me/redstonefinance"
     }
   ]
 }
