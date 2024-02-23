@@ -1,0 +1,40 @@
+---
+title: Fraxtal Incentives Delegation
+lang: en-US
+---
+
+# Fraxtal Incentives Delegation
+
+Incentives are allocated based on the activity of an address. Some addresses, like smart contracts, are unable to interact with the allocated incentives wihtout implementing the interaction upon their deployment. One of the major issues with this is that we are yet to announce how the FXTL points will be claimed and that adding additional functionality to the smart contracts increases their size.
+
+Delegating the earned incentives using the DelegationRegistry allows for earned incentives to be allocated to an address that can interact with the claim process, be that an externally owned account, smart account, or a multi-signature wallet.
+
+The delegations for externally owned accounts can be done directly in the DelegationRegistry.
+
+Delegations are not recursive. This means that if you delegate to another address, and that address delegates to another one, your earned incentives will be allocated to the address you delegated to, not to the one that address delegated to.
+
+## DelegationRegistry addresses
+
+The DelegationRegistry can be found in the Fraxtal mainnet as well as Fraxtal testnet:
+
+|     **Network**     	|                 **Address**                	|                                               **Chain explorer link**                                              	|
+|:-------------------:	|:------------------------------------------:	|:------------------------------------------------------------------------------------------------------------------:	|
+| **Fraxtal mainnet** 	| 0x4392dC16867D53DBFE227076606455634d4c2795 	|     [Mainnet DelegationRegistry](https://fraxscan.com/address/0x4392dc16867d53dbfe227076606455634d4c2795#code)     	|
+| **Fraxtal testnet** 	| 0x46F3172257421b95881FAaf226Dd32A5BDB95a81 	| [Testnet DelegationRegistry](https://holesky.fraxscan.com/address/0x46f3172257421b95881faaf226dd32a5bdb95a81#code) 	|
+
+## Setting delegations for smart contracts
+
+Instead of increasing your smart contract's size by adding support for DelegationRegistry, the delegations can be set during deployment.
+
+To set the delegation during deployment, you can add the following two lines of code to your constructor or initializer:
+
+```solidity
+    constructor(address delegationRegistry, address initialDelegate) {
+        delegationRegistry.call(abi.encodeWithSignature("setDelegationForSelf(address)", initialDelegate));
+        delegationRegistry.call(abi.encodeWithSignature("disableSelfManagingDelegations()"));
+    }
+```
+
+Once an address sets the delegation for themselves, the delegatee is not allowed to manage the addresses' delegations unti the address disables self management of delegations. This is why the two calls are needed. The first one sets the delegatee and the second one disables self management of delegations for the smart contract.
+
+{/* DelegationRegistry: [DelegationRegistry.sol](https://github.com/FraxFinance/dev-fraxchain-contracts/blob/add-flox-points/src/contracts/flox/DelegationRegistry.sol) [0x4392dC16867D53DBFE227076606455634d4c2795] */}
