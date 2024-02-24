@@ -9,6 +9,16 @@
       "imageUrl": "https://avatars.githubusercontent.com/u/26205098?s=280&v=4",
       "twitterXUrl": "https://twitter.com/etherscan"
     },
+     {
+      "key": "gravita-protocol",
+      "name": "Gravita Protocol",
+      "url": "https://app.gravitaprotocol.com/",
+      "description": "An ETH-centric Borrowing Protocol for LSTs and Productive Collateral. Fueling decentralization. ",
+      "tags": ["DeFi"],
+      "imageUrl": "https://www.gravitaprotocol.com/images/logo-gravita.svg",
+      "twitterXUrl": "https://twitter.com/gravitaprotocol",
+      "discordUrl": "https://discord.gg/gravitaprotocol"
+    },
     {
       "key": "convex",
       "name": "Convex",
