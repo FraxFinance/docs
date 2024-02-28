@@ -124,6 +124,16 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
       "twitterXUrl": "https://twitter.com/YieldNestFi",
       "discordUrl": "https://discord.gg/ayAZuQgFaE"
+    },
+    {
+      "key": "asymmetry",
+      "name": "Asymmetry Finance",
+      "url": "https://asymmetry.finance",
+      "description": "The home of Hybrid Liquid Staking. Harnessing Frax, Convex, and EigenLayer to create market leading, real yield on ETH.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/asym_logo.png",
+      "twitterXUrl": "https://twitter.com/AsymmetryFin",
+      "discordUrl": "https://discord.gg/7wzMaUS4tS"
     }
   ]
 }
