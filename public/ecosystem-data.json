@@ -125,5 +125,15 @@
       "twitterXUrl": "https://twitter.com/YieldNestFi",
       "discordUrl": "https://discord.gg/ayAZuQgFaE"
     }
+    {
+      "key": "JokeRace",
+      "name": "JokeRace",
+      "url": "https://jokerace.io",
+      "description": "JokeRace is the contest platform for communities to run, grow, and monetize by deploying a contest on any EVM chain. Contests enable communities to submit and vote on entries… and winners to earn rewards. Use cases include bounties, hackathons, grants, awards ceremonies, “best tweet/meme/essay” competitions, persuasion games, feature requests, governance, elections, amendments, etc.",
+      "tags": ["DAO"],
+      "imageUrl": "https://imgur.com/cSbd6jy",
+      "twitterXUrl": "https://twitter.com/jokerace_io",
+      "telegramUrl": "https://t.me/+rW5X0MqnTXBkOGIx"
+    }
   ]
 }
