@@ -124,6 +124,15 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
       "twitterXUrl": "https://twitter.com/YieldNestFi",
       "discordUrl": "https://discord.gg/ayAZuQgFaE"
+    },
+    {
+      "key": "realworldabs",
+      "name": "Real World Abs",
+      "url": "https://realworldabs.io/",
+      "description": "$RWA is a pure meme coin with no utility barriers. The Frax universe can be complicated, but meme coins are not. Our single aim is to increase awareness of Fraxtal’s next gen tech.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://pbs.twimg.com/profile_images/1749959606561099776/_E-hXm9c_400x400.jpg",
+      "twitterXUrl": "https://twitter.com/realworldabs"
     }
   ]
 }
