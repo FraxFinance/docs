@@ -124,6 +124,15 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
       "twitterXUrl": "https://twitter.com/YieldNestFi",
       "discordUrl": "https://discord.gg/ayAZuQgFaE"
+    },
+    {
+      "key": "adamant",
+      "name": "Adamant Finance",
+      "url": "https://adamant.finance/vaults",
+      "description": "Adamant is a yield optimizer platform designed to help users maximize their DeFi returns.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://avatars.githubusercontent.com/u/78463658?s=280&v=4",
+      "twitterXUrl": "https://twitter.com/Adamantvault"
     }
   ]
 }
