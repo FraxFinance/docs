@@ -31,6 +31,28 @@
       "telegramUrl": "https://t.me/convexEth"
     },
     {
+      "key": "stake-dao-liquid-lockers",
+      "name": "Stake DAO - Liquid Lockers",
+      "url": "https://www.stakedao.org/",
+      "description": "Stake DAO Liquid Lockers is a Liquid Staking platform focused on governance token where stakers of FXS, CRV, BAL, CAKE, etc. can unlock the full potential of their token while keeping a liquid position, while liquidity providers receive boosted yield.",
+      "tags": ["DeFi", "DAO"],
+      "imageUrl": "https://www.stakedao.org/assets/sdt.svg",
+      "twitterXUrl": "https://twitter.com/StakeDAOHQ",
+      "discordUrl": "https://discord.gg/qwQfw4kmYy",
+      "telegramUrl": "https://t.me/StakedaoHQ"
+    },
+    {
+      "key": "stake-dao-votemarket",
+      "name": "Stake DAO - Votemarket",
+      "url": "https://votemarket.stakedao.org/",
+      "description": "Votemarket is the leading on-chain vote incentive platform.",
+      "tags": ["DeFi", "DAO"],
+      "imageUrl": "https://www.stakedao.org/assets/sdt.svg",
+      "twitterXUrl": "https://twitter.com/StakeDAOHQ",
+      "discordUrl": "https://discord.gg/qwQfw4kmYy",
+      "telegramUrl": "https://t.me/StakedaoHQ"
+    },
+    {
       "key": "curve",
       "name": "Curve",
       "url": "https://curve.fi/",
