@@ -124,6 +124,17 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
       "twitterXUrl": "https://twitter.com/YieldNestFi",
       "discordUrl": "https://discord.gg/ayAZuQgFaE"
+    },
+        {
+      "key": "lenx",
+      "name": "LENX Finance",
+      "url": "https://lenx.finance/",
+      "description": "LENX is the omnichain Bitcoin liquidity protocol, enabling supply of native Bitcoin as liquidity to borrow omnichain assets with built-in lending.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://gateway.pinata.cloud/ipfs/QmRxRBCJPwJFAELrWZPU55JUcf9Uf9wp6fVLeFgK6VRYEf",
+      "twitterXUrl": "https://twitter.com/LENX_Finance",
+      "discordUrl": "https://discord.gg/LENX",
+      "telegramUrl": "https://t.me/LENXCommunity"
     }
   ]
 }
