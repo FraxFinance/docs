@@ -205,6 +205,15 @@
       "twitterXUrl": "https://twitter.com/LENX_Finance",
       "discordUrl": "https://discord.gg/LENX",
       "telegramUrl": "https://t.me/LENXCommunity"
+    },
+    {
+      "key": "kfc",
+      "name": "Krypto Fraxtal Chicken",
+      "url": "https://www.kryptochicken.com",
+      "description": "The first fair-launched meme coin on Fraxtal, driven by the community.",
+      "tags": ["MEME"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/kfc.png",
+      "twitterXUrl": "https://twitter.com/krypto_chicken"
     }
   ]
 }
