@@ -205,6 +205,16 @@
       "twitterXUrl": "https://twitter.com/LENX_Finance",
       "discordUrl": "https://discord.gg/LENX",
       "telegramUrl": "https://t.me/LENXCommunity"
+    },
+    {
+      "key": "geckoterminal",
+      "name": "GeckoTerminal",
+      "url": "https://www.geckoterminal.com/",
+      "description": "A DEX tracker and crypto price charting tool. Track real-time cryptocurrency prices, trading volume, transactions, liquidity, and more across all blockchains.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/geckoterminal.png",
+      "twitterXUrl": "https://twitter.com/GeckoTerminal",
+      "telegramUrl": "https://t.me/geckoterminal"
     }
   ]
 }
