@@ -205,6 +205,17 @@
       "twitterXUrl": "https://twitter.com/LENX_Finance",
       "discordUrl": "https://discord.gg/LENX",
       "telegramUrl": "https://t.me/LENXCommunity"
+    },
+    {
+      "key": "owlto",
+      "name": "Owlto Finance",
+      "url": "https://owlto.finance/",
+      "description": "Owlto Finance is a decentralized cross-rollup bridge that focuses on L2, providing 'safe, fast, cheap, and easy-to-use' services.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/owlto.png",
+      "twitterXUrl": "https://twitter.com/Owlto_Finance",
+      "discordUrl": "https://discord.gg/owlto",
+      "telegramUrl": "https://t.me/OwltoFinanceTG"
     }
   ]
 }
