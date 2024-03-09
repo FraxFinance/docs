@@ -236,5 +236,15 @@
       "discordUrl": "https://discord.gg/owlto",
       "telegramUrl": "https://t.me/OwltoFinanceTG"
     }
+    {
+      "key": "FRAXAdventures",
+      "name": "FRAX Adventures",
+      "url": "https://www.fraxadventures.xyz/",
+      "description": "FRAX Adventures are choose-your-own-adventure type fully onchain stories",
+      "tags": ["Entertainment"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/FraxAds.png",
+      "twitterXUrl": "https://twitter.com/FraxAdventures",
+      "telegramUrl": "https://t.me/+SpvwdGuuEDxkZDU1"
+    }
   ]
 }
