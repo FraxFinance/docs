@@ -1,6 +1,15 @@
 {
   "items": [
     {
+      "key": "stably",
+      "name": "Stably",
+      "url": "https://www.stably.io/",
+      "description": "Stably provides stablecoin infrastructure and on/off-ramps into Fraxtal and other blockchains.",
+      "tags": ["Infra"],
+      "imageUrl": "https://files.stably.io/company-logos/stably/stably-mark.svg",
+      "twitterXUrl": "https://twitter.com/stably_official"
+    },
+    {
       "key": "etherscan",
       "name": "Etherscan",
       "url": "https://etherscan.io/",
