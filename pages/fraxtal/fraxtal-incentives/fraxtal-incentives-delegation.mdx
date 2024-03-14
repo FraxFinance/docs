@@ -19,8 +19,8 @@ The DelegationRegistry can be found in the Fraxtal mainnet as well as Fraxtal te
 
 |     **Network**     	|                 **Address**                	|                                               **Chain explorer link**                                              	|
 |:-------------------:	|:------------------------------------------:	|:------------------------------------------------------------------------------------------------------------------:	|
-| **Fraxtal mainnet** 	| 0x4392dC16867D53DBFE227076606455634d4c2795 	|     [Mainnet DelegationRegistry](https://fraxscan.com/address/0x4392dc16867d53dbfe227076606455634d4c2795#code)     	|
-| **Fraxtal testnet** 	| 0x46F3172257421b95881FAaf226Dd32A5BDB95a81 	| [Testnet DelegationRegistry](https://holesky.fraxscan.com/address/0x46f3172257421b95881faaf226dd32a5bdb95a81#code) 	|
+| **Fraxtal mainnet** 	| 0xF5cA906f05cafa944c27c6881bed3DFd3a785b6A 	|     [Mainnet DelegationRegistry](https://fraxscan.com/address/0xF5cA906f05cafa944c27c6881bed3DFd3a785b6A#code)     	|
+| **Fraxtal testnet** 	| 0x7267152C923789712f4518bC2A84b902D6a65A2C 	| [Testnet DelegationRegistry](https://holesky.fraxscan.com/address/0x7267152C923789712f4518bC2A84b902D6a65A2C#code) 	|
 
 ## Setting delegations for smart contracts
 
@@ -35,6 +35,26 @@ To set the delegation during deployment, you can add the following two lines of 
     }
 ```
 
+⚠️WARNING: If you smart contract supports arbitrary calls to be transmitted from it, you have to disable delegation management alltogether.⚠️
+
+Using an arbitrary call, the attacker could modify the delegation settings of your smart contract and receive the incentives that it earns. In order to disable the delegation management, you can add the following call to your constructor:
+
+```solidity
+        delegationRegistry.call(abi.encodeWithSignature("disableDelegationManagement()"));
+```
+
+This call will preserve the delegation settings set in the first call, but won't allow delegation settings to be changed by the delegate, Flox contributor, or your smart contract. Doing so ensures you are still able to accumulate the incentives without the danger of an attacker stealing them.
+
+The full constructor for a smart contract that is at risk of arbitrary call hijacking should look like this:
+
+```solidity
+    constructor(address delegationRegistry, address initialDelegate) {
+        delegationRegistry.call(abi.encodeWithSignature("setDelegationForSelf(address)", initialDelegate));
+        delegationRegistry.call(abi.encodeWithSignature("disableSelfManagingDelegations()"));
+        delegationRegistry.call(abi.encodeWithSignature("disableDelegationManagement()"));
+    }
+```
+
 Once an address sets the delegation for themselves, the delegatee is not allowed to manage the addresses' delegations unti the address disables self management of delegations. This is why the two calls are needed. The first one sets the delegatee and the second one disables self management of delegations for the smart contract.
 
-{/* DelegationRegistry: [DelegationRegistry.sol](https://github.com/FraxFinance/dev-fraxchain-contracts/blob/add-flox-points/src/contracts/flox/DelegationRegistry.sol) [0x4392dC16867D53DBFE227076606455634d4c2795] */}
+{/* DelegationRegistry: [DelegationRegistry.sol](https://github.com/FraxFinance/dev-fraxchain-contracts/blob/add-flox-points/src/contracts/flox/DelegationRegistry.sol) [0xF5cA906f05cafa944c27c6881bed3DFd3a785b6A] */}
