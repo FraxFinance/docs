@@ -245,6 +245,16 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/FraxAds.png",
       "twitterXUrl": "https://twitter.com/FraxAdventures",
       "telegramUrl": "https://t.me/+SpvwdGuuEDxkZDU1"
+    },
+    {
+      "key": "CR100",
+      "name": "CR100",
+      "url": "https://www.cr100.finance",
+      "description": "Community-Driven Meme Coin with Unique Burn Mechanism to Propel FXS Deflation and Achieve 100% CR",
+      "tags": ["MEME"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/CR100.png",
+      "twitterXUrl": "https://twitter.com/Cr100Frax",
+      "telegramUrl": "https://t.me/cr100Frax"
     }
   ]
 }
