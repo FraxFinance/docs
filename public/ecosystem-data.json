@@ -272,6 +272,17 @@
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/goldsky.png",
       "twitterXUrl": "https://twitter.com/goldskyio"
+    },
+    {
+      "key": "archly",
+      "name": "Archly",
+      "url": "https://archly.fi/",
+      "description": "Archly works to empower any user on any chain to engage in seamless cross-chain experiences through our DEX and Rainbow Road platforms.",
+      "tags": ["DeFi", "Infra"],
+      "imageUrl": "https://docs.archly.fi/archly.png",
+      "discordUrl": "https://discord.gg/nZQZ2Br9yc",
+      "telegramUrl": "https://t.me/ArchlyFinance",
+      "twitterXUrl": "https://twitter.com/ArchlyFinance"
     }
   ]
 }
