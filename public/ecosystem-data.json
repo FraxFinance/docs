@@ -272,6 +272,15 @@
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/goldsky.png",
       "twitterXUrl": "https://twitter.com/goldskyio"
+    },
+     {
+      "key": "tellor",
+      "name": "Tellor",
+      "url": "https://tellor.io/",
+      "description": "Tellor is a versatile oracle protocol that can provide any data type permissionlessly, with crypto-economic liveness and security.",
+      "tags": ["Infra"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/tellor.png",
+      "twitterXUrl": "https://twitter.com/wearetellor"
     }
   ]
 }
