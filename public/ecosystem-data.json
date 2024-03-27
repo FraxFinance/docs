@@ -272,6 +272,15 @@
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/goldsky.png",
       "twitterXUrl": "https://twitter.com/goldskyio"
+    },
+    {
+      "key": "vaultcraft",
+      "name": "VaultCraft",
+      "url": "https://vaultcraft.io/",
+      "description": "Build, deploy, and zap into automated yield strategies with VaultCraft.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://app.vaultcraft.io/images/tokens/vcx.svg",
+      "twitterXUrl": "https://twitter.com/VaultCraft_io"
     }
   ]
 }
