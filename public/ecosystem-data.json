@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "key": "beefy",
+      "name": "Beefy",
+      "url": "https://beefy.com/",
+      "description": "Beefy is The Trusted Yield Optimizer that help users to safely and securely autocompound yields on their crypto. Beefy's cutting-edge web app delivers hundreds of DeFi yield opportunities from dozens of chains in a single, easy-to-use service.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://beefy.com/93135b84263309141eba2df4479252f3.png",
+      "twitterXUrl": "https://twitter.com/beefyfinance",
+      "discordUrl": "https://t.co/gnWHy1srj5",
+      "telegramUrl": "https://t.co/HgPmJJlcjt"
+    },
+    {
       "key": "stably",
       "name": "Stably",
       "url": "https://www.stably.io/",
