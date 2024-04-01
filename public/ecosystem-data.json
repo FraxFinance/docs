@@ -312,6 +312,15 @@
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/tellor.png",
       "twitterXUrl": "https://twitter.com/wearetellor"
+    },
+    {
+      "key": "supra",
+      "name": "Supra",
+      "url": "https://supra.com",
+      "description": "Supra as an “IntraLayer” is a powerful middleware network that brings our solutions together - oracles, VRFs, and a native cross-chain protocol through singular shared-security infrastructure.",
+      "tags": ["Infra", "DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/supra.png",
+      "twitterXUrl": "https://twitter.com/SUPRA_Labs"
     }
   ]
 }
