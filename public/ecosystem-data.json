@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "floxdotlol",
+      "name": "Flox.lol",
+      "url": "https://flox.lol/",
+      "description": "Flox.lol is the best place to earn juicy $FXTL, while minting $FLOX, an $FXTL pegged flatcoin.",
+      "tags": ["DeFi", "MEME"],
+      "imageUrl": "https://flox.lol/logo400x400.png",
+      "twitterXUrl": "https://twitter.com/floxdotlol",
+      "telegramUrl": "https://t.me/floxdotlol"
+    },
+    {
       "key": "beefy",
       "name": "Beefy",
       "url": "https://beefy.com/",
