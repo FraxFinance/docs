@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "gronkfrax",
+      "name": "Gronk",
+      "url": "https://gronkfrax.com/",
+      "description": "Gronk is based on one of Ethereum's most significant cultural icons and the Champion of FRAX.",
+      "tags": ["MEME"],
+      "imageUrl": "https://gronkfrax.com/icon.ico",
+      "twitterXUrl": "https://twitter.com/gronkfrax",
+      "telegramUrl": "https://t.me/gronkfrax"
+    },
+    {
       "key": "beefy",
       "name": "Beefy",
       "url": "https://beefy.com/",
