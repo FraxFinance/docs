@@ -321,6 +321,17 @@
       "tags": ["Infra", "DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/supra.png",
       "twitterXUrl": "https://twitter.com/SUPRA_Labs"
+    },
+    {
+      "key": "nfts2me",
+      "name": "NFTs2Me",
+      "url": "https://nfts2me.com",
+      "description": "NFTs2Me is a multichain user-friendly comprehensive platform to create, deploy and manage your NFT collection and community, 100% free with advanced functionalities.",
+      "tags": ["NFT"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/nfts2me.png",
+      "discordUrl": "https://discord.com/invite/Usmgxj2Msk",
+      "telegramUrl": "https://t.me/nfts2me",
+      "twitterXUrl": "https://twitter.com/NFTs2Me"
     }
   ]
 }
