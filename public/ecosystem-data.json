@@ -373,5 +373,15 @@
       "twitterXUrl": "https://twitter.com/API3DAO",
       "discordURL": "https://discord.gg/api3dao"
     }
+    {
+    "key": "dein",
+      "name": "DEIN",
+      "url": "https://dein.fi/",
+      "description": "An AI-driven, omni-chain, decentralized marketplace and adjudication system providing infrastructure for insurance and credit default swaps on anything.",
+      "tags": ["Infra", "DeFi", "Insurance", "Credit default swap"],
+      "imageUrl": "https://3538207768-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F3q3w8sHRweEMFlACufqe%2Fuploads%2FgZ3nhm97pBUKunUcSsMc%2FDEIN%20logo%20cube%20color.png?alt=media&token=20492592-c32e-453f-9f57-9b89b70ccd32",
+      "twitterXUrl": "https://twitter.com/DEIN_fi",
+      "discordURL": "https://discord.gg/dein"
+    }
   ]
 }
