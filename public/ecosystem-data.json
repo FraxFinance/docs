@@ -371,6 +371,16 @@
       "imageUrl": "https://3538207768-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F3q3w8sHRweEMFlACufqe%2Fuploads%2FgZ3nhm97pBUKunUcSsMc%2FDEIN%20logo%20cube%20color.png?alt=media&token=20492592-c32e-453f-9f57-9b89b70ccd32",
       "twitterXUrl": "https://twitter.com/DEIN_fi",
       "discordURL": "https://discord.gg/dein"
+    },
+    {
+      "key": "lagr",
+      "name": "Lagrange",
+      "url": "https://www.lagrange.dev/",
+      "description": "A hyper-parallel Zero-Knowledge Coprocessor that enables verifiable computations at a big data scale across various blockchains.",
+      "tags": ["Infra", "DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/lagrange.png",
+      "twitterXUrl": "https://twitter.com/lagrangedev",
+      "discordURL": "https://discord.gg/Jkxvhmq2"
     }
   ]
 }
