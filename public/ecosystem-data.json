@@ -21,6 +21,16 @@
       "telegramUrl": "https://t.me/gronkfrax"
     },
     {
+      "key": "glyph",
+      "name": "Glyph",
+      "url": "https://www.glyph.fi/",
+      "description": "Fraxtal's Native Credit Layer. Lend, Borrow, Earn.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://raw.githubusercontent.com/Byte-Masons/glyph-resources/6016905154dd2be6e17bf07c2057eb388de76c80/glyphcolor.png",
+      "twitterXUrl": "https://x.com/GlyphFinance/",
+      "discordUrl": "https://discord.com/invite/TmSjuRquWN"
+    },
+    {
       "key": "beefy",
       "name": "Beefy",
       "url": "https://beefy.com/",
