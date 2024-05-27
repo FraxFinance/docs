@@ -381,6 +381,16 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/lagrange.png",
       "twitterXUrl": "https://twitter.com/lagrangedev",
       "discordURL": "https://discord.gg/Jkxvhmq2"
+    },
+    {
+      "key": "comet",
+      "name": "Comet Protocol",
+      "url": "https://cometbridge.app/",
+      "description": "The First Seamless Interlink Communication Protocol Between All Bitcoin and Ethereum Ecosystems.",
+      "tags": ["Infra","Bridge"],
+      "imageUrl": "https://raw.githubusercontent.com/cometbridge/assets/main/comet.png",
+      "twitterXUrl": "https://x.com/Comet_Protocol",
+      "discordURL": "https://discord.com/invite/ZTFQNNXcYs"
     }
   ]
 }
