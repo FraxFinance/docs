@@ -1,0 +1,31 @@
+---
+title: Data Availability
+lang: en-US
+---
+
+Fraxtal DA implementation consists of a modified op-batcher and op-node executable that uses our custom DA implementation as the storage backend of the chain data.
+
+Our custom implementation along with the other node changes can be found in [this](https://github.com/FraxFinance/fraxtal/) repo.
+
+The major changes are in the op-batcher which is the component that’s responsible for storing the chain data and posting the reference on the L1 to be picked up by op-node.
+
+![Batcher](/images/fraxtal-da/batcher.svg)
+
+Compared to the default OP implementation where data is stored in EIP-4844 blobs, ours sends the data to a da-server which is responsible of uploading the data on multiple backends and returning its IFPS hash.
+The IPFS hash is then posted on the L1 so it can be picked up later by op-node.
+
+We are currently hosting the data blobs on 4 different storage backends with a total of 12 copies.
+
+The reference posted on the L1 is then read by our custom op-node implementation that fetches the actual data from a DA endpoint (we provide a public one but anyone can build one that relies only on IPFS).
+
+![Node](/images/fraxtal-da/node.svg)
+
+### Future plans
+
+For the future we’re planning to expand our supported DA backends/implementation. Some of the options we’re reviewing are:
+
+- EigenDA
+- Celestia
+- Near DA
+- EIP-4844 Blobs
+- OP plasma integration
