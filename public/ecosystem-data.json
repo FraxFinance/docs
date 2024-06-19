@@ -401,6 +401,18 @@
       "imageUrl": "https://raw.githubusercontent.com/cometbridge/assets/main/comet.png",
       "twitterXUrl": "https://x.com/Comet_Protocol",
       "discordURL": "https://discord.com/invite/ZTFQNNXcYs"
+    },
+    {
+      "key": "gemach",
+      "name": "Gemach Gbot Telegram bot",
+      "url": "https://t.me/GemachEVM_Bot?start=558596665",
+      "description": "Introducing the Gemach Gbot, your ultimate trading bot for EVM chains. With advanced features like token sniping, limit orders, and real-time alerts, Gbot automates and optimizes your trading strategies. Plus, our lucrative referral program lets you earn 30% rewards on every referral.",
+      "tags": ["Infra","Bridge","DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/gemach.png",
+      "twitterXUrl": "https://x.com/gemach_io",
+      "discordURL": "https://discord.com/invite/QDHsGPQdx3",
+      "telegramUrl": "https://t.me/gemach_public"
     }
+
   ]
 }
