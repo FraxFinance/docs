@@ -3,8 +3,8 @@
     {
       "key": "snft",
       "name": "SNFT",
-      "url": "https://faucet.snft.pro/fraxtal",
-      "description": "SNFT Faucet, Increase New EVMs Testnet Activity, Claim ERC721, ERC1155, and ERC20 Tokens",
+      "url": "https://snft.pro",
+      "description": "MultiChain NFT Marketplace, Launchpad, and Stakes",
       "tags": ["NFT"],
       "imageUrl": "https://github.com/snftpro/docs/tree/master/public/images/ecosystem/snft.png",
       "twitterXUrl": "https://x.com/snftpro",
