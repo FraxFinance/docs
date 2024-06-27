@@ -401,6 +401,17 @@
       "imageUrl": "https://raw.githubusercontent.com/cometbridge/assets/main/comet.png",
       "twitterXUrl": "https://x.com/Comet_Protocol",
       "discordURL": "https://discord.com/invite/ZTFQNNXcYs"
+    },
+    {
+      "key": "Cycnus",
+      "name": "Cycnus University",
+      "url": "https://www.cycnus.org",
+      "description": "The Cycnus University is committed to promoting the development of Web 3.0 + X disciplines, using Fraxtal as the digitalized infrastructure to build an innovative and dynamic educational platform that allows everyone to realize their blockchain dreams.",
+      "tags": ["DAO","Infra","Education"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/CycnusUniversity.png",
+      "twitterXUrl": "https://x.com/CycnusDAO",
+      "discordURL": "https://discord.gg/mSDfzsEbxJ",
+      "telegramUrl": "https://t.me/CycnusUniversity"
     }
   ]
 }
