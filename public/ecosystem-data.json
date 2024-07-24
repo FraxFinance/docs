@@ -423,6 +423,16 @@
       "twitterXUrl": "https://x.com/gemach_io",
       "discordURL": "https://discord.com/invite/QDHsGPQdx3",
       "telegramUrl": "https://t.me/gemach_public"
+    },
+    {
+      "key": "gasdotzip",
+      "name": "Gas.zip",
+      "url": "https://www.gas.zip/",
+      "description": "Fastest one-stop gas refuel bridge for over 200+ chains.",
+      "tags": ["Infra", "Bridge", "DeFi"],
+      "imageUrl": "https://www.gas.zip/gasLogo400x400.png",
+      "twitterXUrl": "https://x.com/gasdotzip",
+      "discordURL": "https://discord.com/invite/gasdotzip"
     }
   ]
 }
