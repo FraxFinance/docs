@@ -104,6 +104,17 @@
       "imageUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/19623.png",
       "twitterXUrl": "https://twitter.com/WombatExchange",
       "discordUrl": "https://discord.gg/Wombat"
+    },
+    {
+      "key": "yieldnest",
+      "name": "YieldNest",
+      "url": "https://yieldnest.finance",
+      "description": "Restake with YieldNest. A protocol delivering next-gen ETH Yield with isolated and tailored restaking strategies powered by EigenLayer. Simple, secure, and high-yielding LRTs.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
+      "twitterXUrl": "https://x.com/YieldNestFi",
+      "discordUrl": "https://discord.com/invite/ayAZuQgFaE",
+      "telegramUrl": "https://t.me/YieldNest"
     }
   ]
 }
