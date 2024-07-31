@@ -1,5 +1,15 @@
 {
   "items": [
+     {
+      "key": "ainexa",
+      "name": "Ainexa",
+      "url": "https://ainexa.ai/",
+      "description": "Ainexa is AI-powered crypto platform with voice support.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://ainexa.ai/logo.png",
+      "twitterXUrl": "https://twitter.com/ainexaai",
+      "telegramUrl": "https://t.me/ainexaai"
+    },
     {
       "key": "floxdotlol",
       "name": "Flox.lol",
