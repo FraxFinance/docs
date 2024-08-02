@@ -434,6 +434,16 @@
       "imageUrl": "https://www.gas.zip/gasLogo400x400.png",
       "twitterXUrl": "https://x.com/gasdotzip",
       "discordURL": "https://discord.com/invite/gasdotzip"
+    },
+    {
+      "key": "memebridge",
+      "name": "MemeBridge",
+      "url": "https://memebridge.xyz/#/bridge",
+      "description": "The cheapest Layer2 bridge. Earn points and bridge through Layer2s within seconds.",
+      "tags": ["Infra", "Bridge"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/memebridge.png",
+      "twitterXUrl": "https://x.com/MemebridgeB",
+      "discordURL": "https://discord.com/invite/UFFmGzryMX"
     }
   ]
 }
