@@ -444,6 +444,14 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/memebridge.png",
       "twitterXUrl": "https://x.com/MemebridgeB",
       "discordURL": "https://discord.com/invite/UFFmGzryMX"
+    },
+    {
+      "key": "snailminting",
+      "name": "Snailminting",
+      "url": "https://snailmint.ing",
+      "description": "Minting snails everyday until FXS is $100",
+      "tags": ["NFT"],
+      "imageUrl": "https://snailmint.ing/fxs_snail_2.png"
     }
   ]
 }
