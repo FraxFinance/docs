@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "snft",
+      "name": "SNFT",
+      "url": "https://snft.pro",
+      "description": "MultiChain NFT Marketplace, Launchpad, and Stakes",
+      "tags": ["NFT"],
+      "imageUrl": "https://github.com/snftpro/docs/tree/master/public/images/ecosystem/snft.png",
+      "twitterXUrl": "https://x.com/snftpro",
+      "telegramUrl": "https://t.me/snftpro"
+    },
+     {
       "key": "floxdotlol",
       "name": "Flox.lol",
       "url": "https://flox.lol/",
