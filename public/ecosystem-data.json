@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "key": "come2top",
+      "name": "Come2Top",
+      "url": "https://come2.top/",
+      "description": "Come2Top is a secure, automated, and fully decentralized GameFi platform built on top of the Fraxtal Mainnet, integrated with the Beefy, Curve, and Frax Protocols.",
+      "tags": ["GameFi", "DeFi"],
+      "imageUrl": "https://raw.githubusercontent.com/come2top/assets/main/Come2Top-SocialLogo.png",
+      "twitterXUrl": "https://x.com/come2top",
+      "telegramUrl": "https://t.me/come2top_official"
+      "discordUrl": "https://discord.gg/2C6F2FdNcS"
+    },
+    {
       "key": "floxdotlol",
       "name": "Flox.lol",
       "url": "https://flox.lol/",
