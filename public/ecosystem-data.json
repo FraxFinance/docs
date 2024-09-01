@@ -452,6 +452,16 @@
       "description": "Minting snails everyday until FXS is $100",
       "tags": ["NFT"],
       "imageUrl": "https://snailmint.ing/fxs_snail_2.png"
+    },
+    {
+      "key": "pumpfaxt",
+      "name": "Pumpfaxt",
+      "url": "https://pumpfaxt.com",
+      "description": "Welcome to PumpFaxt.com, where fun meets blockchain innovation! Pumpfaxt is your go-to platform for engaging with memecoins and tokens in a unique and entertaining way. Our platform leverages smart contracts for all significant operations, ensuring transparency and security, while our server primarily acts as a caching layer to enhance performance.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/pumpfaxt.png",
+      "twitterXUrl": "https://x.com/pumpfaxt",
+      "telegramUrl": "https://t.me/pumpfaxt_bot"
     }
   ]
 }
