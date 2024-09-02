@@ -452,6 +452,16 @@
       "description": "Minting snails everyday until FXS is $100",
       "tags": ["NFT"],
       "imageUrl": "https://snailmint.ing/fxs_snail_2.png"
-    }
+    },
+    {
+      "key": "upnode",
+      "name": "Upnode",
+      "url": "https://upnode.org",
+      "description": "Upnode provides an infrastructure for launching a full-stack L3 OP Stack chain on Frax. Beyond this, Upnode offers professional validator services, advanced identity solutions, and low-latency on-chain gaming infrastructure.",
+      "tags": ["Infra"],
+      "imageUrl": "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/upnodewhitebg.png",
+      "twitterXUrl": "https://twitter.com/upnodeIntern",
+      "telegramUrl": "https://t.me/upnodeIntern"
+    },
   ]
 }
