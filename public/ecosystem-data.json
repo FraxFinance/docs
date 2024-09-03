@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "key": "come2top",
+      "name": "Come2Top",
+      "url": "https://come2.top/",
+      "description": "Come2Top is a secure, automated, and fully decentralized GameFi platform built on top of the Fraxtal Mainnet, integrated with the Beefy, Curve, and Frax Protocols.",
+      "tags": ["GameFi", "DeFi"],
+      "imageUrl": "https://raw.githubusercontent.com/come2top/assets/main/Come2Top-SocialLogo.png",
+      "twitterXUrl": "https://x.com/come2top",
+      "telegramUrl": "https://t.me/come2top_official",
+      "discordUrl": "https://discord.gg/2C6F2FdNcS"
+    },
+    {
       "key": "floxdotlol",
       "name": "Flox.lol",
       "url": "https://flox.lol/",
@@ -449,7 +460,7 @@
       "key": "snailminting",
       "name": "Snailminting",
       "url": "https://snailmint.ing",
-      "description": "Minting snails everyday until FXS is $100",
+      "description": "Minting snails everyday until FXS is at $100",
       "tags": ["NFT"],
       "imageUrl": "https://snailmint.ing/fxs_snail_2.png"
     },
@@ -461,6 +472,26 @@
       "tags": ["NFT"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/cryptosports.png", 
       "discordURL": "https://discord.gg/NpAw6nmzbS"
+    },
+    {
+      "key": "pumpfaxt",
+      "name": "Pumpfaxt",
+      "url": "https://pumpfaxt.com",
+      "description": "Welcome to PumpFaxt.com, where fun meets blockchain innovation! Pumpfaxt is your go-to platform for engaging with memecoins and tokens in a unique and entertaining way. Our platform leverages smart contracts for all significant operations, ensuring transparency and security, while our server primarily acts as a caching layer to enhance performance.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/pumpfaxt.png",
+      "twitterXUrl": "https://x.com/pumpfaxt",
+      "telegramUrl": "https://t.me/pumpfaxt_bot"
+    },
+    {
+      "key": "upnode",
+      "name": "Upnode",
+      "url": "https://upnode.org",
+      "description": "Upnode provides an infrastructure for launching a full-stack L3 OP Stack chain on Frax. Beyond this, Upnode offers professional validator services, advanced identity solutions, and low-latency on-chain gaming infrastructure.",
+      "tags": ["Infra"],
+      "imageUrl": "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/upnodewhitebg.png",
+      "twitterXUrl": "https://twitter.com/upnodeIntern",
+      "telegramUrl": "https://t.me/upnodeIntern"
     }
   ]
 }
