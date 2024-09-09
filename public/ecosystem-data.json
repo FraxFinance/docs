@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "dtrinity",
+      "name": "dTRINITY",
+      "url": "https://dtrinity.org/",
+      "description": "dTRINITY is a liquidity protocol that provides discounted stablecoin loans to drive demand from borrowers and improve yields for lenders, enhancing access to liquidity and leverage in DeFi.",
+      "tags": ["DeFi", "DAO"],
+      "imageUrl": "https://raw.githubusercontent.com/dtrinity/public-assets/9076ed5d1a4b53a2f8c6738f9e224512d8e6e86e/logos/dtrinity/dTRINITY%20-%20White%20Mark.png",
+      "twitterXUrl": "https://twitter.com/dtrinity_defi",
+      "discordUrl": "https://discord.gg/dtrinity"
+    },
+    {
       "key": "come2top",
       "name": "Come2Top",
       "url": "https://come2.top/",
