@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "key": "teahouse-finance",
+      "name": "Teahouse Finance",
+      "url": "https://teahouse.finance/",
+      "description": "Teahouse is a multi-strategy DeFi asset manager similar to a hedge fund. We help enterprise and individual clients grow their crypto assets on our secure and transparent platform.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/teahousefinance-logo.png",
+      "twitterXUrl": "https://x.com/TeahouseFinance",
+      "telegramUrl": "https://t.me/tgteahousefinance",
+      "discordUrl": "https://discord.gg/teahouse-finance"
+    },
+    {
       "key": "dtrinity",
       "name": "dTRINITY",
       "url": "https://dtrinity.org/",
@@ -480,7 +491,7 @@
       "url": "https://www.playcryptosports.com/",
       "description": "DFS on the blockchain. A fantasy team that is truly yours",
       "tags": ["NFT"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/cryptosports.png", 
+      "imageUrl": "https://docs.frax.com/images/ecosystem/cryptosports.png",
       "discordURL": "https://discord.gg/NpAw6nmzbS"
     },
     {
