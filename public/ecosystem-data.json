@@ -12,6 +12,17 @@
       "discordUrl": "https://discord.gg/teahouse-finance"
     },
     {
+      "key": "layerswap",
+      "name": "Layerswap",
+      "url": "https://layerswap.io/",
+      "description": "Layerswap is a reliable and cost-efficient solution for transferring crypto assets across 45+ blockchain networks.",
+      "tags": ["DeFi", "Bridge"],
+      "imageUrl":
+      "twitterXUrl": "https://x.com/layerswap",
+      "telegramUrl": "https://t.me/layerswap_io",
+      "discordUrl": "https://discord.gg/layerswap"
+    },
+    {
       "key": "ionic",
       "name": "Ionic",
       "url": "https://ionic.money/",
