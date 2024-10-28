@@ -523,6 +523,16 @@
       "imageUrl": "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/upnodewhitebg.png",
       "twitterXUrl": "https://twitter.com/upnodeIntern",
       "telegramUrl": "https://t.me/upnodeIntern"
+    },
+    {
+      "key": "popcoin",
+      "name": "PopCoin.Fun",
+      "url": "https://popcoin.fun",
+      "description": "Popcoin is an innovative coin launcher allowing you to easily create, launch, promote and trade meme coins using a fair launch mechanism via our bonding curve, No need for Initial Liquidity.",
+      "tags": ["DeFi", "Infra", "Entertainment"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/popcoin.png",
+      "twitterXUrl": "https://x.com/popcoindotfun",
+      "telegramUrl": "https://t.me/popcoinfun"
     }
   ]
 }
