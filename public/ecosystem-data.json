@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "enkrypt",
+      "name": "Enkrypt",
+      "url": "https://www.enkrypt.com/",
+      "description": "A multichain crypto wallet Hold, buy, send, receive, and swap tokens. Manage your NFTs. Access web3 apps across multiple blockchains.",
+      "tags": ["Infra"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/Enkrypt.png",
+      "twitterXUrl": "https://twitter.com/enkrypt",
+      "discordUrl": "https://discord.gg/Gz8vBneyKe"
+    },
+    {
       "key": "teahouse-finance",
       "name": "Teahouse Finance",
       "url": "https://teahouse.finance/",
