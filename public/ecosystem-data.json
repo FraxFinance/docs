@@ -528,11 +528,11 @@
       "key": "zeroway",
       "name": "ZeroWay",
       "url": "https://zeroway.io/",
-      "description": "Zeroway is a multifunctional interchain platform. Built on Hyperlane, is set to use omnichain technology.",
+      "description": "Zeroway: Simple and cheap ETH bridge using Hyperlane decentralised omnichain technology.",
       "tags": ["Infra", "Bridge", "NFT"],
       "imageUrl": "https://ipfs.io/ipfs/QmfNE2Ud3B7V8AWK4EWN2qYthwftDWode4hp6jGSJRfkhY",
       "twitterXUrl": "https://x.com/zeroway_io",
-      "discordURL": "https://discord.com/invite/bQNEWkXdDG",
+      "discordURL": "https://discord.gg/bQNEWkXdDG",
       "telegramUrl": "https://t.me/zeroway_announcements"
     }
   ]
