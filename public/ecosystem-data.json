@@ -37,7 +37,7 @@
       "name": "Ionic",
       "url": "https://ionic.money/",
       "description": "Ionic is the one-stop shop for capital-efficient lending and borrowing of yield-bearing assets on the OP Superchain.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "Lending"],
       "imageUrl": "https://doc.ionic.money/~gitbook/image?url=https%3A%2F%2F1954749119-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252F4L4EczL4rCp3jyJhAxHG%252Fuploads%252FXxmvC5cXCopD0HeFUCd0%252Flogo%25201.png%3Falt%3Dmedia%26token%3D7b5aad7a-0c55-489a-b305-db58f3635601&width=768&dpr=2&quality=100&sign=ded3ca72&sv=1",
       "twitterXUrl": "https://twitter.com/ionicmoney",
       "discordUrl": "https://discord.gg/ionicmoney"
@@ -47,7 +47,7 @@
       "name": "dTRINITY",
       "url": "https://dtrinity.org/",
       "description": "dTRINITY is a liquidity protocol that provides discounted stablecoin loans to drive demand from borrowers and improve yields for lenders, enhancing access to liquidity and leverage in DeFi.",
-      "tags": ["DeFi", "DAO"],
+      "tags": ["DeFi", "DAO", "Lending"],
       "imageUrl": "https://raw.githubusercontent.com/dtrinity/public-assets/9076ed5d1a4b53a2f8c6738f9e224512d8e6e86e/logos/dtrinity/dTRINITY%20-%20White%20Mark.png",
       "twitterXUrl": "https://twitter.com/dtrinity_defi",
       "discordUrl": "https://discord.gg/dtrinity"
@@ -88,7 +88,7 @@
       "name": "Glyph",
       "url": "https://www.glyph.fi/",
       "description": "Fraxtal's Native Credit Layer. Lend, Borrow, Earn.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "Lending"],
       "imageUrl": "https://raw.githubusercontent.com/Byte-Masons/glyph-resources/6016905154dd2be6e17bf07c2057eb388de76c80/glyphcolor.png",
       "twitterXUrl": "https://x.com/GlyphFinance/",
       "discordUrl": "https://discord.com/invite/TmSjuRquWN"
@@ -109,7 +109,7 @@
       "name": "Stably",
       "url": "https://www.stably.io/",
       "description": "Stably provides stablecoin infrastructure and on/off-ramps into Fraxtal and other blockchains.",
-      "tags": ["Infra"],
+      "tags": ["Infra", "OnRamp"],
       "imageUrl": "https://files.stably.io/company-logos/stably/stably-mark.svg",
       "twitterXUrl": "https://twitter.com/stably_official"
     },
@@ -127,7 +127,7 @@
       "name": "Gravita Protocol",
       "url": "https://app.gravitaprotocol.com/",
       "description": "An ETH-centric Borrowing Protocol for LSTs and Productive Collateral. Fueling decentralization. ",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "Lending"],
       "imageUrl": "https://www.gravitaprotocol.com/images/logo-gravita.svg",
       "twitterXUrl": "https://twitter.com/gravitaprotocol",
       "discordUrl": "https://discord.gg/gravitaprotocol"
@@ -170,7 +170,7 @@
       "name": "Curve",
       "url": "https://curve.fi/",
       "description": "Curve is DeFi's leading AMM, (Automated Market Maker). Hundreds of liquidity pools have been launched through Curve's factory and incentivized by Curve's DAO.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "DEX", "Lending"],
       "imageUrl": "https://frax.imgix.net/tokens/crv.png",
       "twitterXUrl": "https://twitter.com/CurveFinance",
       "discordUrl": "https://discord.gg/rgrfS7W",
@@ -181,7 +181,7 @@
       "name": "IQ.wiki",
       "url": "https://iq.wiki/",
       "description": "IQ.wiki is the world's largest blockchain and crypto encyclopedia.",
-      "tags": ["Infra"],
+      "tags": ["Infra", "AI"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/iq.png",
       "twitterXUrl": "https://twitter.com/IQWIKI",
       "discordUrl": "https://discord.gg/x9EWvTcPXt",
@@ -213,7 +213,7 @@
       "name": "RA",
       "url": "https://ra.exchange",
       "description": "RA is The Next Generation of Concentrated Liquidity. Only on Fraxtal",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "DEX"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/ra.png",
       "twitterXUrl": "https://twitter.com/exchange_RA",
       "discordUrl": "https://discord.gg/PXadUNwMgB"
@@ -223,7 +223,7 @@
       "name": "RedStone Oracles",
       "url": "https://redstone.finance/",
       "description": "RedStone is a Modular Oracle specialising in yield-bearing collateral for lending markets, e.g. LSTs & LRTs. It offers gas-optimized data feeds across 50+ chains & all rollups. Trusted by Morpho, Venus, ether.fi & more.",
-      "tags": ["DeFi", "Infra"],
+      "tags": ["DeFi", "Infra", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/redstone.png",
       "twitterXUrl": "https://twitter.com/redstone_defi",
       "discordUrl": "https://discord.com/invite/PVxBZKFr46",
@@ -245,7 +245,7 @@
       "name": "Wombat Exchange",
       "url": "https://wombat.exchange",
       "description": "The only multi-chain and cross-chain, single-sided DEX. Introducing an innovative Bribe Market 2.0.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "DEX"],
       "imageUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/19623.png",
       "twitterXUrl": "https://twitter.com/WombatExchange",
       "discordUrl": "https://discord.gg/Wombat"
@@ -266,7 +266,7 @@
       "name": "Real World Abs",
       "url": "https://realworldabs.io/",
       "description": "$RWA is a pure meme coin with no utility barriers. The Frax universe can be complicated, but meme coins are not. Our single aim is to increase awareness of Fraxtal’s next gen tech.",
-      "tags": ["DeFi"],
+      "tags": ["MEME"],
       "imageUrl": "https://pbs.twimg.com/profile_images/1749959606561099776/_E-hXm9c_400x400.jpg",
       "twitterXUrl": "https://twitter.com/realworldabs"
     },
@@ -333,7 +333,7 @@
       "name": "Owlto Finance",
       "url": "https://owlto.finance/",
       "description": "Owlto Finance is a decentralized cross-rollup bridge that focuses on L2, providing 'safe, fast, cheap, and easy-to-use' services.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "Bridge"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/owlto.png",
       "twitterXUrl": "https://twitter.com/Owlto_Finance",
       "discordUrl": "https://discord.gg/owlto"
@@ -343,7 +343,7 @@
       "name": "FRAX Adventures",
       "url": "https://www.fraxadventures.xyz/",
       "description": "FRAX Adventures are choose-your-own-adventure type fully onchain stories",
-      "tags": ["Entertainment"],
+      "tags": ["Entertainment", "GameFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/FraxAds.png",
       "twitterXUrl": "https://twitter.com/FraxAdventures",
       "telegramUrl": "https://t.me/+SpvwdGuuEDxkZDU1"
@@ -392,7 +392,7 @@
       "name": "Tellor",
       "url": "https://tellor.io/",
       "description": "Tellor is a versatile oracle protocol that can provide any data type permissionlessly, with crypto-economic liveness and security.",
-      "tags": ["Infra"],
+      "tags": ["Infra", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/tellor.png",
       "twitterXUrl": "https://twitter.com/wearetellor"
     },
@@ -401,7 +401,7 @@
       "name": "Supra",
       "url": "https://supra.com",
       "description": "Supra as an “IntraLayer” is a powerful middleware network that brings our solutions together - oracles, VRFs, and a native cross-chain protocol through singular shared-security infrastructure.",
-      "tags": ["Infra", "DeFi"],
+      "tags": ["Infra", "DeFi", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/supra.png",
       "twitterXUrl": "https://twitter.com/SUPRA_Labs"
     },
@@ -431,7 +431,7 @@
       "name": "API3 DAO",
       "url": "https://api3.org/",
       "description": "API3 provides secure and reliable first-party data feeds that establish seamless connections between API providers and oracle smart contracts, thereby eliminating the need for third-party intermediaries and bolstering the overall integrity of the data.",
-      "tags": ["Infra", "DeFi"],
+      "tags": ["Infra", "DeFi", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/API3white.png",
       "twitterXUrl": "https://twitter.com/API3DAO",
       "discordURL": "https://discord.gg/api3dao"
@@ -482,7 +482,7 @@
       "name": "Gemach Gbot Telegram bot",
       "url": "https://t.me/GemachEVM_Bot?start=558596665",
       "description": "Introducing the Gemach Gbot, your ultimate trading bot for EVM chains. With advanced features like token sniping, limit orders, and real-time alerts, Gbot automates and optimizes your trading strategies. Plus, our lucrative referral program lets you earn 30% rewards on every referral.",
-      "tags": ["Infra", "Bridge", "DeFi"],
+      "tags": ["Infra", "DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/gemach.png",
       "twitterXUrl": "https://x.com/gemach_io",
       "discordURL": "https://discord.com/invite/QDHsGPQdx3",
@@ -521,7 +521,7 @@
       "name": "CryptoSports",
       "url": "https://www.playcryptosports.com/",
       "description": "DFS on the blockchain. A fantasy team that is truly yours",
-      "tags": ["NFT"],
+      "tags": ["NFT", "GameFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/cryptosports.png",
       "discordURL": "https://discord.gg/NpAw6nmzbS"
     },
@@ -530,7 +530,7 @@
       "name": "Pumpfaxt",
       "url": "https://pumpfaxt.com",
       "description": "Welcome to PumpFaxt.com, where fun meets blockchain innovation! Pumpfaxt is your go-to platform for engaging with memecoins and tokens in a unique and entertaining way. Our platform leverages smart contracts for all significant operations, ensuring transparency and security, while our server primarily acts as a caching layer to enhance performance.",
-      "tags": ["DeFi"],
+      "tags": ["DeFi", "MEME"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/pumpfaxt.png",
       "twitterXUrl": "https://x.com/pumpfaxt",
       "telegramUrl": "https://t.me/pumpfaxt_bot"
@@ -550,7 +550,7 @@
       "name": "PopCoin.Fun",
       "url": "https://popcoin.fun",
       "description": "Popcoin is an innovative coin launcher allowing you to easily create, launch, promote and trade meme coins using a fair launch mechanism via our bonding curve, No need for Initial Liquidity.",
-      "tags": ["DeFi", "Infra", "Entertainment"],
+      "tags": ["DeFi", "MEME"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/popcoin.png",
       "twitterXUrl": "https://x.com/popcoindotfun",
       "telegramUrl": "https://t.me/popcoinfun"
@@ -565,6 +565,16 @@
       "twitterXUrl": "https://x.com/zeroway_io",
       "discordURL": "https://discord.gg/bQNEWkXdDG",
       "telegramUrl": "https://t.me/zeroway_announcements"
+    },
+    {
+      "key": "balancer",
+      "name": "Balancer",
+      "url": "https://balancer.fi/",
+      "description": "Balancer is a battle-tested toolkit for true AMM experimentation and innovation.",
+      "tags": ["DeFi", "DEX"],
+      "imageUrl": "https://raw.githubusercontent.com/balancer/brand-assets/refs/heads/main/logo/circle-container/logo-balancer-black-128x128.png",
+      "twitterXUrl": "https://x.com/Balancer",
+      "discordURL": "https://discord.balancer.fi/"
     }
   ]
 }
