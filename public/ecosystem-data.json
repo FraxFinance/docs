@@ -580,7 +580,7 @@
       "key": "kado",
       "name": "Kado",
       "url": "https://www.kado.money/",
-      "description": "Buy and sell cryptocurrency instantly with Kado using your card or bank transfer",
+      "description": "Buy and sell cryptocurrency instantly with Kado using your card or bank transfer.",
       "tags": ["Infra", "OnRamp"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/kado.png",
       "twitterXUrl": "https://x.com/kado_money",
