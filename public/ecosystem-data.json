@@ -575,6 +575,16 @@
       "imageUrl": "https://raw.githubusercontent.com/balancer/brand-assets/refs/heads/main/logo/circle-container/logo-balancer-black-128x128.png",
       "twitterXUrl": "https://x.com/Balancer",
       "discordURL": "https://discord.balancer.fi/"
+    },
+    {
+      "key": "kado",
+      "name": "Kado",
+      "url": "https://www.kado.money/",
+      "description": "Buy and sell cryptocurrency instantly with Kado using your card or bank transfer",
+      "tags": ["Infra", "OnRamp"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/kado.png",
+      "twitterXUrl": "https://x.com/kado_money",
+      "telegramUrl": "https://t.me/joinchat/DBTEybbbFugwZjgx"
     }
   ]
 }
