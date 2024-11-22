@@ -1,6 +1,15 @@
 {
   "items": [
     {
+      "key": "spiral-stake",
+      "name": "Spiral Stake",
+      "url": "https://spiralstake.xyz/",
+      "description": "A platform where users can bring in their LSTs and LRTs, and take home extra liquidity via Spiral Stakes Rotating Credit Pools.",
+      "tags": ["DeFi"],
+      "imageUrl": "https://spiralstake.xyz/assets/spiral-stake-logo-CbEwxnTg.png",
+      "twitterXUrl": "https://x.com/0xspiralstake"
+    },
+    {
       "key": "enkrypt",
       "name": "Enkrypt",
       "url": "https://www.enkrypt.com/",
