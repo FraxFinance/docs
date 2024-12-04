@@ -585,6 +585,16 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/kado.png",
       "twitterXUrl": "https://x.com/kado_money",
       "telegramUrl": "https://t.me/joinchat/DBTEybbbFugwZjgx"
-    }
+    },
+    {
+			"key": "odos",
+			"name": "Odos",
+			"url": "https://odos.xyz/",
+			"description": "Odos is a DeFi aggregation platform for smart order routing, DeFi data, and other DeFi products.",
+			"tags": ["DeFi", "DEX Aggregator"],
+			"imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
+			"twitterXUrl": "https://x.com/odosprotocol",
+			"discordURL": "https://discord.gg/odos"
+		}
   ]
 }
