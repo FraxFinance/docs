@@ -604,6 +604,17 @@
 			"imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
 			"twitterXUrl": "https://x.com/odosprotocol",
 			"discordURL": "https://discord.gg/odos"
-		}
+		},
+    {
+      "key": "dzap",
+      "name": "DZap",
+      "url": "https://dzap.io/",
+      "description": "Unifying DeFi with Aggregation and Zapping. Powered by Zapping AI Agents",
+      "tags": ["DeFi", "AI", "Infra", "Bridge", "DEX Aggregator"],
+      "imageUrl": "https://dzap.io/static/media/Logo.247f945b94ed1dd9e10731b3be93130b.svg",
+      "twitterXUrl": "https://x.com/dzap_io",
+      "telegramUrl": "https://t.me/dzap_io",
+      "discordUrl": "https://discord.gg/rnW8wh2jr8"
+    },
   ]
 }
