@@ -604,6 +604,16 @@
 			"imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
 			"twitterXUrl": "https://x.com/odosprotocol",
 			"discordURL": "https://discord.gg/odos"
+		},
+    {
+			"key": "portals",
+			"name": "Portals.fi",
+			"url": "https://portals.fi/",
+			"description": "Low-code tools & APIs to simplify DeFi. Integrate Web3 functionalities effortlessly, ship faster, drive adoption, and create seamless user experiences.",
+			"tags": ["DeFi", "DEX Aggregator"],
+			"imageUrl": "https://portalsfi.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff6ec7fbe-fd28-4a26-92bc-240fd217ab8b%2Facf65513-6bba-4d77-b8cc-275fca1db637%2Flogo-512x512.png?table=block&id=0e9613ec-3183-45b9-8567-88f4743173dc&spaceId=f6ec7fbe-fd28-4a26-92bc-240fd217ab8b&width=1020&userId=&cache=v2",
+			"twitterXUrl": "https://x.com/portals_fi",
+			"discordURL": "https://discord.gg/JKDYTXN8hm"
 		}
   ]
 }
