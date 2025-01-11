@@ -604,6 +604,16 @@
 			"imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
 			"twitterXUrl": "https://x.com/odosprotocol",
 			"discordURL": "https://discord.gg/odos"
-		}
+	},
+	{
+		"key": "vnx",
+		"name": "VNX",
+		"url": "https://vnx.io/",
+		"description": "VNX, a European licensed token issuance platform, brings real-world assets (RWA) to crypto with fiat-referencing tokens (VEUR, VCHF) and tokenized gold (VNXAU).",
+		"tags": ["DeFi", "OnRamp"],
+		"imageUrl": "https://vnx.li/wp-content/uploads/2025/01/VNX_logo_square.png",
+		"twitterXUrl": "https://x.com/vnx_platform",
+		"telegramUrl": "https://t.me/vnx_li"
+	}		
   ]
 }
