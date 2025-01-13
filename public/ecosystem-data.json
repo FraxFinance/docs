@@ -596,14 +596,24 @@
       "telegramUrl": "https://t.me/joinchat/DBTEybbbFugwZjgx"
     },
     {
-			"key": "odos",
-			"name": "Odos",
-			"url": "https://odos.xyz/",
-			"description": "Odos is a DeFi aggregation platform for smart order routing, DeFi data, and other DeFi products.",
-			"tags": ["DeFi", "DEX Aggregator"],
-			"imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
-			"twitterXUrl": "https://x.com/odosprotocol",
-			"discordURL": "https://discord.gg/odos"
-		}
+      "key": "odos",
+      "name": "Odos",
+      "url": "https://odos.xyz/",
+      "description": "Odos is a DeFi aggregation platform for smart order routing, DeFi data, and other DeFi products.",
+      "tags": ["DeFi", "DEX Aggregator"],
+      "imageUrl": "https://assets.odos.xyz/brandAssets/symbol/odos-symbol-orange.png",
+      "twitterXUrl": "https://x.com/odosprotocol",
+      "discordURL": "https://discord.gg/odos"
+    },
+    {
+      "key": "velodrome",
+      "name": "Velodrome Finance",
+      "url": "https://velodrome.finance/",
+      "description": "Velodrome Finance is a next-generation AMM that combines the best of Curve, Convex and Uniswap, designed to serve as the liquidity hub for the Superchain.",
+      "tags": ["DeFi", "DEX"],
+      "imageUrl": "https://velodrome.finance/brand-kit/symbol.svg",
+      "twitterXUrl": "https://x.com/VelodromeFi",
+      "discordURL": "https://discord.gg/velodrome"
+    }
   ]
 }
