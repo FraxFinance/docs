@@ -16,7 +16,7 @@
       "description": "A multichain crypto wallet Hold, buy, send, receive, and swap tokens. Manage your NFTs. Access web3 apps across multiple blockchains.",
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/Enkrypt.png",
-      "twitterXUrl": "https://twitter.com/enkrypt",
+      "twitterXUrl": "https://x.com/enkrypt",
       "discordUrl": "https://discord.gg/Gz8vBneyKe"
     },
     {
@@ -48,7 +48,7 @@
       "description": "Ionic is the one-stop shop for capital-efficient lending and borrowing of yield-bearing assets on the OP Superchain.",
       "tags": ["DeFi", "Lending"],
       "imageUrl": "https://doc.ionic.money/~gitbook/image?url=https%3A%2F%2F1954749119-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252F4L4EczL4rCp3jyJhAxHG%252Fuploads%252FXxmvC5cXCopD0HeFUCd0%252Flogo%25201.png%3Falt%3Dmedia%26token%3D7b5aad7a-0c55-489a-b305-db58f3635601&width=768&dpr=2&quality=100&sign=ded3ca72&sv=1",
-      "twitterXUrl": "https://twitter.com/ionicmoney",
+      "twitterXUrl": "https://x.com/ionicmoney",
       "discordUrl": "https://discord.gg/ionicmoney"
     },
     {
@@ -58,7 +58,7 @@
       "description": "dTRINITY is a liquidity protocol that provides discounted stablecoin loans to drive demand from borrowers and improve yields for lenders, enhancing access to liquidity and leverage in DeFi.",
       "tags": ["DeFi", "DAO", "Lending"],
       "imageUrl": "https://raw.githubusercontent.com/dtrinity/public-assets/9076ed5d1a4b53a2f8c6738f9e224512d8e6e86e/logos/dtrinity/dTRINITY%20-%20White%20Mark.png",
-      "twitterXUrl": "https://twitter.com/dtrinity_defi",
+      "twitterXUrl": "https://x.com/dtrinity_defi",
       "discordUrl": "https://discord.gg/dtrinity"
     },
     {
@@ -79,7 +79,7 @@
       "description": "Flox.lol is the best place to earn juicy $FXTL, while minting $FLOX, an $FXTL pegged flatcoin.",
       "tags": ["DeFi", "MEME"],
       "imageUrl": "https://flox.lol/logo400x400.png",
-      "twitterXUrl": "https://twitter.com/floxdotlol",
+      "twitterXUrl": "https://x.com/floxdotlol",
       "telegramUrl": "https://t.me/floxdotlol"
     },
     {
@@ -89,7 +89,7 @@
       "description": "Gronk is based on one of Ethereum's most significant cultural icons and the Champion of FRAX.",
       "tags": ["MEME"],
       "imageUrl": "https://gronkfrax.com/icon.ico",
-      "twitterXUrl": "https://twitter.com/gronkfrax",
+      "twitterXUrl": "https://x.com/gronkfrax",
       "telegramUrl": "https://t.me/gronkfrax"
     },
     {
@@ -109,7 +109,7 @@
       "description": "Beefy is The Trusted Yield Optimizer that help users to safely and securely autocompound yields on their crypto. Beefy's web app delivers hundreds of DeFi yield opportunities from dozens of chains in a single, easy-to-use service.",
       "tags": ["DeFi"],
       "imageUrl": "https://beefy.com/d3a65a4f7107d2039fc05b7b775cd8d1.png",
-      "twitterXUrl": "https://twitter.com/beefyfinance",
+      "twitterXUrl": "https://x.com/beefyfinance",
       "discordUrl": "https://t.co/gnWHy1srj5",
       "telegramUrl": "https://t.co/HgPmJJlcjt"
     },
@@ -120,7 +120,7 @@
       "description": "Stably provides stablecoin infrastructure and on/off-ramps into Fraxtal and other blockchains.",
       "tags": ["Infra", "OnRamp"],
       "imageUrl": "https://files.stably.io/company-logos/stably/stably-mark.svg",
-      "twitterXUrl": "https://twitter.com/stably_official"
+      "twitterXUrl": "https://x.com/stably_official"
     },
     {
       "key": "etherscan",
@@ -129,7 +129,7 @@
       "description": "Etherscan is a Block Explorer and Analytics Platform for Ethereum, a decentralized smart contracts platform.",
       "tags": ["Infra"],
       "imageUrl": "https://avatars.githubusercontent.com/u/26205098?s=280&v=4",
-      "twitterXUrl": "https://twitter.com/etherscan"
+      "twitterXUrl": "https://x.com/etherscan"
     },
     {
       "key": "gravita-protocol",
@@ -138,7 +138,7 @@
       "description": "An ETH-centric Borrowing Protocol for LSTs and Productive Collateral. Fueling decentralization. ",
       "tags": ["DeFi", "Lending"],
       "imageUrl": "https://www.gravitaprotocol.com/images/logo-gravita.svg",
-      "twitterXUrl": "https://twitter.com/gravitaprotocol",
+      "twitterXUrl": "https://x.com/gravitaprotocol",
       "discordUrl": "https://discord.gg/gravitaprotocol"
     },
     {
@@ -148,7 +148,7 @@
       "description": "Convex is a platform that boosts rewards for CRV stakers and liquidity providers alike, all in a simple and easy to use interface.",
       "tags": ["DeFi"],
       "imageUrl": "https://frax.imgix.net/tokens/cvx.png",
-      "twitterXUrl": "https://twitter.com/ConvexFinance",
+      "twitterXUrl": "https://x.com/ConvexFinance",
       "discordUrl": "https://discord.gg/TTEVTqY488",
       "telegramUrl": "https://t.me/convexEth"
     },
@@ -159,7 +159,7 @@
       "description": "Stake DAO Liquid Lockers is a Liquid Staking platform focused on governance token where stakers of FXS, CRV, BAL, CAKE, etc. can unlock the full potential of their token while keeping a liquid position, while liquidity providers receive boosted yield.",
       "tags": ["DeFi", "DAO"],
       "imageUrl": "https://www.stakedao.org/assets/sdt.svg",
-      "twitterXUrl": "https://twitter.com/StakeDAOHQ",
+      "twitterXUrl": "https://x.com/StakeDAOHQ",
       "discordUrl": "https://discord.gg/qwQfw4kmYy",
       "telegramUrl": "https://t.me/StakedaoHQ"
     },
@@ -170,7 +170,7 @@
       "description": "Votemarket is the leading on-chain vote incentive platform.",
       "tags": ["DeFi", "DAO"],
       "imageUrl": "https://www.stakedao.org/assets/sdt.svg",
-      "twitterXUrl": "https://twitter.com/StakeDAOHQ",
+      "twitterXUrl": "https://x.com/StakeDAOHQ",
       "discordUrl": "https://discord.gg/qwQfw4kmYy",
       "telegramUrl": "https://t.me/StakedaoHQ"
     },
@@ -181,7 +181,7 @@
       "description": "Curve is DeFi's leading AMM, (Automated Market Maker). Hundreds of liquidity pools have been launched through Curve's factory and incentivized by Curve's DAO.",
       "tags": ["DeFi", "DEX", "Lending"],
       "imageUrl": "https://frax.imgix.net/tokens/crv.png",
-      "twitterXUrl": "https://twitter.com/CurveFinance",
+      "twitterXUrl": "https://x.com/CurveFinance",
       "discordUrl": "https://discord.gg/rgrfS7W",
       "telegramUrl": "https://t.me/curvefi"
     },
@@ -192,7 +192,7 @@
       "description": "IQ.wiki is the world's largest blockchain and crypto encyclopedia.",
       "tags": ["Infra", "AI"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/iq.png",
-      "twitterXUrl": "https://twitter.com/IQWIKI",
+      "twitterXUrl": "https://x.com/IQWIKI",
       "discordUrl": "https://discord.gg/x9EWvTcPXt",
       "telegramUrl": "https://t.me/everipedia"
     },
@@ -203,7 +203,7 @@
       "description": "GalaxyCash is an innovative decentralized financial ecosystem designed to protect and grow your assets with its unique compound interest mechanism.",
       "tags": ["DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/galaxycash.png",
-      "twitterXUrl": "https://twitter.com/galaxy_cash",
+      "twitterXUrl": "https://x.com/galaxy_cash",
       "telegramUrl": "https://t.me/Galaxy_Cash"
     },
     {
@@ -213,7 +213,7 @@
       "description": "The programmable Web3 interoperability platform, scaling the next generation of internet applications to billions of users.",
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/axelar.png",
-      "twitterXUrl": "https://twitter.com/axelarnetwork",
+      "twitterXUrl": "https://x.com/axelarnetwork",
       "discordUrl": "https://discord.com/invite/aRZ3Ra6f7D",
       "telegramUrl": "https://t.me/axelarcommunity"
     },
@@ -224,7 +224,7 @@
       "description": "RA is The Next Generation of Concentrated Liquidity. Only on Fraxtal",
       "tags": ["DeFi", "DEX"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/ra.png",
-      "twitterXUrl": "https://twitter.com/exchange_RA",
+      "twitterXUrl": "https://x.com/exchange_RA",
       "discordUrl": "https://discord.gg/PXadUNwMgB"
     },
     {
@@ -234,7 +234,7 @@
       "description": "RedStone is a Modular Oracle specialising in yield-bearing collateral for lending markets, e.g. LSTs & LRTs. It offers gas-optimized data feeds across 50+ chains & all rollups. Trusted by Morpho, Venus, ether.fi & more.",
       "tags": ["DeFi", "Infra", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/redstone.png",
-      "twitterXUrl": "https://twitter.com/redstone_defi",
+      "twitterXUrl": "https://x.com/redstone_defi",
       "discordUrl": "https://discord.com/invite/PVxBZKFr46",
       "telegramUrl": "https://t.me/redstonefinance"
     },
@@ -245,7 +245,7 @@
       "description": "QiDao is an overcollateralized, crosschain stablecoin protocol that allows users to mint stablecoins natively against the value of their token collaterals",
       "tags": ["DeFi"],
       "imageUrl": "https://cdn.jsdelivr.net/gh/Benjamin891/QiDaoImages/QiDao%20Logo%20Framed%3DBlack%20Profile%20-%20Accent.png",
-      "twitterXUrl": "https://twitter.com/QiDaoProtocol",
+      "twitterXUrl": "https://x.com/QiDaoProtocol",
       "discordUrl": "https://discord.gg/wQKAJdmKJ9",
       "telegramUrl": "https://t.me/QiDaoProtocol"
     },
@@ -256,7 +256,7 @@
       "description": "The only multi-chain and cross-chain, single-sided DEX. Introducing an innovative Bribe Market 2.0.",
       "tags": ["DeFi", "DEX"],
       "imageUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/19623.png",
-      "twitterXUrl": "https://twitter.com/WombatExchange",
+      "twitterXUrl": "https://x.com/WombatExchange",
       "discordUrl": "https://discord.gg/Wombat"
     },
     {
@@ -277,7 +277,7 @@
       "description": "$RWA is a pure meme coin with no utility barriers. The Frax universe can be complicated, but meme coins are not. Our single aim is to increase awareness of Fraxtal’s next gen tech.",
       "tags": ["MEME"],
       "imageUrl": "https://pbs.twimg.com/profile_images/1749959606561099776/_E-hXm9c_400x400.jpg",
-      "twitterXUrl": "https://twitter.com/realworldabs"
+      "twitterXUrl": "https://x.com/realworldabs"
     },
     {
       "key": "asymmetry",
@@ -286,7 +286,7 @@
       "description": "The home of Hybrid Liquid Staking. Harnessing Frax, Convex, and EigenLayer to create market leading, real yield on ETH.",
       "tags": ["DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/asym_logo.png",
-      "twitterXUrl": "https://twitter.com/AsymmetryFin",
+      "twitterXUrl": "https://x.com/AsymmetryFin",
       "discordUrl": "https://discord.gg/7wzMaUS4tS"
     },
     {
@@ -296,7 +296,7 @@
       "description": "JokeRace is the contest platform for communities to run, grow, and monetize by deploying a contest on any EVM chain. Contests enable communities to submit and vote on entries… and winners to earn rewards. Use cases include bounties, hackathons, grants, awards ceremonies, “best tweet/meme/essay” competitions, persuasion games, feature requests, governance, elections, amendments, etc.",
       "tags": ["DAO"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/jokerace.png",
-      "twitterXUrl": "https://twitter.com/jokerace_io",
+      "twitterXUrl": "https://x.com/jokerace_io",
       "telegramUrl": "https://t.me/+rW5X0MqnTXBkOGIx"
     },
     {
@@ -306,7 +306,7 @@
       "description": "Adamant is a yield optimizer platform designed to help users maximize their DeFi returns.",
       "tags": ["DeFi"],
       "imageUrl": "https://avatars.githubusercontent.com/u/78463658?s=280&v=4",
-      "twitterXUrl": "https://twitter.com/Adamantvault"
+      "twitterXUrl": "https://x.com/Adamantvault"
     },
     {
       "key": "fraxdoge",
@@ -315,7 +315,7 @@
       "description": "Wow! Much first! FXD Doge is very first meme on Frax, so pioneer, much trailblaze! Went to dark side of moon, now all in black and white! Fraxchain cool, like moon, but with more Doge. No colors, no worries, just Doge doing moon things. Join FXD, be part of first meme adventure on Frax, wow so historic!",
       "tags": ["MEME"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/fraxdoge.png",
-      "twitterXUrl": "https://twitter.com/FraxDoge",
+      "twitterXUrl": "https://x.com/FraxDoge",
       "telegramUrl": "https://t.me/frxdoge"
     },
     {
@@ -325,7 +325,7 @@
       "description": "The first fair-launched meme coin on Fraxtal, driven by the community.",
       "tags": ["MEME"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/kfc.png",
-      "twitterXUrl": "https://twitter.com/krypto_chicken"
+      "twitterXUrl": "https://x.com/krypto_chicken"
     },
     {
       "key": "geckoterminal",
@@ -334,7 +334,7 @@
       "description": "A DEX tracker and crypto price charting tool. Track real-time cryptocurrency prices, trading volume, transactions, liquidity, and more across all blockchains.",
       "tags": ["DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/geckoterminal.png",
-      "twitterXUrl": "https://twitter.com/GeckoTerminal",
+      "twitterXUrl": "https://x.com/GeckoTerminal",
       "telegramUrl": "https://t.me/geckoterminal"
     },
     {
@@ -344,7 +344,7 @@
       "description": "Owlto Finance is a decentralized cross-rollup bridge that focuses on L2, providing 'safe, fast, cheap, and easy-to-use' services.",
       "tags": ["DeFi", "Bridge"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/owlto.png",
-      "twitterXUrl": "https://twitter.com/Owlto_Finance",
+      "twitterXUrl": "https://x.com/Owlto_Finance",
       "discordUrl": "https://discord.gg/owlto"
     },
     {
@@ -354,7 +354,7 @@
       "description": "FRAX Adventures are choose-your-own-adventure type fully onchain stories",
       "tags": ["Entertainment", "GameFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/FraxAds.png",
-      "twitterXUrl": "https://twitter.com/FraxAdventures",
+      "twitterXUrl": "https://x.com/FraxAdventures",
       "telegramUrl": "https://t.me/+SpvwdGuuEDxkZDU1"
     },
     {
@@ -364,7 +364,7 @@
       "description": "Community-Driven Meme Coin with Unique Burn Mechanism to Propel FXS Deflation and Achieve 100% CR",
       "tags": ["MEME"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/CR100.png",
-      "twitterXUrl": "https://twitter.com/Cr100Frax",
+      "twitterXUrl": "https://x.com/Cr100Frax",
       "telegramUrl": "https://t.me/cr100Frax"
     },
     {
@@ -374,7 +374,7 @@
       "description": "Goldsky is the go-to data indexer for web3 builders, offering high-performance subgraph hosting and realtime data replication pipelines.",
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/goldsky.png",
-      "twitterXUrl": "https://twitter.com/goldskyio"
+      "twitterXUrl": "https://x.com/goldskyio"
     },
     {
       "key": "archly",
@@ -385,7 +385,7 @@
       "imageUrl": "https://docs.archly.fi/archly.png",
       "discordUrl": "https://discord.gg/nZQZ2Br9yc",
       "telegramUrl": "https://t.me/ArchlyFinance",
-      "twitterXUrl": "https://twitter.com/ArchlyFinance"
+      "twitterXUrl": "https://x.com/ArchlyFinance"
     },
     {
       "key": "vaultcraft",
@@ -394,7 +394,7 @@
       "description": "Build, deploy, and zap into automated yield strategies with VaultCraft.",
       "tags": ["DeFi"],
       "imageUrl": "https://app.vaultcraft.io/images/tokens/vcx.svg",
-      "twitterXUrl": "https://twitter.com/VaultCraft_io"
+      "twitterXUrl": "https://x.com/VaultCraft_io"
     },
     {
       "key": "tellor",
@@ -403,7 +403,7 @@
       "description": "Tellor is a versatile oracle protocol that can provide any data type permissionlessly, with crypto-economic liveness and security.",
       "tags": ["Infra", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/tellor.png",
-      "twitterXUrl": "https://twitter.com/wearetellor"
+      "twitterXUrl": "https://x.com/wearetellor"
     },
     {
       "key": "supra",
@@ -412,7 +412,7 @@
       "description": "Supra as an “IntraLayer” is a powerful middleware network that brings our solutions together - oracles, VRFs, and a native cross-chain protocol through singular shared-security infrastructure.",
       "tags": ["Infra", "DeFi", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/supra.png",
-      "twitterXUrl": "https://twitter.com/SUPRA_Labs"
+      "twitterXUrl": "https://x.com/SUPRA_Labs"
     },
     {
       "key": "nfts2me",
@@ -423,7 +423,7 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/nfts2me.png",
       "discordUrl": "https://discord.com/invite/Usmgxj2Msk",
       "telegramUrl": "https://t.me/nfts2me",
-      "twitterXUrl": "https://twitter.com/NFTs2Me"
+      "twitterXUrl": "https://x.com/NFTs2Me"
     },
     {
       "key": "grove",
@@ -432,7 +432,7 @@
       "description": "Backed by thousands of independent, globally distributed nodes, Grove's RPC endpoints abstract the complexities of building multi-chain dApps on decentralized infrastructure.",
       "tags": ["Infra"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/grove.png",
-      "twitterXUrl": "https://twitter.com/BuildWithGrove",
+      "twitterXUrl": "https://x.com/BuildWithGrove",
       "discordUrl": "https://t.co/gnWHy1srj5"
     },
     {
@@ -442,7 +442,7 @@
       "description": "API3 provides secure and reliable first-party data feeds that establish seamless connections between API providers and oracle smart contracts, thereby eliminating the need for third-party intermediaries and bolstering the overall integrity of the data.",
       "tags": ["Infra", "DeFi", "Oracle"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/API3white.png",
-      "twitterXUrl": "https://twitter.com/API3DAO",
+      "twitterXUrl": "https://x.com/API3DAO",
       "discordURL": "https://discord.gg/api3dao"
     },
     {
@@ -452,7 +452,7 @@
       "description": "An AI-driven, omni-chain, decentralized marketplace and adjudication system providing infrastructure for insurance and credit default swaps on anything.",
       "tags": ["Infra", "DeFi", "Insurance", "Credit default swap"],
       "imageUrl": "https://3538207768-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F3q3w8sHRweEMFlACufqe%2Fuploads%2FgZ3nhm97pBUKunUcSsMc%2FDEIN%20logo%20cube%20color.png?alt=media&token=20492592-c32e-453f-9f57-9b89b70ccd32",
-      "twitterXUrl": "https://twitter.com/DEIN_fi",
+      "twitterXUrl": "https://x.com/DEIN_fi",
       "discordURL": "https://discord.gg/dein"
     },
     {
@@ -462,7 +462,7 @@
       "description": "A hyper-parallel Zero-Knowledge Coprocessor that enables verifiable computations at a big data scale across various blockchains.",
       "tags": ["Infra", "DeFi"],
       "imageUrl": "https://docs.frax.com/images/ecosystem/lagrange.png",
-      "twitterXUrl": "https://twitter.com/lagrangedev",
+      "twitterXUrl": "https://x.com/lagrangedev",
       "discordURL": "https://discord.gg/Jkxvhmq2"
     },
     {
@@ -551,7 +551,7 @@
       "description": "Upnode provides an infrastructure for launching a full-stack L3 OP Stack chain on Frax. Beyond this, Upnode offers professional validator services, advanced identity solutions, and low-latency on-chain gaming infrastructure.",
       "tags": ["Infra"],
       "imageUrl": "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/upnodewhitebg.png",
-      "twitterXUrl": "https://twitter.com/upnodeIntern",
+      "twitterXUrl": "https://x.com/upnodeIntern",
       "telegramUrl": "https://t.me/upnodeIntern"
     },
     {
