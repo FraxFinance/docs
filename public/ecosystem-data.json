@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "growthepie",
+      "name": "growthepie",
+      "url": "https://growthepie.xyz/",
+      "description": "Free public goods data platform for Ethereum & Layer 2s, offering onchain data and metrics on activity, value locked, blockspace usage, economics and data availability metrics.",
+      "tags": ["Infra"],
+      "imageUrl": "https://api.growthepie.xyz/brand/logo-assets/growthepie_logo_round_BG_dark.png",
+      "twitterXUrl": "https://x.com/growthepie_eth",
+      "discordUrl": "https://discord.gg/N3WY9Pyu"
+    },
+    {
       "key": "spiral-stake",
       "name": "Spiral Stake",
       "url": "https://spiralstake.xyz/",
