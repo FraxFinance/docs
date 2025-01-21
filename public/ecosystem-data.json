@@ -645,6 +645,17 @@
       "imageUrl": "https://vnx.li/wp-content/uploads/2025/01/VNX_logo_square.png",
       "twitterXUrl": "https://x.com/vnx_platform",
       "telegramUrl": "https://t.me/vnx_li"
+    },
+    {
+      "key": "inceptionlrt",
+      "name": "InceptionLRT",
+      "url": "https://www.inceptionlrt.com/",
+      "description": "Modular Infrastructure for Liquid Restaking. Scalable rewards and enhanced strategies powered by a modular framework for risk management",
+      "tags": ["DeFi", "Infra", "Bridge"],
+      "imageUrl": "https://2674700783-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FH5cQR703CA1JD1dlB1kD%2Fuploads%2Fn21CQgJx8t1LdxGhATBc%2FVector.svg?alt=media",
+      "twitterXUrl": "https://x.com/InceptionLRT",
+      "discordUrl": "https://discord.com/invite/RSAtmyXcSk",
+      "telegramUrl": "https://t.me/inceptionlrt"
     }
   ]
 }
