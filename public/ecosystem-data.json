@@ -666,6 +666,17 @@
       "twitterXUrl": "https://x.com/InceptionLRT",
       "discordUrl": "https://discord.com/invite/RSAtmyXcSk",
       "telegramUrl": "https://t.me/inceptionlrt"
+    },
+    {
+      "key": "symbiosis",
+      "name": "Symbiosis",
+      "url": "https://symbiosis.finance/",
+      "description": "Symbiosis is a cross-chain AMM DEX that pools together liquidity from different networks: L1s and L2s, EVM and non-EVM. With Symbiosis, you can easily swap any token and move your assets across different networks.",
+      "tags": ["DeFi", "Bridge", "DEX"],
+      "imageUrl": "https://s2.coinmarketcap.com/static/img/coins/128x128/15084.png",
+      "twitterXUrl": "https://x.com/symbiosis_fi",
+      "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
+      "telegramUrl": "https://t.me/symbiosis_finance"
     }
   ]
 }
