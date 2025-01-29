@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "the-graph",
+      "name": "The Graph",
+      "url": "https://thegraph.com/docs/en/subgraphs/quick-start/",
+      "description": "The Graph is an indexing protocol that provides an easy way to query blockchain data through decentralized APIs known as subgraphs. Make your dApp truly decentralized by querying data from The Graph.",
+      "tags": ["Infra"],
+      "imageUrl": "https://pbs.twimg.com/profile_images/1735767195567730688/goqgFT93_400x400.jpg",
+      "twitterXUrl": "https://x.com/graphprotocol",
+      "discordUrl": "https://discord.com/invite/graphprotocol"
+    },
+    {
       "key": "growthepie",
       "name": "growthepie",
       "url": "https://growthepie.xyz/",
