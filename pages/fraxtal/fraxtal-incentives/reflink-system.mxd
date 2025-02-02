@@ -1,0 +1,45 @@
+---
+title: Reflink System
+lang: en-US
+---
+
+import { Callout } from 'nextra/components';
+
+# Reflink System
+
+The Reflink System allows you to earn FXTL points by referring new users to the Fraxtal ecosystem.
+
+<Callout type="info">
+  In order to use the Fraxtal Reflink System, you need to have your own **FNS domain**.
+
+  If you don't already have one, you can read the instructions on how to get one [here](../fns/registration.mdx).
+</Callout>
+
+Everyone with a valid FNS domain already has their Reflink active. You only need to connect your wallet to
+[frax.com](https://frax.com) and go to settings menu in your profile. There, you will find your referral link, which you
+can copy and share with others.
+
+A referral is successful when the person who used your Reflink bridges assets to the Fraxtal network using the native
+bridge available on [frax.com](https://frax.com).
+
+Once the user completes the referral criteria, they will be prompted to log the successful completion of the referral to
+the [ReflinkTracker](https://fraxscan.com/address/0x04df782ce2c86a0fb977c170de28e7f0689414fc) smart contract. Once they
+do that, the Frax team will review the referral to protect the system from exploits, calculate the points, and allocate
+them to both the user and the referrer.
+
+## Reflink example
+
+Each Reflink follows the same pattern, so if you own an FNS name, you can use it without copying it from your
+[frax.com](https://frax.com) profile.
+
+If your FNS name is:
+
+```
+example.fns
+```
+
+Your referral link is:
+
+```
+https://frax.com/r/example
+```
