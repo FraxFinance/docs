@@ -1,0 +1,69 @@
+---
+title: Flox Farms
+lang: en-US
+---
+
+import { Callout } from 'nextra/components';
+
+# Flox Farms
+
+The Flox Farms allows you to earn FXTL points by utilizing your assets in the Fraxtal ecosystem.
+
+You can find the available Flox Farms in the [Farms Dashboard](https://frax.com/points).
+
+## How Farms Work
+
+When you deposit your assets to a Farm, they start earning points. You should see your *effective balance* updated as
+soon as you deposit into the farm. The balances are snapshoted every hour to calculate the amount of points your assets
+earned for you in the time period.
+
+### Effective Balance
+
+The Farms only allocate the points for the **effective balance** and not the full deposit. The reason for this is that
+we don't want to allocate the points for the same token multiple times.
+
+<Callout emoji="📖">
+  If you deposit your assets into a lending pool and those assets are lent to another user, they are earning the
+  FXTL points for that user and can't earn the points for you at the same time.
+</Callout>
+
+### Multipliers
+
+Each Farm has its own multiplier. The multiplier tells you how many points you are earning compared to the base FXTL
+points earning rate. The points are earned based on the asset values in the *frxUSD*.
+
+<Callout emoji="📖">
+  Depositing 1 *frxUSD* worth of assets in to a Farm with a multiplier of **10x** earns ten times more FXTL points than
+  depositing 1 *frxUSD* in to a Farm with a multiplier of **1x**.
+</Callout>
+
+### Earning Rate
+
+[Flox Farms Dashboard](https://frax.com/points) includes your estimated point-earning rate expressed in the FXTL points
+per hour. You can see them by hovering over the value in the *FXTL earned* column.
+
+### Cummulative data
+
+At the top of the Dashboard, you can find the main estimated values.
+
+#### Total Points
+
+The *Total points* value is a sum between already allocated points and the estimated not-yet allocated points.
+
+#### Pending Points
+
+The *Pending points* value is the amount of points you have already earned, but haven't been allocated yet.
+
+#### Rank
+
+The *Rank* value is your current ranking amongst all of the users that have ever earned FXTL points.
+
+## Complex Farms
+
+Some of the Farms are more complex than others. While all use the effective balance to calculate the FXTL points earned,
+some use multiple sources to determine users' balances.
+
+### BAMM Farms
+
+The BAMM Farms take into account all possible interactions you could have with BAMM. Lenders and borrowers of the Farm
+asset, no matter which pool, earn points for their approved assets.
