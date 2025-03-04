@@ -1,0 +1,197 @@
+---
+title: Code
+lang: en-US
+---
+
+### Source Code
+
+- https://github.com/fraxfinance/frax-oft-upgradeable
+- https://github.com/fraxfinance/layerzero-v2-upgradeable
+- https://github.com/fraxfinance/frax-oft-legacy
+
+You can bridge programatically through Solidity and Typescript.
+
+NOTE: When sending from Ethereum or Fraxtal, as you are sending the Frax asset to the lockbox, it is required to first approve the lockbox contract to transfer the asset on your behalf.
+
+### Solidity
+
+```
+npm install @fraxfinance/layerzero-v2-upgradeable
+```
+
+```solidity
+import { OptionsBuilder } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contracts/oapp/libs/OptionsBuilder.sol";
+import { SendParam, MessagingFee, IOFT } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contracts/oft/interfaces/IOFT.sol";
+
+uint256 amount = 1e18;
+// frxUSD OFT - Bridging FROM Universal chain
+address oft = 0x80eede496655fb9047dd39d9f418d5483ed600df;
+// Ethereum - choose destination EID from https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/scripts/L0Config.json
+uint32 dstEid = 30101;
+
+bytes memory options = OptionsBuilder.newOptions();
+SendParam memory sendParam = SendParam({
+        dstEid: dstEid,
+        to: bytes32(uint256(uint160(msg.sender))),
+        amountLD: amount,
+        minAmountLD: amount,
+        extraOptions: options,
+        composeMsg: '',
+        oftCmd: ''
+});
+MessagingFee memory fee = IOFT(_oft).quoteSend(sendParam, false);
+IOFT(_oft).send{value: fee.nativeFee}(
+    sendParam,
+    fee,
+    payable(msg.sender)
+);
+```
+
+### Typescript
+
+```typescript
+const abi = []; // load ABI from https://etherscan.io/address/0x909DBdE1eBE906Af95660033e478D59EFe831fED#code
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "uint32", name: "dstEid", type: "uint32" },
+          { internalType: "bytes32", name: "to", type: "bytes32" },
+          { internalType: "uint256", name: "amountLD", type: "uint256" },
+          { internalType: "uint256", name: "minAmountLD", type: "uint256" },
+          { internalType: "bytes", name: "extraOptions", type: "bytes" },
+          { internalType: "bytes", name: "composeMsg", type: "bytes" },
+          { internalType: "bytes", name: "oftCmd", type: "bytes" },
+        ],
+        internalType: "struct SendParam",
+        name: "_sendParam",
+        type: "tuple",
+      },
+      { internalType: "bool", name: "_payInLzToken", type: "bool" },
+    ],
+    name: "quoteSend",
+    outputs: [
+      {
+        components: [
+          { internalType: "uint256", name: "nativeFee", type: "uint256" },
+          { internalType: "uint256", name: "lzTokenFee", type: "uint256" },
+        ],
+        internalType: "struct MessagingFee",
+        name: "msgFee",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "uint32", name: "dstEid", type: "uint32" },
+          { internalType: "bytes32", name: "to", type: "bytes32" },
+          { internalType: "uint256", name: "amountLD", type: "uint256" },
+          { internalType: "uint256", name: "minAmountLD", type: "uint256" },
+          { internalType: "bytes", name: "extraOptions", type: "bytes" },
+          { internalType: "bytes", name: "composeMsg", type: "bytes" },
+          { internalType: "bytes", name: "oftCmd", type: "bytes" },
+        ],
+        internalType: "struct SendParam",
+        name: "_sendParam",
+        type: "tuple",
+      },
+      {
+        components: [
+          { internalType: "uint256", name: "nativeFee", type: "uint256" },
+          { internalType: "uint256", name: "lzTokenFee", type: "uint256" },
+        ],
+        internalType: "struct MessagingFee",
+        name: "_fee",
+        type: "tuple",
+      },
+      { internalType: "address", name: "_refundAddress", type: "address" },
+    ],
+    name: "send",
+    outputs: [
+      {
+        components: [
+          { internalType: "bytes32", name: "guid", type: "bytes32" },
+          { internalType: "uint64", name: "nonce", type: "uint64" },
+          {
+            components: [
+              { internalType: "uint256", name: "nativeFee", type: "uint256" },
+              { internalType: "uint256", name: "lzTokenFee", type: "uint256" },
+            ],
+            internalType: "struct MessagingFee",
+            name: "fee",
+            type: "tuple",
+          },
+        ],
+        internalType: "struct MessagingReceipt",
+        name: "msgReceipt",
+        type: "tuple",
+      },
+      {
+        components: [
+          { internalType: "uint256", name: "amountSentLD", type: "uint256" },
+          {
+            internalType: "uint256",
+            name: "amountReceivedLD",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct OFTReceipt",
+        name: "oftReceipt",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+];
+
+import * as dotenv from "dotenv";
+import { ethers } from "ethers";
+import { Options } from "@layerzerolabs/lz-v2-utilities";
+
+dotenv.config();
+const PK: string = process.env.PK!;
+
+const oft = "0x80eede496655fb9047dd39d9f418d5483ed600df"; // frxUSD on universal chain
+
+async function main() {
+  const url = /* ENTER RPC URL HERE */;
+  const provider = new ethers.providers.JsonRpcProvider(url);
+  const signer = new ethers.Wallet(PK, provider);
+  const contract = new ethers.Contract(oft, abi, signer);
+
+  // basic send
+  const dstEid = 30101;
+  const to = ethers.utils.zeroPad(signer.address, 32);
+  const options = Options.newOptions().toHex().toString();
+  const composeMsg = "0x";
+
+  const amount = 10 ** 18;
+  const abiCoder = new ethers.utils.AbiCoder();
+  const minAmountLD = 0;
+
+  const sendParam = [
+    dstEid,
+    to,
+    amount.toString(),
+    minAmountLD.toString(),
+    options,
+    composeMsg,
+    "0x",
+  ];
+
+  // get native fee
+  const [nativeFee] = await contract.quoteSend(sendParam, false);
+
+  // execute the send
+  await contract.send(sendParam, [nativeFee, 0], signer.address, {
+    value: nativeFee,
+  });
+}
+
+main();
+```
