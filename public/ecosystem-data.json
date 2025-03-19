@@ -688,5 +688,16 @@
       "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
       "telegramUrl": "https://t.me/symbiosis_finance"
     }
+    {
+      "key": "pheasant-network",
+      "name": "Pheasant Network",
+      "url": "https://pheasant.network/",
+      "description": "Pheasant Network is an Intent-centric Bridge and Cross-chain Swap.",
+      "tags": ["DEX Aggregator"],
+      "imageUrl": "http://drive.google.com/uc?export=view&id=1kBy8cjb_PbpMtlUlkRr0CgWNpKRTeUAW",
+      "twitterXUrl": "https://x.com/PheasantNetwork",
+      "discordUrl": "https://discord.gg/pRYSEUVERT"
+      "telegramUrl": "https://t.me/pheasant_network"
+    },
   ]
 }
