@@ -28,6 +28,40 @@ Frax assets are represented as OFTs on chains other than Fraxtal, and Ethereum. 
 
 Frax operates a dual-lockbox design where users can exit their OFT token into the native Frax-asset token on both Ethereum and Fraxtal. Utilizing a dual-lockbox design is a novel solution to bridging as liquidity is unlocked from more than one location.
 
+## Mesh and Hub Design
+
+Frax OFTs are wired together in one of two ways:
+
+1. **Hub**: A single, central connection to Fraxtal. Bridging from Chain A to B can be seen as `A => Fraxtal => B`.
+2. **Mesh**: A direct connection to other chains. Bridging from Chain A to B can be seen as `A => B`.
+
+When a new chain is added, it is first connected via the Hub model. If the chain has sufficient demand, it can be upgraded to a Mesh model.
+
+The following graphic illustrates the Hub and Mesh design, where zkSync and Abstract are connected via the Hub model, while the other destinations are connected via the Mesh model:
+
+![Crosschain Mesh](/images/crosschain-mesh.png)
+
+### Current Wires
+
+- Hub
+  - zkSync
+  - Abstract
+  - Linea
+- Mesh
+  - Mode
+  - Sei
+  - X-Layer
+  - Ink
+  - Sonic
+  - Arbitrum
+  - Optimism
+  - Polygon
+  - Avalanche
+  - BSC
+  - Polygon zkEVM
+  - Berachain
+  - Blast
+
 ## Legacy vs. Upgradeable OFTs
 
 In the initial deployment with LayerZero, the LayerZero team deployed Frax assets across several chains as fixed contracts. After the initial deployment, the Frax team has assumed additional deployment responsibilities and currently deploys OFTs as upgradeable, transparent proxies (contracts audited, repo [link](https://github.com/FraxFinance/LayerZero-v2-upgradeable)).
