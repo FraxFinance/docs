@@ -24,7 +24,7 @@ import { OptionsBuilder } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contr
 import { SendParam, MessagingFee, IOFT } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contracts/oft/interfaces/IOFT.sol";
 
 uint256 amount = 1e18;
-// frxUSD OFT - Bridging FROM Universal chain
+// frxUSD OFT - Bridging FROM semi-deterministic chain
 address oft = 0x80eede496655fb9047dd39d9f418d5483ed600df;
 // Ethereum - choose destination EID from https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/scripts/L0Config.json
 uint32 dstEid = 30101;
@@ -156,7 +156,7 @@ import { Options } from "@layerzerolabs/lz-v2-utilities";
 dotenv.config();
 const PK: string = process.env.PK!;
 
-const oft = "0x80eede496655fb9047dd39d9f418d5483ed600df"; // frxUSD on universal chain
+const oft = "0x80eede496655fb9047dd39d9f418d5483ed600df"; // frxUSD on semi-deterministic chain
 
 async function main() {
   const url = /* ENTER RPC URL HERE */;
