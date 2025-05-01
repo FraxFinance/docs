@@ -1,0 +1,25 @@
+---
+title: veFRAX
+lang: en-US
+---
+
+import Image from 'next/image';
+
+## veFRAX
+
+veFRAX is the staked version of FRAX (prev. FXS) the governance and utility token of the entire Frax universe. veFRAX has various utility and votes in all governance decisions throughout the Frax ecosystem of protocols. Users stake their FRAX tokens for a self-selected period of between 1 week to 208 weeks (4 years). A user’s veFRAX balance is non-transferrable (it is not a separate token) and is linearly correlated with the amount of FRAX they staked multiplied by their lock time. For every 1 FRAX token staked for 4 years, a user’s veFRAX balance goes up by 4. A user’s veFRAX balance decays slowly as a user’s unlock time approaches.
+
+Prior to Fraxtal genesis, veFRAX could only be staked on Ethereum mainnet. Users can now stake veFRAX natively on Fraxtal through an improved staking contract in addition to Ethereum mainnet.
+
+A separate global veFRAXCounter contract unifies a user’s balance between Ethereum mainnet and Fraxtal by reading the state of the veFRAX contract on Ethereum mainnet and combining it with the user’s veFRAX balance on Fraxtal. The combined balance displayed in this veFRAXCounter contract is used for Fraxtal utility such as Flox boosts, governance votes, and various new features. Thus, staking veFRAX on Ethereum mainnet or Fraxtal is identical in function for the new types of utility available on Fraxtal.
+
+
+<p align="center">
+  <Image
+  src="/images/veFRAX.png"
+  alt="veFRAX"
+  width={600}
+  height={600}
+  style={{ paddingTop: 20 }}
+/>
+</p>

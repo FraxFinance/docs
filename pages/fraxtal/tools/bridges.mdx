@@ -7,26 +7,30 @@ lang: en-US
 
 ## Fraxtal OP Stack Bridge
 
-The [Fraxtal Bridge](https://mainnet.frax.com/tools/bridge) allows you to bridge ETH, frxETH, and any other tokens from Ethereum to Fraxtal and vice versa.
+The [Fraxtal Bridge](https://mainnet.frax.com/tools/bridge) allows you to bridge FRAX, and any other tokens from Ethereum to Fraxtal and vice versa.
 
-## Fraxtal Ferry
+## Frax Mesh
 
-The [Fraxtal Ferry](https://app.frax.finance/fraxferry) allows you to bridge FRAX, FXS, FPIS, FPI, sFRAX, and sfrxETH.
+*For in-depth technical architecture and protocol design, see the official [Frax Crosschain Overview](https://docs.frax.com/protocol/crosschain/overview)*
+
+Frax Mesh is the native, unified bridging infrastructure for all Frax ecosystem assets—including FRAX, frxUSD, sfrxUSD, frxETH, and sfrxETH—across multiple EVM-compatible chains such as Ethereum Mainnet, Fraxtal.
+
+Users can initiate bridging directly within the Frax UI at https://frax.com/swap
 
 ## Comparison
 
 ### Ethereum -> Fraxtal
 
-|                  |  Fraxtal OP Stack Bridge  |         Fraxtal Ferry         |
+|                  |  Fraxtal OP Stack Bridge  |         Frax Mesh             |
 | :--------------- | :-----------------------: | :---------------------------: |
-| Supported tokens |            All            | Frax tokens, excluding frxETH |
-| Duration         |        &lt; 1 hour        |           24 hours            |
+| Supported tokens |            All            |         Frax tokens           |
+| Duration         |        &lt; 1 hour        |        &lt; 1 Minute          |
 | Delivery         | Automatically distributed |   Automatically distributed   |
 
 ### Fraxtal -> Ethereum
 
-|                  | Fraxtal OP Stack Bridge |         Fraxtal Ferry         |
+|                  | Fraxtal OP Stack Bridge |         Frax Mesh             |
 | :--------------- | :---------------------: | :---------------------------: |
-| Supported tokens |           All           | Frax tokens, excluding frxETH |
-| Duration         |         7 days          |           24 hours            |
+| Supported tokens |           All           |         Frax tokens           |
+| Duration         |         7 days          |         &lt; 1 Minute         |
 | Delivery         |       Must claim        |   Automatically distributed   |
