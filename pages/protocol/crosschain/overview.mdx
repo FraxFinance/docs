@@ -15,6 +15,8 @@ The [Omnichain Fungible Token (OFT)](https://docs.layerzero.network/v2/home/toke
 
 Frax assets are represented as OFTs on chains other than Fraxtal, and Ethereum. An OFT operates the exact same as an ERC20 with the additional function of bridge-ability through the LayerZero protocol.
 
+All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2-upgradeable) and managed by a 3/5 multisig on each respective chain.
+
 ### Available Frax OFTs
 
 - frxUSD
@@ -33,13 +35,13 @@ Frax operates a dual-lockbox design where users can exit their OFT token into th
 Frax OFTs are wired together in one of two ways:
 
 1. **Hub**: A single, central connection to Fraxtal. Bridging from Chain A to B can be seen as `A => Fraxtal => B`.
-2. **Mesh**: A direct connection to other chains. Bridging from Chain A to B can be seen as `A => B`.
+2. **Mesh**: A direct connection to other chains, as well as both the Fraxtal and Ethereum lockbox. Bridging from Chain A to B can be seen as `A => B`.
 
 When a new chain is added, it is first connected via the Hub model. If the chain has sufficient demand, it can be upgraded to a Mesh model.
 
 The following graphic illustrates the Hub and Mesh design, where zkSync and Abstract are connected via the Hub model, while the other destinations are connected via the Mesh model:
 
-![Crosschain Mesh](/images/crosschain-mesh.png)
+![Crosschain Mesh](/images/protocol/crosschain-mesh.png)
 
 ### Current Wires
 
@@ -47,6 +49,8 @@ The following graphic illustrates the Hub and Mesh design, where zkSync and Abst
   - zkSync
   - Abstract
   - Linea
+  - Aptos
+  - Movement
 - Mesh
   - Mode
   - Sei
@@ -61,22 +65,18 @@ The following graphic illustrates the Hub and Mesh design, where zkSync and Abst
   - Polygon zkEVM
   - Berachain
   - Blast
-
-## Legacy vs. Upgradeable OFTs
-
-In the initial deployment with LayerZero, the LayerZero team deployed Frax assets across several chains as fixed contracts. After the initial deployment, the Frax team has assumed additional deployment responsibilities and currently deploys OFTs as upgradeable, transparent proxies (contracts audited, repo [link](https://github.com/FraxFinance/LayerZero-v2-upgradeable)).
-
-All OFTs with bridging permissions are managed by a 3/6 msig on each respective chain.
+  - Base
 
 ### Process
 
 - Bridge through the FUI ([link](https://www.frax.com))
-- Bridge legacy OFTs through the Stargate UI ([link](https://stargate.finance/bridge))
+- Bridge through the Stargate UI ([link](https://stargate.finance/bridge))
+- Bridge programatically (see #Code section)
 
 ## Security Considerations
 
-Layer Zero OFT Frax Assets are not a liability of the Frax Protocol. They do not appear on the balance sheet on [Frax Facts](https://facts.frax.finance/frax/balance-sheet). They are not redeemable for protocol owned assets. They are only redeemable for the Frax Asset in the Layer Zero “lockbox” contract that is part of the Layer Zero Protocol.
+Layer Zero OFT Frax Assets are not a liability of the Frax Protocol. They do not appear on the balance sheet on [Frax Facts](https://facts.frax.finance/frax/balance-sheet). They are not redeemable for protocol owned assets. They are only redeemable for the Frax Asset in the Layer Zero "lockbox" contract that is part of the Layer Zero Protocol.
 
-Layer Zero OFT Frax Assets are settled by Layer Zero Decentralized Verification Networks (DVNs) that are not operated by the Frax Protocol, Frax Core Developers, or any associated entity of Frax. Therefore, the risk of OFT Frax Assets are borne by their holders. This is similar to holding “USDC tokens” on a network that its issuer, Circle, does not support minting/redeeming on. Such “USDC tokens” do not appear on Circle’s balance sheet as a liability nor are they redeemable from its issuer. They are only redeemable for the underlying USDC token in the bridge (ie ‘lockbox’) contract.
+Layer Zero OFT Frax Assets are settled by Layer Zero Decentralized Verification Networks (DVNs) that are not operated by the Frax Protocol, Frax Core Developers, or any associated entity of Frax. Therefore, the risk of OFT Frax Assets are borne by their holders. This is similar to holding "USDC tokens" on a network that its issuer, Circle, does not support minting/redeeming on. Such "USDC tokens" do not appear on Circle's balance sheet as a liability nor are they redeemable from its issuer. They are only redeemable for the underlying USDC token in the bridge (ie 'lockbox') contract.
 
 In the future, the Frax Protocol can work with Layer Zero to upgrade certain OFT Frax Assets on select networks to allow the Frax Protocol to have direct oversight in the settlement process similar to the Frax Ferry system. After this, the OFT Frax Assets for those select networks will be reported on the associated balance sheet of those Frax Assets. When this occurs, the Frax Protocol will consider such tokens at that time as its liability that are backed directly by the assets it holds on its respective balance sheets. At this time, no Frax OFT tokens are native liabilities of the protocol.
