@@ -17,11 +17,11 @@ The Frax Price Index (FPI) is the second stablecoin of the Frax Finance ecosyste
 />
 
 ## FPIS
-⚠️ FPIS is set to be phased out by March 22, 2028 and convertible thereafter to FXS ⚠️
+⚠️ FPIS is set to be phased out by March 22, 2028 and convertible thereafter to FRAX (prev. FXS) ⚠️
 
-The Frax Price Index Share (FPIS) token is the governance token of the system, which is also entitled to seigniorage from the protocol. Excess yield will be directed from the treasury to FPIS holders, similar to the FXS structure. During times in which the FPI treasury does not create enough yield to maintain the increased backing per FPI due to inflation, new FPIS may be minted and sold to increase the treasury. Since the protocol is launched from within the Frax ecosystem, the FPIS token will also direct a variable part of its revenue to FXS holders.
+The Frax Price Index Share (FPIS) token is the governance token of the system, which is also entitled to seigniorage from the protocol. Excess yield will be directed from the treasury to FPIS holders, similar to the FRAX structure. During times in which the FPI treasury does not create enough yield to maintain the increased backing per FPI due to inflation, new FPIS may be minted and sold to increase the treasury. Since the protocol is launched from within the Frax ecosystem, the FPIS token will also direct a variable part of its revenue to FRAX holders.
 
-Per the [Frax Singularity Roadmap Part 1](https://gov.frax.finance/t/fip-341-frax-singularity-roadmap-part-1/2987) vote, the community decided to eventually retire the FPIS token in the interest of focusing on FXS. On March 22, 2028, FPIS will be eligible for conversion to FXS at the ratio of 2.5 FPIS to 1 FXS. Until then, users may choose to lock their FPIS on Fraxtal using the [FPIS Locker](https://app.frax.finance/fpifpis/fpislocker). This will give the user 1.333x - 0.333x veFXS voting power based on the length of their lock. After the March 22, 2028 conversion date, positions that are still locked on the FPIS Locker can be converted to their FXS equivalent and rolled over into veFXS until the remaining lock time is completed, after which FXS can be withdrawn. FPIS that was never locked in the FPIS Locker or became unlocked before the conversion date may also be converted to FXS after the conversion date without having to go via the FPIS Locker. Users that have locked [veFPIS](https://docs.frax.finance/frax-price-index/vefpis) positions may now freely withdraw their FPIS.
+Per the [Frax Singularity Roadmap Part 1](https://gov.frax.finance/t/fip-341-frax-singularity-roadmap-part-1/2987) vote, the community decided to eventually retire the FPIS token in the interest of focusing on FRAX. On March 22, 2028, FPIS will be eligible for conversion to FRAX at the ratio of 2.5 FPIS to 1 FRAX. Until then, users may choose to lock their FPIS on Fraxtal using the [FPIS Locker](https://app.frax.finance/fpifpis/fpislocker). This will give the user 1.333x - 0.333x veFRAX voting power based on the length of their lock. After the March 22, 2028 conversion date, positions that are still locked on the FPIS Locker can be converted to their FRAX equivalent and rolled over into veFRAX until the remaining lock time is completed, after which FRAX can be withdrawn. FPIS that was never locked in the FPIS Locker or became unlocked before the conversion date may also be converted to FRAX after the conversion date without having to go via the FPIS Locker. Users that have locked [veFPIS](https://docs.frax.finance/frax-price-index/vefpis) positions may now freely withdraw their FPIS.
 
 <img
   src="/images/protocol/FPIS.png"
@@ -53,16 +53,16 @@ Thus, the FPI peg tracks the above 12 month inflation rate and pegs to it at all
 ## FPI as a Unit of Account
 FPI aims to be the first on-chain stablecoin to have its own unit of account derived from a basket of goods, both crypto and non-crypto. While FPI can be considered an inflation resistant yield asset, its primary motivation is to create a new stablecoin to denominate transactions, value, and debt. Denominating DAO treasuries and measuring revenue in FPI as well as benchmarking performance against an FPI trading pair helps better gauge if value accrual is actively growing against inflation in real terms. It also helps ground on-chain economics to baskets of real world assets.
 
-At first, the treasury will be comprised solely of $FRAX, but will expand to include other crypto-native assets such as bridged BTC, ETH, and non-crypto consumer goods and services.
+At first, the treasury will be comprised solely of Legacy Frax Dollar (FRAX), but will expand to include other crypto-native assets such as bridged BTC, ETH, and non-crypto consumer goods and services.
 
 ## FPI Stability Mechanism
-FPI uses the same type of AMOs as the FRAX stablecoin however it is modeled to keep a 100% collateral ratio (CR) at all times. This means that for the collateral ratio to stay at 100% the protocol balance sheet must be growing at least at the rate of CPI inflation. Thus, AMO strategy contracts must earn a yield proportional to CPI otherwise the CR will decrease to below 100%. During times that AMO yield is under the CPI rate, a TWAMM AMO will sell FPIS tokens for FRAX stablecoins to keep the CR at 100% at all times. The FPIS TWAMMs will be removed when the CR returns to 100%.
+FPI uses the same type of AMOs as the Legacy Frax Dollar stablecoin however it is modeled to keep a 100% collateral ratio (CR) at all times. This means that for the collateral ratio to stay at 100% the protocol balance sheet must be growing at least at the rate of CPI inflation. Thus, AMO strategy contracts must earn a yield proportional to CPI otherwise the CR will decrease to below 100%. During times that AMO yield is under the CPI rate, a TWAMM AMO will sell FPIS tokens for Legacy Frax Dollar stablecoins to keep the CR at 100% at all times. The FPIS TWAMMs will be removed when the CR returns to 100%.
 
-Minting of FPI (using FRAX) and redeeming FPI (to receive FRAX) can be done at any time for a small fee using the FPI Controller Pool. Users can also buy/sell FPI in various markets such as Curve or Fraxswap.
+Minting of FPI (using Legacy Frax Dollar) and redeeming FPI (to receive Legacy Frax Dollar) can be done at any time for a small fee using the FPI Controller Pool. Users can also buy/sell FPI in various markets such as Curve or Fraxswap.
 
 FPI Controller Pool: ```0x2397321b301B80A1C0911d6f9ED4b6033d43cF51```
 
 ## FPI Comptroller Multisig
-The FPI Comptroller multisig collects/deposits surplus/deficit FRAX from the FPI Controller Pool and is the owner of FPI-related contracts. It also invests in various income streams like Curve/Convex farms and uses the proceeds to help add backing to the FPI peg.
+The FPI Comptroller multisig collects/deposits surplus/deficit Legacy Frax Dollar from the FPI Controller Pool and is the owner of FPI-related contracts. It also invests in various income streams like Curve/Convex farms and uses the proceeds to help add backing to the FPI peg.
 
 FPI Comptroller Multisig: ```0x6A7efa964Cf6D9Ab3BC3c47eBdDB853A8853C502```

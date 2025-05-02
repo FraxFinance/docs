@@ -90,7 +90,7 @@ export const sfrxUsdAddresses = {
 }
 
 export const frxEthAddresses = {
-  Token: { Ethereum: '0x5e8422345238f34275888049021821e8e08caa1f', Fraxtal: 'wfrxETH: 0xfc00000000000000000000000000000000000006', OFT:'0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050' },
+  Token: { Ethereum: '0x5e8422345238f34275888049021821e8e08caa1f', Fraxtal: '0xfc00000000000000000000000000000000000006', OFT:'0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050' },
   Comptroller: { Ethereum: 'N/A', Fraxtal: 'N/A' }
 }
 
