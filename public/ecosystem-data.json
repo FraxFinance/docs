@@ -687,6 +687,17 @@
       "twitterXUrl": "https://x.com/symbiosis_fi",
       "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
       "telegramUrl": "https://t.me/symbiosis_finance"
+    },
+    {
+      "key": "conft",
+      "name": "coNFT",
+      "url": "https://conft.app",
+      "description": "coNFT - a Multi-Chain Web3 Utility Hub offering comprehensive services such as Web3 Name Service, NFT Aggregator, and Launchpad.",
+      "tags": ["NFT"],
+      "imageUrl": "https://dashboard-assets.dappradar.com/document/49218/conft-project-marketplaces-49218-logo-166x166_65739407d876b2c5ff4bd5275af278e6.png",
+      "twitterXUrl": "https://x.com/ConftApp",
+      "discordUrl": "https://discord.com/invite/FU8MNfMRv8",
+      "telegramUrl": "https://t.me/co_nft"
     }
   ]
 }
