@@ -687,6 +687,15 @@
       "twitterXUrl": "https://x.com/symbiosis_fi",
       "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
       "telegramUrl": "https://t.me/symbiosis_finance"
+    },
+    {
+  "key": "guardrail-ai",
+  "name": "Guardrail",
+  "url": "https://guardrail.ai",
+  "description": "AI-driven security solutions for blockchain protocols and applications.",
+  "tags": ["AI", "Security", "Infra", "monitoring", "realtime", "threat detection", "hack prevention"],
+  "imageUrl": "https://github.com/ajrabke9/docs/blob/master/public/images/ecosystem/GUARDRAIL_SYMBOL-LOGO-03-blackbg3.png",
+  "twitterXUrl": "https://twitter.com/guardrailai",
     }
   ]
 }
