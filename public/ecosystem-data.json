@@ -687,6 +687,16 @@
       "twitterXUrl": "https://x.com/symbiosis_fi",
       "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
       "telegramUrl": "https://t.me/symbiosis_finance"
-    }
+    },
+    "key": "meerkat",
+    "name": "Meerkat",
+    "url": "https://bitfans.me/",
+    "description": "Meerkat is a cross-chain social app and marketplace. Powered by AI agents.",
+    "tags": ["DeFi", "AI"],
+    "imageUrl": "https://docs.frax.com/images/ecosystem/meerkat.png",
+    "twitterXUrl": "https://x.com/bitfansAi",
+    "discordUrl": "https://discord.gg/yMvTXcAN8b",
+    "telegramUrl": "",
+    
   ]
 }
