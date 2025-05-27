@@ -23,12 +23,14 @@ All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2
 - sfrxUSD
 - frxETH
 - sfrxETH
-- FRAX (prev. FXS)
+- WFRAX (prev. FXS)
 - FPI
 
 ## Lockbox Design
 
 Frax operates a dual-lockbox design where users can exit their OFT token into the native Frax-asset token on both Ethereum and Fraxtal. Utilizing a dual-lockbox design is a novel solution to bridging as liquidity is unlocked from more than one location.
+
+**NOTE**: FRAX is a single-lockbox design, with liquidity hosted on Fraxtal. Users bridging FRAX to Ethereum will receive the WFRAX OFT if using LayerZero. Using the native Optimism bridge from Fraxtal will return FXS on Ethereum.
 
 ## Mesh and Hub Design
 
@@ -41,6 +43,21 @@ When a new chain is added, it is first connected via the Hub model. If the chain
 
 The following graphic illustrates the Hub and Mesh design, where zkSync and Abstract are connected via the Hub model, while the other destinations are connected via the Mesh model:
 
+### WFRAX vs. FXS on Ethereum
+
+There are two versions of FRAX on Ethereum: WFRAX and FXS. WFRAX is the LayerZero-powered OFT version of FRAX. FXS is the legacy version of FRAX that is not connected to the LayerZero Protocol. FXS is the original version of FRAX that was launched on Ethereum in 2020.
+
+Users only have one option to convert their FXS into FRAX: through the native Optimism bridge.
+
+In order to convert WFRAX to FXS, users must first either:
+
+- If on Fraxtal: unwrap their WFRAX to FRAX.
+- If on a LZ-powered chain: bridge WFRAX to Fraxtal to receive FRAX.
+
+From there, users can convert FRAX to FXS on Ethereum through the native Optimism bridge.
+
+Ethereum WFRAX OFT is also connected via the hub model. This means that bridging WFRAX from chain X to Ethereum will be `X => Fraxtal => Ethereum`. Bridging FXS to chain X will first require the user to bridge FXS to Fraxtal through the native Optimism bridge, converting their FXS to FRAX.
+
 ![Crosschain Mesh](/images/protocol/crosschain-mesh.png)
 
 ### Current Wires
@@ -51,6 +68,8 @@ The following graphic illustrates the Hub and Mesh design, where zkSync and Abst
   - Linea
   - Aptos
   - Movement
+  - Worldchain
+  - Ethereum WFRAX
 - Mesh
   - Mode
   - Sei

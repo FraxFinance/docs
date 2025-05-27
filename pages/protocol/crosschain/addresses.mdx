@@ -9,46 +9,74 @@ lang: en-US
 
 ### EVM
 
-#### Semi-Deterministic
+#### Semi-Deterministic Addresses
 
-- Mode, Sei, X-Layer, Ink, Sonic, Arbitrum, Optimism, Polygon, Avalanche, BSC, Polygon zkEVM, Berachain, Blast
-- Connected to both Ethereum and Fraxtal upgradeable lockboxes
+Each of the 6 OFTs maintain the same address across these chains:
+
+- Mode
+- Sei
+- X-Layer
+- Ink
+- Sonic
+- Arbitrum
+- Optimism
+- Polygon
+- Avalanche
+- BSC
+- Polygon zkEVM
+- Berachain
+- Blast
+- Worldchain
+
+#### Random Addresses
+
+Each address of these OFTs is unique:
+
+- Linea, Base
+  - All 6 OFTs
+- Ethereum
+  - WFRAX OFT
 
 #### zkSync
 
-- zkSync Era, Abstract
+- zkSync Era, Abstract maintain the same addresses across all 6 OFTs. This is due to the ZK compiler.
 
-|                  | Semi-Deterministic                           | Linea                                                                                | Base                                                                              | zkSync                                       |
-| :--------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------------------------- |
-| ProxyAdmin       | `0x223a681fc5c5522c85c96157c0efa18cd6c5405c` | [`link`](https://lineascan.build/address/0x3cf371c128b092b085B7732069cEAF3Fd863F270) | [`link`](https://basescan.org/address/0xe5020A6d073a794B6E7f05678707dE47986Fb0b6) | `0xe59dcae52a4ffa39be99588486c84bc2dc1ba52f` |
-| frxUSD           | `0x80eede496655fb9047dd39d9f418d5483ed600df` | [`link`](https://lineascan.build/address/0xC7346783f5e645aa998B106Ef9E7f499528673D8) | [`link`](https://basescan.org/address/0x91A3f8a8d7a881fBDfcfEcd7A2Dc92a46DCfa14e) | `0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d` |
-| sfrxUSD          | `0x5bff88ca1442c2496f7e475e9e7786383bc070c0` | [`link`](https://lineascan.build/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | [`link`](https://basescan.org/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | `0x9F87fbb47C33Cd0614E43500b9511018116F79eE` |
-| frxETH           | `0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050` | [`link`](https://lineascan.build/address/0xB1aFD04774c02AE84692619448B08BA79F19b1ff) | [`link`](https://basescan.org/address/0x7eb8d1E4E2D0C8b9bEDA7a97b305cF49F3eeE8dA) | `0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440` |
-| sfrxETH          | `0x3ec3849c33291a9ef4c5db86de593eb4a37fde45` | [`link`](https://lineascan.build/address/0x383Eac7CcaA89684b8277cBabC25BCa8b13B7Aa2) | [`link`](https://basescan.org/address/0x192e0C7Cc9B263D93fa6d472De47bBefe1Fb12bA) | `0xFD78FD3667DeF2F1097Ed221ec503AE477155394` |
-| FRAX (prev. FXS) | `0x64445f0aecc51e94ad52d8ac56b7190e764e561a` | [`link`](https://lineascan.build/address/0x5217Ab28ECE654Aab2C68efedb6A22739df6C3D5) | [`link`](https://basescan.org/address/0x0CEAC003B0d2479BebeC9f4b2EBAd0a803759bbf) | `0xAf01aE13Fb67AD2bb2D76f29A83961069a5F245F` |
-| FPI              | `0x90581eCa9469D8D7F5D3B60f4715027aDFCf7927` | [`link`](https://lineascan.build/address/0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4) | [`link`](https://basescan.org/address/0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B) | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E` |
+|                   | Semi-Deterministic                           | Linea                                                                                | Base                                                                              | zkSync                                       |
+| :---------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------------------------- |
+| ProxyAdmin        | `0x223a681fc5c5522c85C96157c0efA18cd6c5405c` | [`link`](https://lineascan.build/address/0x3cf371c128b092b085B7732069cEAF3Fd863F270) | [`link`](https://basescan.org/address/0xe5020A6d073a794B6E7f05678707dE47986Fb0b6) | `0xe59dcae52a4ffa39be99588486c84bc2dc1ba52f` |
+| frxUSD            | `0x80Eede496655FB9047dd39d9f418d5483ED600df` | [`link`](https://lineascan.build/address/0xC7346783f5e645aa998B106Ef9E7f499528673D8) | [`link`](https://basescan.org/address/0x91A3f8a8d7a881fBDfcfEcd7A2Dc92a46DCfa14e) | `0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d` |
+| sfrxUSD           | `0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0` | [`link`](https://lineascan.build/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | [`link`](https://basescan.org/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | `0x9F87fbb47C33Cd0614E43500b9511018116F79eE` |
+| frxETH            | `0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050` | [`link`](https://lineascan.build/address/0xB1aFD04774c02AE84692619448B08BA79F19b1ff) | [`link`](https://basescan.org/address/0x7eb8d1E4E2D0C8b9bEDA7a97b305cF49F3eeE8dA) | `0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440` |
+| sfrxETH           | `0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45` | [`link`](https://lineascan.build/address/0x383Eac7CcaA89684b8277cBabC25BCa8b13B7Aa2) | [`link`](https://basescan.org/address/0x192e0C7Cc9B263D93fa6d472De47bBefe1Fb12bA) | `0xFD78FD3667DeF2F1097Ed221ec503AE477155394` |
+| WFRAX (prev. FXS) | `0x64445f0aecC51E94aD52d8AC56b7190e764E561a` | [`link`](https://lineascan.build/address/0x5217Ab28ECE654Aab2C68efedb6A22739df6C3D5) | [`link`](https://basescan.org/address/0x0CEAC003B0d2479BebeC9f4b2EBAd0a803759bbf) | `0xAf01aE13Fb67AD2bb2D76f29A83961069a5F245F` |
+| FPI               | `0x90581eCa9469D8D7F5D3B60f4715027aDFCf7927` | [`link`](https://lineascan.build/address/0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4) | [`link`](https://basescan.org/address/0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B) | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E` |
+
+- Ethereum WFRAX
+  - `0x04ACaF8D2865c0714F79da09645C13FD2888977f`
 
 ### Non-EVM
 
-|                  | Solana                                                                          |
-| :--------------- | :------------------------------------------------------------------------------ |
-| frxUSD           | [`link`](https://solscan.io/token/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) |
-| sfrxUSD          | [`link`](https://solscan.io/token/DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45) |
-| frxETH           | [`link`](https://solscan.io/token/5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf) |
-| sfrxETH          | [`link`](https://solscan.io/token/58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv) |
-| FRAX (prev. FXS) | [`link`](https://solscan.io/token/zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga)  |
-| FPI              | [`link`](https://solscan.io/token/8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH) |
+|                   | Solana                                                                                                                  |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| frxUSD            | [`GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw`](https://solscan.io/token/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) |
+| sfrxUSD           | [`DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45`](https://solscan.io/token/DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45) |
+| frxETH            | [`5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf`](https://solscan.io/token/5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf) |
+| sfrxETH           | [`58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv`](https://solscan.io/token/58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv) |
+| WFRAX (prev. FXS) | [`zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga`](https://solscan.io/token/zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga)   |
+| FPI               | [`8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH`](https://solscan.io/token/8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH) |
 
 ### Lockboxes
 
-|                  | Fraxtal                                                                           | Ethereum                                                                          | Ethereum (legacy)                                                                 |
-| :--------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
-| frxUSD           | [`link`](https://fraxscan.com/address/0x96A394058E2b84A89bac9667B19661Ed003cF5D4) | [`link`](https://etherscan.io/address/0x566a6442A5A6e9895B9dCA97cC7879D632c6e4B0) | [`link`](https://etherscan.io/address/0x909DBdE1eBE906Af95660033e478D59EFe831fED) |
-| sfrxUSD          | [`link`](https://fraxscan.com/address/0x88Aa7854D3b2dAA5e37E7Ce73A1F39669623a361) | [`link`](https://etherscan.io/address/0x7311CEA93ccf5f4F7b789eE31eBA5D9B9290E126) | [`link`](https://etherscan.io/address/0xe4796cCB6bB5DE2290C417Ac337F2b66CA2E770E) |
-| frxETH           | [`link`](https://fraxscan.com/address/0x9aBFE1F8a999B0011ecD6116649AEe8D575F5604) | [`link`](https://etherscan.io/address/0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6) | [`link`](https://etherscan.io/address/0xF010a7c8877043681D59AD125EbF575633505942) |
-| sfrxETH          | [`link`](https://fraxscan.com/address/0x999dfAbe3b1cc2EF66eB032Eea42FeA329bBa168) | [`link`](https://etherscan.io/address/0xbBc424e58ED38dd911309611ae2d7A23014Bd960) | [`link`](https://etherscan.io/address/0x1f55a02A049033E3419a8E2975cF3F572F4e6E9A) |
-| FRAX (prev. FXS) | [`link`](https://fraxscan.com/address/0xd86fBBd0c8715d2C1f40e451e5C3514e65E7576A) | [`link`](https://etherscan.io/address/0xC6F59a4fD50cAc677B51558489E03138Ac1784EC) | [`link`](https://etherscan.io/address/0x23432452B720C80553458496D4D9d7C5003280d0) |
-| FPI              | [`link`](https://fraxscan.com/address/0x75c38D46001b0F8108c4136216bd2694982C20FC) | [`link`](https://etherscan.io/address/0x9033BAD7aA130a2466060A2dA71fAe2219781B4b) | [`link`](https://etherscan.io/address/0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d) |
+|                   | Fraxtal                                                                                                                 | Ethereum                                                                                                                | Ethereum (legacy)                                                                                                       |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| frxUSD            | [`0x96A394058E2b84A89bac9667B19661Ed003cF5D4`](https://fraxscan.com/address/0x96A394058E2b84A89bac9667B19661Ed003cF5D4) | [`0x566a6442A5A6e9895B9dCA97cC7879D632c6e4B0`](https://etherscan.io/address/0x566a6442A5A6e9895B9dCA97cC7879D632c6e4B0) | [`0x909DBdE1eBE906Af95660033e478D59EFe831fED`](https://etherscan.io/address/0x909DBdE1eBE906Af95660033e478D59EFe831fED) |
+| sfrxUSD           | [`0x88Aa7854D3b2dAA5e37E7Ce73A1F39669623a361`](https://fraxscan.com/address/0x88Aa7854D3b2dAA5e37E7Ce73A1F39669623a361) | [`0x7311CEA93ccf5f4F7b789eE31eBA5D9B9290E126`](https://etherscan.io/address/0x7311CEA93ccf5f4F7b789eE31eBA5D9B9290E126) | [`0xe4796cCB6bB5DE2290C417Ac337F2b66CA2E770E`](https://etherscan.io/address/0xe4796cCB6bB5DE2290C417Ac337F2b66CA2E770E) |
+| frxETH            | [`0x9aBFE1F8a999B0011ecD6116649AEe8D575F5604`](https://fraxscan.com/address/0x9aBFE1F8a999B0011ecD6116649AEe8D575F5604) | [`0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6`](https://etherscan.io/address/0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6) | [`0xF010a7c8877043681D59AD125EbF575633505942`](https://etherscan.io/address/0xF010a7c8877043681D59AD125EbF575633505942) |
+| sfrxETH           | [`0x999dfAbe3b1cc2EF66eB032Eea42FeA329bBa168`](https://fraxscan.com/address/0x999dfAbe3b1cc2EF66eB032Eea42FeA329bBa168) | [`0xbBc424e58ED38dd911309611ae2d7A23014Bd960`](https://etherscan.io/address/0xbBc424e58ED38dd911309611ae2d7A23014Bd960) | [`0x1f55a02A049033E3419a8E2975cF3F572F4e6E9A`](https://etherscan.io/address/0x1f55a02A049033E3419a8E2975cF3F572F4e6E9A) |
+| WFRAX (prev. FXS) | [`0xd86fBBd0c8715d2C1f40e451e5C3514e65E7576A`](https://fraxscan.com/address/0xd86fBBd0c8715d2C1f40e451e5C3514e65E7576A) | \*                                                                                                                      | [`0x23432452B720C80553458496D4D9d7C5003280d0`](https://etherscan.io/address/0x23432452B720C80553458496D4D9d7C5003280d0) |
+| FPI               | [`0x75c38D46001b0F8108c4136216bd2694982C20FC`](https://fraxscan.com/address/0x75c38D46001b0F8108c4136216bd2694982C20FC) | [`0x9033BAD7aA130a2466060A2dA71fAe2219781B4b`](https://etherscan.io/address/0x9033BAD7aA130a2466060A2dA71fAe2219781B4b) | [`0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d`](https://etherscan.io/address/0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d) |
+
+\* Ethereum WFRAX is not a lockbox but an OFT. See the "EVM" section above for details.
 
 ### Multisigs
 
