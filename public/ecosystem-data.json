@@ -687,6 +687,17 @@
       "twitterXUrl": "https://x.com/symbiosis_fi",
       "discordUrl": "https://discord.com/invite/YHgDSJ42eG",
       "telegramUrl": "https://t.me/symbiosis_finance"
+    },
+    {
+      "key": "crosscurve",
+      "name": "CrossCurve MetaLayer",
+      "url": "https://app.crosscurve.fi/",
+      "description": "Unified Cross-Chain Liquidity & High-Yield Farming. Your all-in-one solution to swap, bridge, and earn ﻿with full security.",
+      "tags": ["DeFi", "Bridge", "DEX"],
+      "imageUrl": "https://github.com/i6opoga/docs/blob/master/public/images/ecosystem/CrossCurve%20bl.png",
+      "twitterXUrl": "https://x.com/crosscurvefi",
+      "discordUrl": "https://discord.gg/crosscurve",
+      "telegramUrl": "https://t.me/CrossCurveMetaLayer"
     }
   ]
 }
