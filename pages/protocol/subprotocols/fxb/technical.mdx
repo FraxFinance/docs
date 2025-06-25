@@ -1,0 +1,49 @@
+---
+title: FXB Technical Details
+lang: en-US
+---
+
+_Legacy version of Frax Protocol docs are currently available on [docs.frax.finance](https://docs.frax.finance)_
+
+# FXB Technical Details
+
+Contracts: https://github.com/FraxFinance/frax-bonds/tree/master/src/contracts
+
+## General Overview
+
+FXB (Frax Bonds) are zero-coupon bonds auctioned at less than 1 stablecoin and are redeemable for 1 stablecoin at maturity. As part of the current contract design, each FXB contract has 1:1 stablecoins deposited in the contract upon minting. A mint exposes the OpenZeppelin ERC20 `_mint()` method, which allows the contract to mint the FXB token given the amount of LFRAX deposited. The FXB contract also exposes the OpenZeppelin ERC20 `_burn()` method, which allows the contract to burn the FXB token and release the LFRAX stablecoins back to the user.
+
+## Contract Overview
+
+Overall, you can think of the FXB v2 protocol core contracts as:
+
+1. **FXBFactory**: The factory contract that creates FXB contracts.
+1. **FXB**: The FXB contract that holds the LFRAX stablecoins
+1. **Beacon**: The contract that references the implementation used to create the FXB contracts.
+1. **AuctionFactory**: Permissionless factory contract creates token auctions.
+1. **Auction**: The auction contract that manages the auction process for FXBs.
+1. **FXBAMO**: The FXB AMO contract that manages the auctions and minting of FXBs.
+
+### FXBFactory
+
+The FXBFactory contract is the factory contract that creates FXB contracts. It is a permissioned contract that can only be called by the Frax Comptroller. Each FXB must have a unique maturity date. The factory also stores the beacon contract.
+
+### FXB
+
+The FXB contract is the contract that holds the LFRAX stablecoins. It is an ERC20 token with two additonal methods: `mint()` and `burn()`. There are two versions of FXBs on Fraxtal: _v1_ and _v2_. The key differentiation between the versions is that v1 FXBs are upgradeable uniquely as [TransparentUpgradeableProxies](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/proxy/transparent/TransparentUpgradeableProxy.sol), while v2 FXBs upgrade together as [BeaconProxies](https://github.com/FraxFinance/frax-bonds/blob/master/src/contracts/FraxBeaconProxy.sol). The v2 FXBs reference the beacon contract for their implementation.
+
+### Beacon
+
+The beacon contract is a simple contract with access controlled by the Frax Comptroller. It stores the implemention contract used for all calls to FXB v2 contracts. When the implementation contract is changed, all FXB v2 contract calls will automatically reference the new implementaion. This allows for a single upgrade to the FXB v2 contracts without requiring any changes to the individual FXB v2 contracts.
+
+### AuctionFactory
+
+The AuctionFactory contract is a permissionless factory contract that creates auction contracts. Anyone can call the AuctionFactory to create an auction between two ERC20 tokens. The creator of the auction contract is the owner of the auction, and is given permission to start and stop auctions. The AuctionFactory is used by the FXB AMO to create auctions for FXBs.
+
+### Auction
+
+Each auction contract is designed for a specific buy and sell token. Auctions expose an interface similar to Uniswap V2, with methods like `swap()`, `getAmountIn/Out()`, etc. When an auction is started, the owner deposits the ERC20 tokens they're selling and sets the criteria seen [here](https://github.com/FraxFinance/frax-bonds/blob/8f795c4a6cef1037c677345f2066828a7b99f67d/src/contracts/SlippageAuction.sol#L343-L358).
+
+### FXBAMO
+
+The FXB AMO contract is the contract that manages the auctions and minting of FXBs. It is a permissioned contract that can only be called by the Frax Comptroller and the Frax Operator. Normal operations are done by the Operator, while sensitive actions are done by the Comptroller. The AMO is used strictly by the Frax team and is not a publicly-callable contract.
