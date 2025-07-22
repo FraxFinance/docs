@@ -709,6 +709,17 @@
       "twitterXUrl": "https://x.com/blocksense_",
       "discordUrl": "https://discord.gg/blocksense",
       "telegramUrl": "https://t.me/BlocksenseNetwork"
+    },
+    {
+      "key": "rubic",
+      "name": "Rubic",
+      "url": "https://rubic.exchange/",
+      "description": "Rubic is the Best Rate Finder across 100+ chains and 360+ DEXs, bridges, aggregators & intent protocols. For users and dApps.",
+      "tags": ["DeFi", "DEX Aggregator", "Bridge"],
+      "imageUrl": "https://assets.coingecko.com/coins/images/12629/standard/rubic.png?1696512437",
+      "twitterXUrl": "https://x.com/CryptoRubic",
+      "discordUrl": "https://discord.gg/7EYzPbWKFQ",
+      "telegramUrl": "https://t.me/cryptorubic_chat"
     }
   ]
 }
