@@ -1,0 +1,115 @@
+---
+title: # RWARedemptionCoordinator
+lang: en-US
+---
+
+# RWARedemptionCoordinator
+
+## Overview
+
+`RWARedemptionCoordinator` is an Ownable contract used by the Fraxnet ecosystem to facilitate the redemption of `frxUSD` into `USDC` through a multi-step RWA (Real World Asset) redemption pipeline. It ensures slippage protection and interacts with both a `FrxUSDCustodian` and an `IRWAUSDCRedeemer` to complete the swap.
+
+Similar to the FraxNetDepositFactory, This contract exists as an implementation for an EIP-1967 Transparent Proxy
+
+## Key Features
+
+* Converts `frxUSD` → RWA → `USDC`
+* Slippage protection via configurable maxSlippage
+* Integrates with FrxUSD custodian and RWA redemption modules
+
+## Initialization
+
+### Constructor
+
+```solidity
+constructor(address _RWA, address _frxUSDCustodian, address _rwaUSDCRedeemer)
+```
+
+* Sets immutable addresses for tokens and dependencies.
+* Initializes contract and ownership.
+
+### initialize
+
+```solidity
+function initialize(uint256 _maxSlippage) external
+```
+
+* Can be used via `upgradeToAndCall` to initialize post-deployment.
+* Fails if already initialized.
+
+## Constants
+
+| Name            | Type      | Description                                    |
+| --------------- | --------- | ---------------------------------------------- |
+| `frxUSD`        | `IERC20`  | Frax USD stablecoin                                |
+| `USDC`          | `IERC20`  | Circle stablecoin                              |
+| `RWA`           | `IERC20`  | RWA token to be redeemed                       |
+| `PERCENT_SCALE` | `uint256` | Scaling factor for slippage calculations (1e5) |
+
+## State Variables
+
+| Name              | Type               | Description                       |
+| ----------------- | ------------------ | --------------------------------- |
+| `wasInitialized`  | `bool`             | Prevents double initialization    |
+| `maxSlippage`     | `uint256`          | Max allowed slippage in base 1e5  |
+| `frxUSDCustodian` | `FrxUSDCustodian`  | Custodian to convert frxUSD → RWA |
+| `rwaUSDCRedeemer` | `IRWAUSDCRedeemer` | Redeemer to convert RWA → USDC    |
+
+## Events
+
+| Name                                                       | Description                       |
+| ---------------------------------------------------------- | --------------------------------- |
+| `MaxSlippageSet(uint256 oldSlippage, uint256 newSlippage)` | Emitted when max slippage changes |
+
+## Custom Errors
+
+| Error                  | Description                                       |
+| ---------------------- | ------------------------------------------------- |
+| `MaxSlippageTooHigh()` | Thrown if slippage is set > 100%                  |
+| `AlreadyInitialized()` | Thrown if `initialize()` is called more than once |
+
+## Functions
+
+### RWA Redemption
+
+```solidity
+function redeemRWA(uint256 amount) external returns (uint256 amountUSDCOut)
+```
+
+* Accepts `frxUSD` from caller.
+* Converts `frxUSD → RWA` via `FrxUSDCustodian`.
+* Converts `RWA → USDC` via `IRWAUSDCRedeemer`.
+* Reverts if output USDC is less than `minAmountOut` based on slippage.
+
+### Slippage Configuration
+
+```solidity
+function setMaxSlippage(uint256 newSlippage) external onlyOwner
+```
+
+* Admin function to update slippage protection threshold.
+* Reverts if new slippage is over 100% (1e5).
+
+### Helpers
+
+```solidity
+function scaleUpTo1e18(uint256 amount1e6) public pure returns (uint256)
+function scaleDownTo1e6(uint256 amount1e18) public pure returns (uint256)
+```
+
+* Utility functions for adjusting between token decimal representations.
+
+## Dependencies
+
+* [`FrxUSDCustodian`](./FrxUSDCustodian.sol)
+* [`IRWAUSDCRedeemer`](./interfaces/IRWAUSDCRedeemer.sol)
+
+## Notes
+
+* Protects users from unexpected slippage during multi-hop redemption
+* Part of the larger Fraxnet cross-chain and RWA infrastructure
+
+---
+
+**Author**: Frax Finance
+**License**: AGPL-3.0-only

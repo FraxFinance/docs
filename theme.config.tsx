@@ -17,7 +17,7 @@ const config: DocsThemeConfig = {
   logo: () => {
     const router = useRouter();
     const asPath = router.asPath;
-    const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : 'frax';
+    const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : asPath.startsWith('/fraxnet') ? 'fraxnet' : 'frax' ;
 
     return (
       <>
@@ -31,6 +31,16 @@ const config: DocsThemeConfig = {
           <>
             <FraxIcon size={32} />
             <span style={{ marginLeft: 10 }}>Frax Docs</span>
+          </>
+        )}
+        {section === 'fraxnet' && (
+          <>
+            <img
+              src="https://static.frax.com/images/tokens/frxusd.png"
+              alt="Fraxnet Icon"
+              style={{ width: 32, height: 32 }}
+            />
+            <span style={{ marginLeft: 10 }}>Fraxnet Docs</span>
           </>
         )}
       </>
@@ -56,9 +66,9 @@ const config: DocsThemeConfig = {
     const router = useRouter();
     const { frontMatter } = useConfig();
     const asPath = router.asPath;
-    const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : 'frax';
-
-    const faviconImage = section === 'fraxtal' ? '/images/fraxtal-256x256.png' : '/images/frax-256x256.png';
+      const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : asPath.startsWith('/fraxnet') ? 'fraxnet' : 'frax' ;
+    
+    const faviconImage = section === 'fraxtal' ? '/images/fraxtal-256x256.png' : section === 'fraxnet' ? '/images/protocol/frxusd.png' : '/images/frax-256x256.png';
 
     return (
       <>

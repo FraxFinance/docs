@@ -1,0 +1,133 @@
+---
+∂title: FrxUSDCustodian
+lang: en-US
+-----------
+
+# FrxUSDCustodian
+
+## Overview
+
+`FrxUSDCustodian` is a **non-custodial mint/redeem contract** designed to maintain a 1:1 backing between `frxUSD` and a corresponding real-world asset (RWA) token or stablecoin, such as USDC, USDB, or USTB. It operates as an [ERC-4626](https://eips.ethereum.org/EIPS/eip-4626)-style vault but with added Frax-specific functionality and governance features.
+
+Each instance of this contract holds reserves of a specific custodian token and allows users to deposit it to mint `frxUSD` or redeem `frxUSD` to withdraw the custodian token, subject to mint/redeem caps and fees.
+
+It is designed to support regulatory compliance (e.g. with [Genius Act](https://www.coindesk.com/policy/2024/03/07/us-treasury-releases-guidance-on-stablecoin-backing-rules/)) and can shuffle excess tokens into yield-bearing RWA issuers.
+
+## Key Features
+
+* ERC-4626-like vault with mint/redeem symmetry
+* Fee controls for minting and redeeming
+* Cap on the total `frxUSD` minted via this vault
+* Conversion logic that handles differing decimals between frxUSD and the custodian token
+* Restricted operator list for shuffling assets into yield strategies (e.g., RWA issuers)
+* Optional slippage protection during RWA shuffle
+* Admin-controlled upgrades, fees, and limits via `Ownable2Step`
+
+## Initialization
+
+```solidity
+constructor(address _frxUSD, address _custodianTkn)
+```
+
+* Sets the immutable references to frxUSD and custodian token
+* Retrieves and stores their decimals
+
+```solidity
+function initialize(address _owner, uint256 _mintCap, uint256 _mintFee, uint256 _redeemFee)
+```
+
+* One-time initialization function (guarded by `wasInitialized` flag)
+* Sets owner, cap, and fees
+
+## State Variables
+
+| Name                    | Type      | Description                                                 |
+| ----------------------- | --------- | ----------------------------------------------------------- |
+| `frxUSD`                | `FrxUSD`  | Reference to the frxUSD token (mintable/burnable)           |
+| `custodianTkn`          | `IERC20`  | Backing asset held in custody for minted `frxUSD`                  |
+| `mintCap`               | `uint256` | Maximum amount of `frxUSD` that can be minted               |
+| `mintFee` / `redeemFee` | `uint256` | 18-decimal fixed-point fee rate                             |
+| `frxUSDMinted`          | `uint256` | Running counter of minted `frxUSD` from this contract       |
+| `isApprovedOperator`    | `mapping` | Authorized shufflers who can interact with RWA issuers      |
+| `minAfterShuffle`       | `uint256` | Minimum balance of `custodianTkn` after a shuffleToRwa call |
+
+## Core Functions
+
+### Minting and Depositing
+
+```solidity
+function deposit(uint256 assets, address receiver) external returns (uint256 shares);
+function mint(uint256 shares, address receiver) external returns (uint256 assets);
+```
+
+* Mints frxUSD in exchange for the backing asset
+* Subject to `mintCap` and `mintFee`
+
+### Redeeming and Withdrawing
+
+```solidity
+function withdraw(uint256 assets, address receiver, address owner) external returns (uint256 shares);
+function redeem(uint256 shares, address receiver, address owner) external returns (uint256 assets);
+```
+
+* Redeems `frxUSD` for the underlying token, minus `redeemFee`
+
+### Conversions and Previews
+
+```solidity
+function previewDeposit(uint256 assets) public view returns (uint256 shares);
+function previewRedeem(uint256 shares) public view returns (uint256 assets);
+```
+
+* Computes expected mint/redeem amounts with fees and decimal adjustments
+
+### Limits
+
+```solidity
+function maxMint(address) public view returns (uint256);
+function maxWithdraw(address) public view returns (uint256);
+```
+
+* Enforces mint cap and ensures vault solvency
+
+### RWA Shuffle
+
+```solidity
+function shuffleToRwa(uint256 amount, uint256 minAmountRwaOut) public;
+```
+
+* Allows approved bots to move idle custodian tokens to RWA issuers for yield
+* Enforces slippage bounds and post-shuffle minimum balance
+
+## Events
+
+| Name                        | Description                               |
+| --------------------------- | ----------------------------------------- |
+| `Deposit` / `Withdraw`      | Minting and redeeming lifecycle events    |
+| `MintCapSet`                | Emitted when the cap is adjusted          |
+| `OperatorStatusSet`         | Admin toggles an operator's permission    |
+| `custodianTknShuffledToRwa` | Tokens sent to RWA issuer                 |
+| `MinAmountAfterShuffleSet`  | Update to minimum reserve after shuffling |
+
+## Access Control
+
+* Inherits `Ownable2Step` for safe admin transfer
+* Only the owner can:
+
+  * Adjust fees, cap, operator list
+  * Call `setMinAfterShuffle`
+  * Recover tokens or perform upgrades
+
+## Usage in Frax
+
+Each `FrxUSDCustodian` contract is paired 1:1 with a specific backing asset. Examples:
+
+* [`frxUSD-USDC Custodian`](#) holds USDC
+* [`frxUSD-USDB Custodian`](#) holds USDB
+
+Together, they allow `frxUSD` to be dynamically minted and redeemed against multiple real-world backed assets, while ensuring compliance, solvency, and flexibility for revenue-generating strategies.
+
+---
+
+**Author**: Frax Finance
+**License**: MIT

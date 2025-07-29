@@ -1,0 +1,152 @@
+---
+title: FraxnetDepositFactory
+lang: en-US
+---
+
+# FraxNetDepositFactory
+
+## Overview
+
+`FraxNetDepositFactory` is a factory smart contract used to deploy `FraxNetDeposit` contracts in a deterministic and gas-efficient manner. It integrates with external services like LayerZero (for cross-chain messaging), Circle's CCTP (for USDC transfer), and the Frax RWA custodian system.
+
+This contract serves as the implementation for an [EIP-1967](https://eips.ethereum.org/EIPS/eip-1967) Transparent Proxy.
+
+## Key Features
+
+* Beacon Proxy-based deployment, for child contracts
+* Deterministic contract creation with `CREATE2`
+* Cross-chain setup using LayerZero and Circle CCTP
+* Dual-path redemption (Custodian or RWA)
+
+## Initialization
+
+The factory must be initialized once by calling the `initialize(...)` function with the following parameters:
+
+```solidity
+function initialize(
+    IFrxUSDCustodian _frxUSDCustodian,
+    IRemoteHop _remoteHop,
+    address _cctpTokenMessenger,
+    IRWAUSDCRedeemer _rwaUsdcRedeemer
+) external;
+```
+
+This sets up dependencies and deploys the implementation contract for cloning.
+
+## Public Variables
+
+| Name                      | Type                        | Description                              |
+| ------------------------- | --------------------------- | ---------------------------------------- |
+| `wasInitialized`          | `bool`                      | Ensures factory is initialized only once |
+| `frxUSDCustodian`         | `IFrxUSDCustodian`          | Contract that mints frxUSD               |
+| `remoteHop`               | `IRemoteHop`                | Cross-chain communication interface      |
+| `fraxNetDepositContracts` | `FraxNetDeposit[]`          | All deployed contracts                   |
+| `isFraxNetDeposit`        | `mapping(address => bool)`  | Verifies FraxNetDeposit contract         |
+| `operators`               | `mapping(address => bool)`  | Authorized operator accounts             |
+| `rwaRedeemer`             | `IRWAUSDCRedeemer`          | RWA-based USDC redemption pathway        |
+| `cctpTokenMessenger`      | `address`                   | Circle CCTP token messenger address      |
+| `eidToCCTPDomain`         | `mapping(uint32 => uint32)` | L0 EID to CCTP domain mapping            |
+| `rwaRedemptionThreshold`  | `uint256`                   | Redemption threshold for using RWA       |
+| `beaconContract`          | `FraxBeacon`                | Beacon for `FraxNetDeposit` proxy logic  |
+
+## Events
+
+| Name                          | Description                                     |
+| ----------------------------- | ----------------------------------------------- |
+| `FraxNetDepositCreated`       | Emitted when a new deposit contract is deployed |
+| `FrxUSDCustodianSet`          | Emitted on custodian address update             |
+| `RemoteHopSet`                | Emitted on remote hop update                    |
+| `OperatorSet`                 | Emitted on operator permission change           |
+| `RwaRedemptionThresholdSet`   | Emitted on redemption threshold update          |
+| `CCTPTokenMessengerSet`       | Emitted on messenger update                     |
+| `RwaRedeemerSet`              | Emitted on redeemer update                      |
+| `LayerZeroEidToCCTPDomainSet` | Emitted on EID-to-domain mapping change         |
+
+## Functions
+
+### Deployment
+
+```solidity
+function createFraxNetDeposit(uint32 _targetEid, bytes32 _targetAddress) external returns (FraxNetDeposit);
+```
+
+Deploys a new `FraxNetDeposit` contract to a specific LayerZero destination.
+
+```solidity
+function getDeploymentAddress(uint32 _targetEid, bytes32 _targetAddress) external view returns (address);
+```
+
+Predicts the deployment address of a future contract.
+
+### Configuration
+
+```solidity
+function setFrxUSDCustodian(IFrxUSDCustodian _frxUSDCustodian) external onlyOwner;
+function setRemoteHop(IRemoteHop _remoteHop) external onlyOwner;
+function setOperator(address operator, bool isOp) external onlyOwner;
+function setRwaRedemptionThreshold(uint256 newThreshold) external onlyOwner;
+function setRwaRedeemer(IRWAUSDCRedeemer newRwaRedeemer) external onlyOwner;
+function setCCTPTokenMessenger(address newTokenMessenger) external onlyOwner;
+function setEidToCCTPDomain(uint32 _eid, uint32 _cctpDomain) external onlyOwner;
+```
+
+Admin functions to update contract dependencies and behavior.
+
+### Queries
+
+```solidity
+function fraxNetDepositContractsLength() external view returns (uint256);
+function getCustodianAndHop() external view returns (IFrxUSDCustodian, IRemoteHop);
+function isOperator(address operator) external view returns (bool);
+```
+
+Useful queries for state inspection.
+
+### Emergency Recovery
+
+```solidity
+function recoverERC20(
+    address tokenAddress,
+    uint256 tokenAmount,
+    FraxNetDeposit fraxNetDepositContract,
+    address recipient
+) external onlyOwner;
+```
+
+Allows the owner to recover tokens stuck in a `FraxNetDeposit` contract.
+
+## Errors
+
+| Name                   | Description                             |
+| ---------------------- | --------------------------------------- |
+| `Create2Failed()`      | Thrown when CREATE2 deployment fails    |
+| `AlreadyInitialized()` | Thrown on double initialization attempt |
+
+## Deployment Behavior
+
+`FraxNetDeposit` contracts are deployed using the `CREATE2` opcode with the salt:
+
+```solidity
+keccak256(abi.encode(_targetEid, _targetAddress))
+```
+
+This ensures deterministic address generation per target chain and address.
+
+## Dependencies
+
+* [`FraxNetDeposit`](./FraxNetDeposit.sol): Proxy child contract
+* [`FraxBeacon`](./FraxBeacon.sol): Beacon controlling logic
+* LayerZero + CCTP + RWA ecosystem interfaces
+
+## Notes
+
+* The factory is Ownable and uses OpenZeppelin's `Ownable2Step` for ownership transfer
+* Redemptions can be routed via RWA or the standard custodian based on thresholds
+* L0 EIDs and CCTP domains must match the same chain
+
+---
+
+**Author**: Frax Finance
+**License**: AGPL-3.0-only
+
+
