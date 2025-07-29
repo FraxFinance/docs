@@ -698,6 +698,17 @@
       "twitterXUrl": "https://x.com/crosscurvefi",
       "discordUrl": "https://discord.gg/crosscurve",
       "telegramUrl": "https://t.me/CrossCurveMetaLayer"
+    },
+    {
+      "key": "blocksense",
+      "name": "Blocksense",
+      "url": "https://blocksense.network",
+      "description": "Blocksense is a programmable oracle platform that brings real-world data on-chain using zero-knowledge proofs and game-theoretic consensus.",
+      "tags": ["Oracle", "Infra"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/Blocksense.png",
+      "twitterXUrl": "https://x.com/blocksense_",
+      "discordUrl": "https://discord.gg/blocksense",
+      "telegramUrl": "https://t.me/BlocksenseNetwork"
     }
   ]
 }
