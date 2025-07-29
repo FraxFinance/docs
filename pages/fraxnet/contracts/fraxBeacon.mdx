@@ -1,0 +1,99 @@
+--- 
+title: Fraxnet Beacon
+lang: en-US
+---
+
+# FraxBeacon
+## Overview
+
+`FraxBeacon` is an **upgradable beacon** used within the Frax Finance ecosystem to manage implementation addresses for Beacon Proxy deployments. It allows a factory contract to deploy minimal proxies (Beacon Proxies) that forward calls to the address specified by the beacon’s `implementation()` function.
+
+This architecture enables **centralized upgradeability** for multiple proxy contracts through a single control point.
+
+It follows the [EIP-1967 Beacon Proxy Standard](https://eips.ethereum.org/EIPS/eip-1967) and is **Ownable2Step**, providing a safe ownership transfer process.
+
+## Key Features
+
+- Central upgradeability point for all beacon-based FraxNet contracts
+- Ownable2Step for secure admin transitions
+- Emits event on upgrades for auditability
+- Used by the `FraxNetDepositFactory` to deploy all `FraxNetDeposit` contracts
+
+## Initialization
+
+```solidity
+constructor(address _owner, address _initialImplementation)
+```
+
+* Sets the owner (admin) and the initial logic contract.
+* Can only be called once during deployment.
+
+## State Variables
+
+| Name           | Type     | Description                                                        |
+|----------------|----------|--------------------------------------------------------------------|
+| `implementation` | `address` | The address of the current logic contract that proxies will delegate to |
+
+## Functions
+
+### `implementation() → address`
+
+```solidity
+function implementation() external view override returns (address)
+```
+
+* Returns the current implementation contract.
+* Used by proxies to resolve the target for delegated calls.
+
+### `setImplementation(address _newImplementation)`
+
+```solidity
+function setImplementation(address _newImplementation) external onlyOwner
+```
+
+* Admin-only function to update the implementation address.
+* Emits `FraxBeaconImplementationUpdated`.
+
+### `_setImplementation(address _newImplementation)`
+
+```solidity
+function _setImplementation(address _newImplementation) internal
+```
+
+* Internal logic to update and emit event.
+* Called during construction and upgrade.
+
+## Events
+
+| Name                                 | Description                                                        |
+|--------------------------------------|--------------------------------------------------------------------|
+| `FraxBeaconImplementationUpdated`    | Emitted when the implementation address is changed.                |
+
+```solidity
+event FraxBeaconImplementationUpdated(address oldImplementation, address newImplementation);
+```
+
+## Access Control
+
+* The contract inherits from `Ownable2Step`.
+* Only the current owner can call `setImplementation`.
+* Ownership transfers require two steps: `transferOwnership` and `acceptOwnership`.
+
+## Usage in Frax
+
+The `FraxBeacon` is primarily used by:
+
+- `FraxNetDepositFactory` to manage the upgrade path for deployed `FraxNetDeposit` contracts.
+- Enables **upgrading logic** of all `FraxNetDeposit` instances by updating this single beacon.
+- Ensures that new deployments and existing proxies always reference the latest logic contract.
+
+## Notes
+
+- Updating the beacon will immediately affect all proxies tied to it.
+- Ensures scalable and gas-efficient management of upgradable contracts.
+- No initialization function is required—parameters are passed via constructor.
+
+---
+
+**Author**: Frax Finance  
+**License**: AGPL-3.0-only  
