@@ -15,7 +15,7 @@ The [Omnichain Fungible Token (OFT)](https://docs.layerzero.network/v2/home/toke
 
 Frax assets are represented as OFTs on chains other than Fraxtal, and Ethereum. An OFT operates the exact same as an ERC20 with the additional function of bridge-ability through the LayerZero protocol.
 
-All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2-upgradeable) and managed by a 3/5 multisig on each respective chain.
+All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2-upgradeable) and managed by a 3/6 multisig on each respective chain.
 
 ### Available Frax OFTs
 
@@ -32,16 +32,11 @@ Frax operates a dual-lockbox design where users can exit their OFT token into th
 
 **NOTE**: FRAX is a single-lockbox design, with liquidity hosted on Fraxtal. Users bridging FRAX to Ethereum will receive the WFRAX OFT if using LayerZero. Using the native Optimism bridge from Fraxtal will return FXS on Ethereum.
 
-## Mesh and Hub Design
+## Hub Design
 
-Frax OFTs are wired together in one of two ways:
+Frax OFTs are wired together as a **Hub**: with a single, central connection to Fraxtal, bridging from chain A to chain B can be seen as `A => Fraxtal => B`. The Frax team has designed a novel solution called a "Hop" which reduces the complexity in connections from N^2 to N through only connecting chains to Fraxtal. Chains connected to Fraxtal send their bridge transactions through the "Hop" [contracts](https://github.com/fraxfinance/fraxtal-lz-hop) which automatically forward the transaction to the destination chain. Therefore, behind the scenes, bridging from `A => B` is actually two transactions: `A => Fraxtal` and `Fraxtal => B`, where the second transaction is automatically handled by the LayerZero Executor via [`lzCompose()`](https://docs.layerzero.network/v2/developers/evm/oapp/message-design-patterns#composed).
 
-1. **Hub**: A single, central connection to Fraxtal. Bridging from Chain A to B can be seen as `A => Fraxtal => B`.
-2. **Mesh**: A direct connection to other chains, as well as both the Fraxtal and Ethereum lockbox. Bridging from Chain A to B can be seen as `A => B`.
-
-When a new chain is added, it is first connected via the Hub model. If the chain has sufficient demand, it can be upgraded to a Mesh model.
-
-The following graphic illustrates the Hub and Mesh design, where zkSync and Abstract are connected via the Hub model, while the other destinations are connected via the Mesh model:
+The exception to Hops are Non-EVM chains, currently Solana, Aptos, and Movement. These chains do not support the Hop contracts and instead support direction bridging to both Fraxtal and Ethereum. Therefore, bridging from `Solana => B` requires two seperate submitted transactions by the user: `Solana => Fraxtal` and `Fraxtal => B`. In this case, the user must wait for their bridge to Fraxtal to settle before submitting the second transaction to bridge to B.
 
 ### WFRAX vs. FRAX
 
@@ -62,33 +57,33 @@ From there, users can convert FRAX to FXS on Ethereum through the native Optimis
 
 Ethereum WFRAX OFT is also connected via the hub model. This means that bridging WFRAX from chain X to Ethereum will be `X => Fraxtal => Ethereum`. Bridging FXS to chain X will first require the user to bridge FXS to Fraxtal through the native Optimism bridge, converting their FXS to FRAX.
 
-![Crosschain Mesh](/images/protocol/crosschain-mesh.png)
+![Crosschain Connections](/images/protocol/crosschain-hub.png)
 
-### Current Wires
+### Current Chains
 
-- Hub
-  - zkSync
-  - Abstract
-  - Linea
-  - Aptos
-  - Movement
-  - Worldchain
-  - Ethereum WFRAX
-- Mesh
-  - Mode
-  - Sei
-  - X-Layer
-  - Ink
-  - Sonic
-  - Arbitrum
-  - Optimism
-  - Polygon
-  - Avalanche
-  - BSC
-  - Polygon zkEVM
-  - Berachain
-  - Blast
-  - Base
+- Abstract
+- Aptos
+- Arbitrum
+- Avalanche
+- Base
+- Berachain
+- BSC
+- Ethereum
+- Ink
+- Linea
+- Katana
+- Mode
+- Movement
+- Optimism
+- Plume
+- Polygon
+- Polygon zkEVM
+- Sei
+- Sonic
+- Unichain
+- Worldchain
+- X-Layer
+- zkSync
 
 ### Process
 
