@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Frax USD",
+    "address": "0xFc00000000000000000000000000000000000001",
+    "symbol": "frxUSD",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/frxusd.png"
+  },
+  {
+    "name": "Wrapped Frax",
+    "address": "0xFc00000000000000000000000000000000000002",
+    "symbol": "WFRAX",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/wfrax.png"
+  },
+  {
+    "name": "Frax Ether",
+    "address": "0xFC00000000000000000000000000000000000006",
+    "symbol": "frxETH",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/frxeth.png"
+  },
+  {
+    "name": "Staked Frax USD",
+    "address": "0xfc00000000000000000000000000000000000008",
+    "symbol": "sfrxUSD",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/sfrxusd.png"
+  },
+  {
+    "name": "Frax Price Index Share",
+    "address": "0xfc00000000000000000000000000000000000004",
+    "symbol": "FPIS",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fpis.png"
+  },
+  {
+    "name": "Staked Frax Ether",
+    "address": "0xFC00000000000000000000000000000000000005",
+    "symbol": "sfrxETH",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/sfrxeth.png"
+  },
+  {
+    "name": "Convex FXS",
+    "address": "0xEFb4B26FC242478c9008274F9e81db89Fa6adAB9",
+    "symbol": "cvxFXS",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/cvxfxs.png"
+  },
+  {
+    "name": "Frax Price Index",
+    "address": "0xFc00000000000000000000000000000000000003",
+    "symbol": "FPI",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fpi.png"
+  },
+  {
+    "name": "Renzo Restaked ETH",
+    "address": "0x2416092f143378750bb29b79eD961ab195CcEea5",
+    "symbol": "ezETH",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/ezeth.png"
+  },
+  {
+    "name": "Curve DAO Token",
+    "address": "0x331B9182088e2A7d6D3Fe4742AbA1fB231aEcc56",
+    "symbol": "CRV",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/crv.png"
+  },
+  {
+    "name": "Tether USD",
+    "address": "0x4d15EA9C2573ADDAeD814e48C148b5262694646A",
+    "symbol": "USDT",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/usdt.png"
+  },
+  {
+    "name": "IQ",
+    "address": "0x6EFB84bda519726Fa1c65558e520B92b51712101",
+    "symbol": "IQ",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/iq.png"
+  },
+  {
+    "name": "USD Coin",
+    "address": "0xDcc0F2D8F90FDe85b10aC1c8Ab57dc0AE946A543",
+    "symbol": "USDC",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/usdc.png"
+  },
+  {
+    "name": "FXB20291231",
+    "address": "0xF1e2b576aF4C6a7eE966b14C810b772391e92153",
+    "symbol": "FXB20291231",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fxb.png"
+  },
+  {
+    "name": "FXB20271231",
+    "address": "0x6c9f4E6089c8890AfEE2bcBA364C2712f88fA818",
+    "symbol": "FXB20271231",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fxb.png"
+  },
+  {
+    "name": "FXB20251231",
+    "address": "0xacA9A33698cF96413A40A4eB9E87906ff40fC6CA",
+    "symbol": "FXB20251231",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fxb.png"
+  },
+  {
+    "name": "FXB_4_DEC312026",
+    "address": "0x8e9C334afc76106F08E0383907F4Fca9bB10BA3e",
+    "symbol": "FXB_4_DEC312026",
+    "decimals": 18,
+    "chainId": 252,
+    "logoURI": "https://static.frax.com/images/tokens/fxb.png"
+  }
+]
