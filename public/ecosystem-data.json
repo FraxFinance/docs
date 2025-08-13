@@ -720,6 +720,17 @@
       "twitterXUrl": "https://x.com/CryptoRubic",
       "discordUrl": "https://discord.gg/7EYzPbWKFQ",
       "telegramUrl": "https://t.me/cryptorubic_chat"
+    },
+    {
+      "key": "mt-pelerin",
+      "name": "Mt Pelerin",
+      "url": "https://www.mtpelerin.com",
+      "description": "Invest in FRAX and other assets the easy way! Buy, swap and sell crypto with the lowest fees, zero hidden costs and full control over your cryptoassets.",
+      "tags": ["DeFi", "Bridge", "OnRamp"],
+      "imageUrl": "https://www.mtpelerin.com/images/logo.svg",
+      "twitterXUrl": "https://x.com/intent/user?screen_name=mtpelerin",
+      "discordUrl": "https://discord.gg/WErDKTvMr7",
+      "telegramUrl": "https://t.me/mtpelerinchat/"
     }
   ]
 }
