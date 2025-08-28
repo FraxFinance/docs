@@ -1,0 +1,50 @@
+---
+title: Frax Development Standards
+lang: en-US
+---
+
+## General
+
+### Repository
+
+- Should utilize [`frax-template`](https://github.com/FraxFinance/frax-template) and [`frax-standard-solidity`](https://github.com/FraxFinance/frax-standard-solidity) to speed up and normalize development.
+- Should pin dependencies to prevent breaks in future installs.
+
+### Pull Requests
+
+- Should receive one explicit approval for low-risk PRs, at least two approvals otherwise to reduce errors and promote collaboration.
+- Should describe all notable changes within the description to support reviewers.
+- Should only apply one feature/change per PR to simplify reviews.
+- Should only contain commits by the author, unless a supporting PR is merged in, to prevent duplicate/overwritten work.
+
+## Scripts
+
+### Deploy/Upgrade
+
+- Should generate the msig tx where needed using [SafeTxHelper](https://github.com/FraxFinance/frax-standard-solidity/blob/master/src/SafeTxHelper.sol), writing the tx to file, to provide replicable steps in msig operations.
+- Should use minimal hardcoded addresses to reduce possibility of wrong addresses.
+  - Should use either a Constants file or dynamic loading (via contract calls) where possible.
+- Should define all variables as `public` to enable calling variables across tests.
+- Should have the script command commented above the script to easily replicate if needed.
+- Should have validation of state to further secure deployment.
+
+### Tests
+
+- Should incorporate the script to validate what is run.
+- Should validate what is not covered in the script, creating full coverage.
+- Should be pinned to a forked block to pass post-deployment.
+
+## Upgrades
+
+### General
+
+- Should contain an updated `version()`, ie. "1.1.0" to track current contract version.
+- Should inherit prior versions if possible to separate upgrade changes, simplifying reviews.
+- Should add state through namespaced storage to protect state variables.
+- Should mark all functions as `virtual` to support potential future overrides.
+- Should inherit child contracts where possible to separate concerns.
+- Should utilize `FraxUpgradeableProxy` or `FraxTransparentProxy` from `frax-standard-solidity` to maintain proxy standards across the org.
+
+## Contracts
+
+- Should balance simplicity with limited storage calls.
