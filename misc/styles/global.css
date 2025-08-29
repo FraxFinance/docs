@@ -84,7 +84,12 @@ body {
   ul:before {
     @apply bg-frax-gray-500 dark:bg-frax-gray-800;
   }
-  :hover {
+
+  /* Apply hover effects only to actual links and buttons */
+  a:hover,
+  button:hover,
+  [role='button']:hover,
+  [role='link']:hover {
     @apply bg-transparent dark:bg-transparent !important;
     @apply text-blue-500 dark:text-blue-400 !important;
   }

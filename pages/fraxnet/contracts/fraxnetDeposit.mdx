@@ -1,23 +1,22 @@
 ---
-title: Fraxnet Deposit
+title: FraxNet Deposit
 lang: en-US
 ---
-
 
 # FraxNetDeposit
 
 ## Overview
 
-`FraxNetDeposit` is a cross-chain deposit and redemption contract used in the Fraxnet ecosystem. It enables the minting of `frxUSD` from `USDC`, and its transfer to another chain using LayerZero’s OFT mechanism. It also supports redemption of `frxUSD` to `USDC` using either a custodian or RWA-based redemption path.
+`FraxNetDeposit` is a cross-chain deposit and redemption contract used in the FraxNet ecosystem. It enables the minting of `frxUSD` from `USDC`, and its transfer to another chain using LayerZero’s OFT mechanism. It also supports redemption of `frxUSD` to `USDC` using either a custodian or RWA-based redemption path.
 
-This contract serves as the implementation for [EIP-1967](https://eips.ethereum.org/EIPS/eip-1967) Beacon Proxies deployed from the `FraxNetDeposit` Factory contract 
+This contract serves as the implementation for [EIP-1967](https://eips.ethereum.org/EIPS/eip-1967) Beacon Proxies deployed from the `FraxNetDeposit` Factory contract
 
 ## Key Features
 
-* Deposits USDC to mint frxUSD
-* Sends frxUSD cross-chain via LayerZero
-* Redeems frxUSD back to USDC conditionally
-* Integrates with Circle’s CCTP
+- Deposits USDC to mint frxUSD
+- Sends frxUSD cross-chain via LayerZero
+- Redeems frxUSD back to USDC conditionally
+- Integrates with Circle’s CCTP
 
 ## Initialization
 
@@ -26,8 +25,8 @@ constructor(address _factory)
 function initialize(uint32 _targetEid, bytes32 _targetAddress)
 ```
 
-* Called once by the factory upon deployment.
-* Sets target LayerZero endpoint and target recipient address.
+- Called once by the factory upon deployment.
+- Sets target LayerZero endpoint and target recipient address.
 
 ## Constants
 
@@ -70,29 +69,32 @@ function initialize(uint32 _targetEid, bytes32 _targetAddress)
 ```solidity
 function processDeposit(uint256 amount) external payable
 ```
-* User must have previously sent USDC, or other stablecoin, to their `FraxNetDeposit` contract.
-* Caller must be an operator.
-* Transfers USDC from sender, mints `frxUSD` using custodian.
-* Sends frxUSD to `targetAddress` via:
 
-  * Direct transfer (if Ethereum)
-  * LayerZero OFT (if other chains)
+- User must have previously sent USDC, or other stablecoin, to their `FraxNetDeposit` contract.
+- Caller must be an operator.
+- Transfers USDC from sender, mints `frxUSD` using custodian.
+- Sends frxUSD to `targetAddress` via:
+
+  - Direct transfer (if Ethereum)
+  - LayerZero OFT (if other chains)
 
 ### Redemption Flow
 
 ```solidity
 function processRedemption(uint256 amount) external
 ```
-* User must have previously sent frxUSD to their `FraxNetDeposit` contract.
-* Caller must be an operator.
-* Redeems `frxUSD` for `USDC` using:
 
-  * USDC custodian (if amount < `rwaRedemptionThreshold` and sufficient liquidity exists)
-  * RWA redeemer otherwise
-* Sends USDC to target:
+- User must have previously sent frxUSD to their `FraxNetDeposit` contract.
+- Caller must be an operator.
+- Redeems `frxUSD` for `USDC` using:
 
-  * Direct transfer (if Ethereum)
-  * Circle CCTP (if other chains)
+  - USDC custodian (if amount < `rwaRedemptionThreshold` and sufficient liquidity exists)
+  - RWA redeemer otherwise
+
+- Sends USDC to target:
+
+  - Direct transfer (if Ethereum)
+  - Circle CCTP (if other chains)
 
 ### Quoting
 
@@ -100,7 +102,7 @@ function processRedemption(uint256 amount) external
 function quote(uint256 amount) external view returns (IRemoteHop.MessagingFee memory)
 ```
 
-* Uses RemoteHop to return a LayerZero quote for a given USDC amount.
+- Uses RemoteHop to return a LayerZero quote for a given USDC amount.
 
 ### Admin
 
@@ -108,7 +110,7 @@ function quote(uint256 amount) external view returns (IRemoteHop.MessagingFee me
 function recoverERC20(address tokenAddress, uint256 tokenAmount, address recipient) external
 ```
 
-* Allows factory owner to recover ERC20 tokens.
+- Allows factory owner to recover ERC20 tokens.
 
 ### Utility Functions
 
@@ -117,21 +119,20 @@ function scaleUpTo1e18(uint256 amount1e6) public pure returns (uint256)
 function scaleDownTo1e6(uint256 amount1e18) public pure returns (uint256)
 ```
 
-* Helper conversions between `1e6` and `1e18` decimal representations.
+- Helper conversions between `1e6` and `1e18` decimal representations.
 
 ## Dependencies
 
-* [`FraxNetDepositFactory`](./FraxNetDepositFactory.sol)
-* `IRemoteHop`, `IFrxUSDCustodian`, `IRWAUSDCRedeemer`, `ITokenMessenger`
+- [`FraxNetDepositFactory`](./FraxNetDepositFactory.sol)
+- `IRemoteHop`, `IFrxUSDCustodian`, `IRWAUSDCRedeemer`, `ITokenMessenger`
 
 ## Notes
 
-* Factory is used for access control (e.g. setting operators, recovering tokens)
-* Deposit vs redemption paths are optimized for cost and RWA handling
-* Emits events for every successful cross-chain or redemption operation
+- Factory is used for access control (e.g. setting operators, recovering tokens)
+- Deposit vs redemption paths are optimized for cost and RWA handling
+- Emits events for every successful cross-chain or redemption operation
 
 ---
 
 **Author**: Frax Finance
 **License**: AGPL-3.0-only
-

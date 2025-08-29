@@ -1,0 +1,7 @@
+{
+  "usdc": "Mint and redeem frxUSD with USDC",
+  "ustb": "Mint and redeem frxUSD with Superstate's USTB",
+  "buidl": "Mint and redeem frxUSD with Blackrock's BUIDL",
+  "wtgxx": "Mint and redeem frxUSD with WisdomTree's WTGXX",
+  "usdb": "Mint and redeem frxUSD with Bridge.xyz's USDB"
+}

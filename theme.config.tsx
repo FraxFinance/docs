@@ -17,7 +17,13 @@ const config: DocsThemeConfig = {
   logo: () => {
     const router = useRouter();
     const asPath = router.asPath;
-    const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : asPath.startsWith('/fraxnet') ? 'fraxnet' : 'frax' ;
+    const section = asPath.startsWith('/fraxtal')
+      ? 'fraxtal'
+      : asPath.startsWith('/fraxnet')
+        ? 'fraxnet'
+        : asPath.startsWith('/frxusd')
+          ? 'frxusd'
+          : 'frax';
 
     return (
       <>
@@ -35,12 +41,14 @@ const config: DocsThemeConfig = {
         )}
         {section === 'fraxnet' && (
           <>
-            <img
-              src="https://static.frax.com/images/tokens/frxusd.png"
-              alt="Fraxnet Icon"
-              style={{ width: 32, height: 32 }}
-            />
-            <span style={{ marginLeft: 10 }}>Fraxnet Docs</span>
+            <img src="https://static.frax.com/images/tokens/frxusd.png" alt="FraxNet Icon" style={{ width: 32, height: 32 }} />
+            <span style={{ marginLeft: 10 }}>FraxNet Docs</span>
+          </>
+        )}
+        {section === 'frxusd' && (
+          <>
+            <img src="https://static.frax.com/images/tokens/frxusd.png" alt="frxUSD Icon" style={{ width: 32, height: 32 }} />
+            <span style={{ marginLeft: 10 }}>frxUSD Docs</span>
           </>
         )}
       </>
@@ -66,9 +74,20 @@ const config: DocsThemeConfig = {
     const router = useRouter();
     const { frontMatter } = useConfig();
     const asPath = router.asPath;
-      const section = asPath.startsWith('/fraxtal') ? 'fraxtal' : asPath.startsWith('/fraxnet') ? 'fraxnet' : 'frax' ;
-    
-    const faviconImage = section === 'fraxtal' ? '/images/fraxtal-256x256.png' : section === 'fraxnet' ? '/images/protocol/frxusd.png' : '/images/frax-256x256.png';
+    const section = asPath.startsWith('/fraxtal')
+      ? 'fraxtal'
+      : asPath.startsWith('/fraxnet')
+        ? 'fraxnet'
+        : asPath.startsWith('/frxusd')
+          ? 'frxusd'
+          : 'frax';
+
+    const faviconImage =
+      section === 'fraxtal'
+        ? '/images/fraxtal-256x256.png'
+        : section === 'fraxnet' || section === 'frxusd'
+          ? '/images/protocol/frxusd.png'
+          : '/images/frax-256x256.png';
 
     return (
       <>
