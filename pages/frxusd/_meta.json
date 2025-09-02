@@ -18,6 +18,7 @@
     "type": "separator"
   },
   "mint-and-redeem-overview": "Overview",
+  "mint-and-redeem-routes": "Supported Routes & Networks",
   "mint-and-redeem-quickstarts": "Quickstarts: Mint & Redeem frxUSD on Ethereum",
   "cross-chain-mint-and-redeem-quickstart": "Quickstart: Mint & Redeem frxUSD Cross-Chain",
   "_stake_and_unstake": {
@@ -25,8 +26,9 @@
     "type": "separator"
   },
   "stake-and-unstake-overview": "Overview",
-  "stake-and-unstake-quickstart": "Quickstart: Stake & Unstake frxUSD on Ethereum",
-  "stake-and-unstake-quickstart-cross-chain": "Quickstart: Stake & Unstake frxUSD Cross-Chain",
+  "stake-and-unstake-supported-networks": "Supported Networks and EIDs",
+  "stake-and-unstake-quickstart-evm-chains": "Quickstart: Stake & Unstake frxUSD on EVM chains",
+  "stake-and-unstake-quickstart-fraxtal": "Quickstart: Stake & Unstake frxUSD on Fraxtal",
   "_white_label_stablecoin": {
     "title": "White-label Stablecoins",
     "type": "separator"
