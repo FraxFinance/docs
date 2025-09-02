@@ -31,11 +31,11 @@ frxUSD can be minted using any of these assets:
 3. **Hold frxUSD** to earn Treasury yields automatically via [FraxNet](https://net.frax.com)
 4. **Redeem anytime** by converting frxUSD back to your chosen asset
 
-## Cross-Chain Minting & Redeeming with Fraxnet
+## Cross-Chain Minting & Redeeming with FraxNet
 
 ### Overview
 
-FraxNet introduces a cross-chain infrastructure that enables users to mint frxUSD on one blockchain while using assets from another. This system leverages LayerZero technology and specialized smart contracts to provide seamless cross-chain functionality.
+FraxNet introduces a cross-chain infrastructure that enables users to mint frxUSD on one blockchain while using assets from another. This system leverages FraxZero technology and specialized smart contracts to provide seamless cross-chain functionality.
 
 ### Key Benefits
 
@@ -46,10 +46,10 @@ FraxNet introduces a cross-chain infrastructure that enables users to mint frxUS
 
 ### How Cross-Chain Minting Works
 
-The Fraxnet system operates through a sophisticated contract architecture:
+The FraxNet system operates through a sophisticated contract architecture:
 
-1. **Contract Deployment**: Each user deploys a personalized Fraxnet deposit contract via the factory on Ethereum mainnet
-2. **Asset Transfer**: Transfer USDC (or other supported assets) directly to your deployed Fraxnet contract
+1. **Contract Deployment**: Each user deploys a personalized FraxNet deposit contract via the factory on Ethereum mainnet
+2. **Asset Transfer**: Transfer USDC (or other supported assets) directly to your deployed FraxNet contract
 3. **Cross-Chain Minting**: The system processes your deposit and mints frxUSD on your chosen destination chain
 4. **Recipient Control**: Specify exactly which address on which chain will receive the minted frxUSD
 
@@ -57,13 +57,13 @@ The Fraxnet system operates through a sophisticated contract architecture:
 
 The redemption process reverses the minting flow:
 
-1. **Cross-Chain Transfer**: Send frxUSD from the destination chain back to your Fraxnet contract on Ethereum
+1. **Cross-Chain Transfer**: Send frxUSD from the destination chain back to your FraxNet contract on Ethereum
 2. **Asset Conversion**: Call `processRedemption` to convert frxUSD back to USDC
 3. **Asset Delivery**: Receive USDC directly to your specified address on Ethereum
 
 ### Supported Networks
 
-Fraxnet currently supports cross-chain operations between:
+FraxNet currently supports cross-chain operations between:
 
 - **Ethereum Mainnet** (deployment and asset source)
 - **Base Mainnet** (frxUSD destination)
@@ -80,7 +80,7 @@ Fraxnet currently supports cross-chain operations between:
 - You're working with smaller amounts where gas costs aren't a major concern
 - You want immediate access to Treasury yields
 
-### Use Fraxnet Cross-Chain When:
+### Use FraxNet Cross-Chain When:
 
 - You want to mint frxUSD on a network with lower gas fees
 - You need to bridge assets between different blockchain ecosystems
@@ -96,12 +96,12 @@ Fraxnet currently supports cross-chain operations between:
 - Supported assets (USDC, USDB, or tokenized treasuries)
 - Web3 wallet (MetaMask, WalletConnect, etc.)
 
-### For Fraxnet Cross-Chain:
+### For FraxNet Cross-Chain:
 
 - **Ethereum Mainnet**: ETH for contract deployment and operations
 - **Destination Chain**: ETH (or native gas token) for receiving and using frxUSD
 - **Supported Assets**: USDC or other approved assets on Ethereum mainnet
-- **Contract Deployment**: One-time deployment of your personal Fraxnet contract
+- **Contract Deployment**: One-time deployment of your personal FraxNet contract
 
 ## Security & Transparency
 
@@ -111,9 +111,9 @@ Fraxnet currently supports cross-chain operations between:
 - Real-time reserve verification through transparency reports
 - Institutional-grade custody backing all frxUSD
 
-### Fraxnet Cross-Chain
+### FraxNet Cross-Chain
 
-- LayerZero's proven cross-chain messaging protocol
+- FraxZero's proven cross-chain messaging protocol
 - Personalized contract deployment for enhanced security
 - Same institutional backing and transparency standards
 - Regular security audits and monitoring
@@ -123,7 +123,7 @@ Fraxnet currently supports cross-chain operations between:
 ### Quick Start Guides
 
 - [Traditional Mint & Redeem Quickstart](/frxusd/mint-and-redeem-quickstarts/usdc) - Learn basic minting and redeeming
-- [Cross-Chain Mint & Redeem Quickstart](/frxusd/cross-chain-mint-and-redeem-quickstart) - Master Fraxnet cross-chain operations
+- [Cross-Chain Mint & Redeem Quickstart](/frxusd/cross-chain-mint-and-redeem-quickstart) - Master FraxNet cross-chain operations
 
 ### Advanced Topics
 
@@ -132,6 +132,6 @@ Fraxnet currently supports cross-chain operations between:
 
 ## What's Next
 
-Whether you choose traditional minting or Fraxnet cross-chain operations, frxUSD provides a robust foundation for building the future of decentralized finance. The protocol's flexibility ensures that users can access stable, yield-generating digital dollars regardless of their preferred blockchain network or use case.
+Whether you choose traditional minting or FraxNet cross-chain operations, frxUSD provides a robust foundation for building the future of decentralized finance. The protocol's flexibility ensures that users can access stable, yield-generating digital dollars regardless of their preferred blockchain network or use case.
 
 For developers looking to integrate frxUSD into their applications, both traditional and cross-chain methods offer comprehensive APIs and smart contract interfaces that can be customized for specific use cases.
