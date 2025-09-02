@@ -21,5 +21,9 @@
   "protocol": {
     "title": "Protocol",
     "type": "page"
+  },
+  "fraxnet": {
+    "title": "Fraxnet",
+    "type": "page"
   }
 }
