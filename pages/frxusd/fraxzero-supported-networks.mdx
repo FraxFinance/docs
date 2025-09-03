@@ -7,7 +7,11 @@ lang: en-US
 
 ### FraxZero RemoteHop Supported Networks
 
-frxUSD cross-chain transfers are available between the following networks using the RemoteHop method. Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quickstarts/transfer-from-evm) guide to get started.
+frxUSD cross-chain transfers are available between the following networks using the RemoteHop method.
+
+**Note:** If Ethereum mainnet is the source chain using the RemoteHop method, you must use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) for `quote` and `send` methods.
+
+Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quickstarts/transfer-from-evm) guide to see it in action.
 
 | **Mainnet**       | **EID** | **RemoteHop Address**                                                                                                                            |
 | :---------------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -34,19 +38,25 @@ frxUSD cross-chain transfers are available between the following networks using 
 | **XLayer**        | 30274   | [{<code>0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396</code>}](https://www.oklink.com/x-layer/address/0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396)   |
 | **zkSync**        | 30165   | [{<code>0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb</code>}](https://explorer.zksync.io/address/0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb)       |
 
+### FraxZero Solana
+
+frxUSD cross-chain transfers from Solana to Ethereum or Fraxtal are supported.
+
+Follow our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-solana) guide to get started.
+
+| **Mainnet** | **EID** | **Program ID**                                                                                                                         | **Mint**                                                                                                                               | **Escrow**                                                                                                                             |
+| :---------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| **Solana**  | 30168   | [{<code>E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ</code>}](https://solscan.io/account/E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ) | [{<code>GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw</code>}](https://solscan.io/account/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) | [{<code>84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX</code>}](https://solscan.io/account/84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX) |
+
 ### FraxZero Lockbox Supported Networks
 
-frxUSD cross-chain transfers between Fraxtal and EVM chains are available using the Lockbox method. Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quickstarts/transfer-from-evm) guide to get started.
+frxUSD cross-chain transfers between Fraxtal and EVM chains are available using the Lockbox method.
+
+**Note:** If Ethereum mainnet is the source chain using the RemoteHop method, you must use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) for `quote` and `send` methods.
+
+Follow our [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-with-fraxtal) guide to get started.
 
 | **Mainnet**  | **EID** | **Lockbox Address**                                                                                                                  |
 | :----------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------- |
 | **Ethereum** | 30101   | [{<code>0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0</code>}](https://etherscan.io/address/0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E) |
 | **Fraxtal**  | 30255   | [{<code>0x96A394058E2b84A89bac9667B19661Ed003cF5D4</code>}](https://fraxscan.com/address/0x96A394058E2b84A89bac9667B19661Ed003cF5D4) |
-
-### FraxZero Solana
-
-frxUSD cross-chain transfers from Solana to Ethereum or Fraxtal are supported. Follow our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-solana) guide to get started.
-
-| **Mainnet** | **EID** | **Program ID**                                                                                                                         | **Mint**                                                                                                                               | **Escrow**                                                                                                                             |
-| :---------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
-| **Solana**  | 30168   | [{<code>E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ</code>}](https://solscan.io/account/E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ) | [{<code>GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw</code>}](https://solscan.io/account/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) | [{<code>84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX</code>}](https://solscan.io/account/84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX) |

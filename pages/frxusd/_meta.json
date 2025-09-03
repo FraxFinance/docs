@@ -5,7 +5,6 @@
   },
   "index": "frxUSD Overview",
   "frxusd-contracts": "frxUSD Contract Addresses",
-  "sample-applications": "Sample Applications",
   "_cross_chain_transfers": {
     "title": "Cross-Chain Transfers",
     "type": "separator"

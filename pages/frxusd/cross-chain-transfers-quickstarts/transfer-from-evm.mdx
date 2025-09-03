@@ -5,9 +5,11 @@ lang: en-US
 
 # Transfer frxUSD from EVM chains
 
-This guide demonstrates how to use the viem framework in a simple script that enables a user to transfer frxUSD from all EVM-compatible chains listed on the [FraxZero RemoteHop addresses](/frxusd/fraxzero-supported-networks) page using the RemoteHop method.
+This guide demonstrates how to use the viem framework in a simple script that enables a user to transfer frxUSD from any EVM-compatible chains listed on the [FraxZero RemoteHop addresses](/frxusd/fraxzero-supported-networks) page using the RemoteHop method.
 
-**Note:** This guide does not support frxUSD transfers with Fraxtal or Solana as a source chain or Fraxtal as a destination chain. To support frxUSD transfers from Solana, see our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-fraxtal) guide. To support frxUSD transfers from or to Fraxtal, see our [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-from-fraxtal) guide.
+In this example, we will be transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet** and vice versa.
+
+**Note:** This guide does not support frxUSD transfers with Fraxtal and Solana as a source chain or Fraxtal as a destination chain. To support frxUSD transfers from Solana, see our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-fraxtal) guide. To support frxUSD transfers from or to Fraxtal, see our [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-from-fraxtal) guide.
 
 ## Prerequisites
 
@@ -24,9 +26,13 @@ Before you start building the sample app to perform a frxUSD transfer, ensure yo
    - During setup, create a wallet on **Ethereum mainnet**.
    - Retrieve the **private key** for your wallet, as it will be required in the script below.
 
-3. **Fund your wallet with the gas token on the source chain**
+3. **Fund your wallet with the gas token on the source chains**
 
-   - For this guide, we will be transferring frxUSD from **Ethereum mainnet**. Therefore, you will need to fund your wallet with **ETH** on **Ethereum mainnet**.
+   - For this guide, we will be transferring frxUSD from **Ethereum mainnet** and **Arbitrum mainnet** and vice versa. Therefore, you will need to fund your wallet with **ETH** on both networks.
+
+4. **Fund your wallet with frxUSD on the source chain**
+
+   - For this guide, we will be first transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet** and vice versa. Therefore, you will need to [fund your wallet](https://frax.com/swap?tokenA=0x0000000000000000000000000000000000000000&tokenB=0xcacd6fd266af91b8aed52accc382b4e165586e29&originChainId=1&destinationChainId=1) with **frxUSD** on **Ethereum mainnet**.
 
 ## Project setup
 
@@ -95,52 +101,85 @@ This section covers the necessary setup for the transfer.js script, including de
 
 ### 1. Replace with your private key and wallet address
 
-Ensure that this section of the file includes your **private key** and associated **wallet address**. The script also predefines the **RemoteHop contract address**, the **transfer amount**, and the **max fee**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
+Ensure that this section of the file includes your **private key** for `PRIVATE_KEY` and associated **wallet address** for `DESTINATION_ADDRESS`.
+
+The script also predefines the **RemoteHop contract addresses**, the **frxUSD contract addresses**, the **lockbox contract address** (only for transfers from Ethereum using the RemoteHop method), the **EIDs**, and the **transfer amount**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
 
 ```javascript
 // ============ Configuration Constants ============
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
-// RemoteHop Contract Addresses and Destination EID
-const ETHEREUM_MAINNET_REMOTE_HOP = '0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E'; // RemoteHop contract address on source chain
-const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD contract address on source chain
-const ARBITRUM_MAINNET_EID = 30110; // EID of destination chain (Arbitrum mainnet)
-const DESTINATION_ADDRESS = '0x1234567890123456789012345678901234567890'; // Recipient address
+// FILL IN THE FOLLOWING VARIABLE
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Recipient address
 const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
 
-// Transfer Parameters
-const TRANSFER_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD
+// RemoteHop Contract Addresses
+const ETHEREUM_MAINNET_REMOTE_HOP = '0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E'; // RemoteHop contract address on source chain
+const ARBITRUM_MAINNET_REMOTE_HOP = '0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A'; // RemoteHop contract address on destination chain
+
+// frxUSD Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD contract address on source chain
+const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df'; // frxUSD contract address on destination chain
+
+// Lockbox Contract Address
+const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0'; // When transferring from Ethereum to any other EVM chain (excluding Fraxtal) using the RemoteHop method, the Ethereum Lockbox address must be used for `quote` and `send` methods.
+
+// EIDs for destination chains
+const ARBITRUM_MAINNET_EID = 30110; // EID of destination chain for first frxUSD transfer (Arbitrum mainnet)
+const ETHEREUM_MAINNET_EID = 30101; // EID of destination chain for second frxUSD transfer (Ethereum mainnet)
+
+// Transfer Parameters for both frxUSD transfers
+const TRANSFER_AMOUNT = 1_000_000_000_000_000_000n; // 1 frxUSD (18 decimals)
 ```
 
-### 2. Set up wallet client
+### 2. Set up wallet client and public client
 
-The **wallet client** configures the appropriate network settings using `viem`. In this example, the script will be transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet**.
+The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet** and vice versa.
 
 ```javascript
-// Set up a wallet client on the source chain
+// Set up wallet clients
 const ethereumClient = createWalletClient({
   chain: mainnet,
   transport: http(),
   account,
 });
+const arbitrumClient = createWalletClient({
+  chain: arbitrum,
+  transport: http(),
+  account,
+});
+
+// Set up public clients
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+const arbitrumPublicClient = createPublicClient({
+  chain: arbitrum,
+  transport: http(),
+});
 ```
 
 ## frxUSD cross-chain transfer process
 
-The following sections outline the relevant transfer logic of the sample script. In this example, we are transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet**. Follow the steps below to perform the transfer:
+The following sections outline the relevant transfer logic of the sample script. In this example, we are first transferring 1 frxUSD from **Ethereum mainnet** to **Arbitrum mainnet**. Then we are transferring 1 frxUSD back to **Ethereum mainnet** from **Arbitrum mainnet**. Follow the steps below to perform the transfer:
 
 ### 1. Approve frxUSD
 
-The first step is to grant approval for the [FraxZero RemoteHop contract](/frxusd/frax-zero) deployed on **Ethereum mainnet**. This allows the contract to withdraw frxUSD from the specified wallet address on the source chain. For other EVM chains as a source chain, use the appropriate RemoteHop contract address from the [frxUSD RemoteHop addresses](/frxusd/fraxzero-supported-networks) page.
+For the first transfer from **Ethereum mainnet** to **Arbitrum mainnet**, grant approval for the [FraxZero RemoteHop contract](/frxusd/frax-zero) deployed on **Ethereum mainnet**.
+
+For the second transfer from **Arbitrum mainnet** to **Ethereum mainnet**, grant approval for the [FraxZero RemoteHop contract](/frxusd/frax-zero) deployed on **Arbitrum mainnet**.
+
+This allows the contracts to withdraw frxUSD from the specified wallet address on the source chains. For other EVM chains as a source chain, use the appropriate RemoteHop contract address from the [frxUSD RemoteHop addresses](/frxusd/fraxzero-supported-networks) page.
 
 ```javascript
-async function approveFrxUSD() {
+async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, remoteHopAddress) {
   console.log('Approving frxUSD transfer...');
-  const approveTx = await ethereumClient.sendTransaction({
-    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+  const approveTx = await sourceChainClient.sendTransaction({
+    to: frxUsdTokenAddress,
     data: encodeFunctionData({
       abi: [
         {
@@ -155,18 +194,34 @@ async function approveFrxUSD() {
         },
       ],
       functionName: 'approve',
-      args: [ETHEREUM_MAINNET_REMOTE_HOP, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
+      args: [remoteHopAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
     }),
   });
   console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+
+async function approveFrxUSDForEthereumToArbitrumTransfer() {
+  await approveFrxUSD(
+    ethereumClient,
+    ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_REMOTE_HOP,
+  );
+}
+
+async function approveFrxUSDForArbitrumToEthereumTransfer() {
+  await approveFrxUSD(
+    arbitrumClient,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    ARBITRUM_MAINNET_REMOTE_HOP,
+  );
 }
 ```
 
 ### 2. Retrieve FraxZero Quote
 
-In this step, you call the `quote` function from the RemoteHop contract deployed on **Ethereum mainnet** to get the native fee amount required for the transfer. You specify the following parameters:
+In this step, you call the `quote` function from the RemoteHop contracts deployed on **Ethereum mainnet** and **Arbitrum mainnet** to get the native fee amounts required for each respective transfer. You specify the following parameters:
 
-- **OFT**: The contract address of the frxUSD token being transferred from the source chain
+- **OFT**: The contract address of the frxUSD token being transferred from the source chain. For transfers from Ethereum to Arbitrum or any other EVM chain (excluding Fraxtal), use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) instead of the frxUSD token address for this parameter.
 - **Destination EID**: The EID of the destination chain (EIDs can be found [here](/frxusd/fraxzero-supported-networks))
 - **Destination address**: The wallet address that will receive the transferred frxUSD (in bytes32 format)
 - **Amount**: The amount of frxUSD to transfer (in wei)
@@ -174,10 +229,15 @@ In this step, you call the `quote` function from the RemoteHop contract deployed
 The quote function returns the native fee amount required for the transfer.
 
 ```javascript
-async function retrieveQuote() {
+async function retrieveQuote(
+  sourceChainClient,
+  remoteHopAddress,
+  frxUsdTokenAddressOrEthereumLockboxAddress,
+  destinationEid,
+) {
   console.log('Retrieving quote...');
-  const quote = await ethereumClient.readContract({
-    address: ETHEREUM_MAINNET_REMOTE_HOP,
+  const quote = await sourceChainClient.readContract({
+    address: remoteHopAddress,
     data: encodeFunctionData({
       abi: [
         {
@@ -205,8 +265,8 @@ async function retrieveQuote() {
       ],
       functionName: 'quote',
       args: [
-        ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-        ARBITRUM_MAINNET_EID,
+        frxUsdTokenAddressOrEthereumLockboxAddress,
+        destinationEid,
         DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
         TRANSFER_AMOUNT,
       ],
@@ -219,19 +279,30 @@ async function retrieveQuote() {
 
 ### 3. Transfer frxUSD
 
-After retrieving the native fee amount, you can call the `sendOFT` function from the RemoteHop contract deployed on **Ethereum mainnet** to transfer frxUSD to **Arbitrum mainnet**. This function takes the following parameters:
+After retrieving the native fee amounts, you can call the `sendOFT` function on the RemoteHop contracts deployed on **Ethereum mainnet** and **Arbitrum mainnet** to transfer frxUSD from **Ethereum mainnet** to **Arbitrum mainnet** and back to **Ethereum mainnet**. This function takes the following parameters:
 
-- **OFT**: The contract address of the frxUSD token being transferred from the source chain
+- **OFT**: The contract address of the frxUSD token being transferred from the source chain. For transfers from Ethereum to Arbitrum or any other EVM chain (excluding Fraxtal), use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) instead of the frxUSD token address for this parameter.
 - **Destination EID**: The EID of the destination chain
 - **Destination address**: The wallet address that will receive the transferred frxUSD (in bytes32 format)
 - **Amount**: The amount of frxUSD to transfer (in wei)
 
 ```javascript
-async function transferFrxUSD() {
+async function transferFrxUSD(
+  sourceWalletClient,
+  sourcePublicClient,
+  remoteHopAddress,
+  frxUsdTokenAddressOrEthereumLockboxAddress,
+  destinationEid,
+) {
   console.log('Transferring frxUSD...');
-  const nativeFee = await retrieveQuote();
-  const transferTx = await ethereumClient.sendTransaction({
-    to: ETHEREUM_MAINNET_REMOTE_HOP,
+  const nativeFee = await retrieveQuote(
+    sourcePublicClient,
+    remoteHopAddress,
+    frxUsdTokenAddressOrEthereumLockboxAddress,
+    destinationEid,
+  );
+  const transferTx = await sourceWalletClient.sendTransaction({
+    to: remoteHopAddress,
     value: nativeFee,
     data: encodeFunctionData({
       abi: [
@@ -250,14 +321,38 @@ async function transferFrxUSD() {
       ],
       functionName: 'sendOFT',
       args: [
-        ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-        ARBITRUM_MAINNET_EID,
+        frxUsdTokenAddressOrEthereumLockboxAddress,
+        destinationEid,
         DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
         TRANSFER_AMOUNT,
       ],
     }),
   });
+  console.log();
   console.log(`Transfer Tx: ${transferTx}`);
+  console.log(`View on LayerZero explorer: https://layerzeroscan.com/tx/${transferTx}`);
+}
+
+// Here, because Ethereum mainnet is the source chain for this transfer using the RemoteHop method, we use the Ethereum Lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForEthereumToArbitrum() {
+  await transferFrxUSD(
+    ethereumWalletClient,
+    ethereumPublicClient,
+    ETHEREUM_MAINNET_REMOTE_HOP,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS, // Use lockbox address only when transferring from Ethereum to any other EVM chain (excluding Fraxtal)
+    ARBITRUM_MAINNET_EID,
+  );
+}
+
+// Here, because Ethereum mainnet is not the source chain for this transfer using the RemoteHop method, we use the frxUSD token address instead of the Ethereum Lockbox address.
+async function transferFrxUSDForArbitrumToEthereum() {
+  await transferFrxUSD(
+    arbitrumWalletClient,
+    arbitrumPublicClient,
+    ARBITRUM_MAINNET_REMOTE_HOP,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_EID,
+  );
 }
 ```
 
@@ -272,7 +367,13 @@ Now that you understand the core steps for programmatically **transferring frxUS
 ```javascript
 // Import environment variables
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import {
+  createWalletClient,
+  createPublicClient,
+  http,
+  encodeFunctionData,
+  nonceManager,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, arbitrum } from 'viem/chains';
 
@@ -280,29 +381,58 @@ import { mainnet, arbitrum } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
-// RemoteHop Contract Addresses and Destination EID
+// Recipient address
+const DESTINATION_ADDRESS = '0x68a1e5b239BFa068d6231E80C64c5D7fFBf9CEe4'; // Enter your recipient wallet address here
+const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(
+  2,
+)}`; // Convert to bytes32 format
+
+// RemoteHop Contract Addresses
 const ETHEREUM_MAINNET_REMOTE_HOP = '0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E'; // RemoteHop contract address on source chain
+const ARBITRUM_MAINNET_REMOTE_HOP = '0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A'; // RemoteHop contract address on destination chain
+
+// frxUSD Contract Addresses
 const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD contract address on source chain
-const ARBITRUM_MAINNET_EID = 30110; // EID of destination chain (Arbitrum mainnet)
-const DESTINATION_ADDRESS = '0x1234567890123456789012345678901234567890'; // Address of recipient
-const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
+const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df'; // frxUSD contract address on destination chain
 
-// Transfer Parameters
-const TRANSFER_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD
+// Lockbox Contract Address
+const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0'; // When transferring from Ethereum to any other EVM chain (excluding Fraxtal) using the RemoteHop method, the Ethereum Lockbox address must be used for `quote` and `send` methods.
 
-// Set up a wallet client on the source chain
-const ethereumClient = createWalletClient({
+// EIDs for destination chains
+const ARBITRUM_MAINNET_EID = 30110; // EID of destination chain for first frxUSD transfer (Arbitrum mainnet)
+const ETHEREUM_MAINNET_EID = 30101; // EID of destination chain for second frxUSD transfer (Ethereum mainnet)
+
+// Transfer Parameters for both frxUSD transfers
+const TRANSFER_AMOUNT = 1_000_000_000_000_000_000n; // 1 frxUSD (18 decimals)
+
+// Set up wallet clients
+const ethereumWalletClient = createWalletClient({
   chain: mainnet,
   transport: http(),
   account,
 });
+const arbitrumWalletClient = createWalletClient({
+  chain: arbitrum,
+  transport: http(),
+  account,
+});
 
-async function approveFrxUSD() {
+// Set up public clients
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+const arbitrumPublicClient = createPublicClient({
+  chain: arbitrum,
+  transport: http(),
+});
+
+async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, remoteHopAddress) {
   console.log('Approving frxUSD transfer...');
-  const approveTx = await ethereumClient.sendTransaction({
-    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+  const approveTx = await sourceChainClient.sendTransaction({
+    to: frxUsdTokenAddress,
     data: encodeFunctionData({
       abi: [
         {
@@ -317,59 +447,92 @@ async function approveFrxUSD() {
         },
       ],
       functionName: 'approve',
-      args: [ETHEREUM_MAINNET_REMOTE_HOP, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
+      args: [remoteHopAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
     }),
   });
   console.log(`frxUSD Approval Tx: ${approveTx}`);
 }
 
-async function retrieveQuote() {
+async function approveFrxUSDForEthereumToArbitrumTransfer() {
+  await approveFrxUSD(
+    ethereumWalletClient,
+    ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_REMOTE_HOP,
+  );
+}
+
+async function approveFrxUSDForArbitrumToEthereumTransfer() {
+  await approveFrxUSD(
+    arbitrumWalletClient,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    ARBITRUM_MAINNET_REMOTE_HOP,
+  );
+}
+async function retrieveQuote(
+  sourceChainClient,
+  remoteHopAddress,
+  frxUsdTokenAddressOrEthereumLockboxAddress,
+  destinationEid,
+) {
   console.log('Retrieving quote...');
-  const quote = await ethereumClient.readContract({
-    address: ETHEREUM_MAINNET_REMOTE_HOP,
-    data: encodeFunctionData({
-      abi: [
-        {
-          inputs: [
-            { internalType: 'address', name: '_oft', type: 'address' },
-            { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
-            { internalType: 'bytes32', name: '_to', type: 'bytes32' },
-            { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
-          ],
-          name: 'quote',
-          outputs: [
-            {
-              components: [
-                { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
-                { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
-              ],
-              internalType: 'struct MessagingFee',
-              name: 'fee',
-              type: 'tuple',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      functionName: 'quote',
-      args: [
-        ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-        ARBITRUM_MAINNET_EID,
-        DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
-        TRANSFER_AMOUNT,
-      ],
-    }),
+  const quote = await sourceChainClient.readContract({
+    address: remoteHopAddress,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'lzTokenFee',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      frxUsdTokenAddressOrEthereumLockboxAddress,
+      destinationEid,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      TRANSFER_AMOUNT,
+    ],
   });
   const nativeFee = quote.nativeFee;
   return nativeFee;
 }
 
-async function transferFrxUSD() {
+async function transferFrxUSD(
+  sourceWalletClient,
+  sourcePublicClient,
+  remoteHopAddress,
+  frxUsdTokenAddressOrEthereumLockboxAddress,
+  destinationEid,
+) {
   console.log('Transferring frxUSD...');
-  const nativeFee = await retrieveQuote();
-  const transferTx = await ethereumClient.sendTransaction({
-    to: ETHEREUM_MAINNET_REMOTE_HOP,
+  const nativeFee = await retrieveQuote(
+    sourcePublicClient,
+    remoteHopAddress,
+    frxUsdTokenAddressOrEthereumLockboxAddress,
+    destinationEid,
+  );
+  const transferTx = await sourceWalletClient.sendTransaction({
+    to: remoteHopAddress,
     value: nativeFee,
     data: encodeFunctionData({
       abi: [
@@ -388,20 +551,69 @@ async function transferFrxUSD() {
       ],
       functionName: 'sendOFT',
       args: [
-        ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-        ARBITRUM_MAINNET_EID,
+        frxUsdTokenAddressOrEthereumLockboxAddress,
+        destinationEid,
         DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
         TRANSFER_AMOUNT,
       ],
     }),
   });
+  console.log();
   console.log(`Transfer Tx: ${transferTx}`);
+  console.log(`View on LayerZero explorer: https://layerzeroscan.com/tx/${transferTx}`);
+}
+
+// Here, because Ethereum mainnet is the source chain for this transfer using the RemoteHop method, we use the Ethereum Lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForEthereumToArbitrum() {
+  await transferFrxUSD(
+    ethereumWalletClient,
+    ethereumPublicClient,
+    ETHEREUM_MAINNET_REMOTE_HOP,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS, // Use lockbox address only when transferring from Ethereum to any other EVM chain (excluding Fraxtal)
+    ARBITRUM_MAINNET_EID,
+  );
+}
+
+// Here, because Ethereum mainnet is not the source chain for this transfer using the RemoteHop method, we use the frxUSD token address instead of the Ethereum Lockbox address.
+async function transferFrxUSDForArbitrumToEthereum() {
+  await transferFrxUSD(
+    arbitrumWalletClient,
+    arbitrumPublicClient,
+    ARBITRUM_MAINNET_REMOTE_HOP,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_EID,
+  );
 }
 
 async function main() {
-  await approveFrxUSD();
-  await transferFrxUSD();
-  console.log('frxUSD transfer completed!');
+  if (DESTINATION_ADDRESS === 'enter-your-recipient-wallet-address-here') {
+    console.error(
+      'Destination address is not set. Please set the DESTINATION_ADDRESS variable in the transfer.js file.',
+    );
+    process.exit(1);
+  }
+  const command = process.argv[2]; // Get command from CLI
+
+  switch (command) {
+    case 'ethereum-to-arbitrum':
+      console.log('Running Ethereum → Arbitrum transfer...');
+      // await approveFrxUSDForEthereumToArbitrumTransfer();
+      await transferFrxUSDForEthereumToArbitrum();
+      break;
+
+    case 'arbitrum-to-ethereum':
+      console.log('Running Arbitrum → Ethereum transfer...');
+      await approveFrxUSDForArbitrumToEthereumTransfer();
+      await transferFrxUSDForArbitrumToEthereum();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "ethereum-to-arbitrum" or "arbitrum-to-ethereum".',
+      );
+      process.exit(1);
+  }
+
+  console.log('Transfer completed!');
 }
 
 main().catch(console.error);
@@ -411,13 +623,19 @@ The `transfer.js` script provides a complete **end-to-end** solution for transfe
 
 ## Test the script
 
-To test the script, run the following command:
+To test the Ethereum to Arbitrum transfer, run the following command:
 
 ```shell
-node transfer.js
+node transfer.js ethereum-to-arbitrum
 ```
 
-Once the script runs and the transfer is finalized, a **confirmation receipt** is logged in the console.
+To test the Arbitrum to Ethereum transfer, run the following command:
+
+```shell
+node transfer.js arbitrum-to-ethereum
+```
+
+Once each script runs and the transfer is finalized, a **confirmation receipt** and link on [LayerZero scan](https://layerzeroscan.com/) is logged in the console for each respective transfer. Each transfer takes approximately **4-5 minutes** to complete.
 
 ## What's next
 
