@@ -102,7 +102,7 @@ Ensure that this section of the file includes your **private key** and associate
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses and Destination EID
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USTB_CUSTODIAN =
@@ -266,7 +266,7 @@ Create a `mint-and-redeem.js` in your project directory and paste the following.
 ```javascript
 // ============ Setup (imports, account, client) ============
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 
@@ -274,7 +274,7 @@ import { mainnet } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USTB_CUSTODIAN =
@@ -400,7 +400,24 @@ async function redeemFrxusdForUstb() {
 
 // ============ Main ============
 async function main() {
-  // Mint flow
+  const command = process.argv[2];
+  switch (command) {
+    case 'mint-with-ustb':
+      console.log('Running mint with USTB...');
+      await approveUstbForMint();
+      await mintFrxusdWithUstb();
+      break;
+    case 'redeem-for-ustb':
+      console.log('Running mint with USTB...');
+      await approveFrxusdForRedeem();
+      await redeemFrxusdForUstb();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "mint-with-ustb" or "redeem-with-frxusd".',
+      );
+      process.exit(1);
+  }
   await approveUstbForMint();
   await mintFrxusdWithUstb();
 
@@ -416,10 +433,16 @@ main().catch(console.error);
 
 ## Test the script
 
-To test the script, run the following command:
+To test minting frxUSD with USTB, run the following command:
 
 ```shell
-node mint-and-redeem.js
+node mint-and-redeem.js mint-with-ustb
+```
+
+To test redeeming frxUSD with USTB, run the following command:
+
+```shell
+node mint-and-redeem.js redeem-for-ustb
 ```
 
 Once the script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.

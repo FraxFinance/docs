@@ -103,7 +103,7 @@ This section covers the necessary setup for the transfer.js script, including de
 
 Ensure that this section of the file includes your **private key** for `PRIVATE_KEY` and associated **wallet address** for `DESTINATION_ADDRESS`.
 
-The script also predefines the **RemoteHop contract addresses**, the **frxUSD contract addresses**, the **lockbox contract address** (only for transfers from Ethereum using the RemoteHop method), the **EIDs**, and the **transfer amount**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
+The script also predefines the **RemoteHop contract addresses**, the **frxUSD contract addresses**, the **lockbox contract address** (only for transfers from Ethereum using the RemoteHop method), the destination **EIDs**, and the **transfer amount**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
 
 ```javascript
 // ============ Configuration Constants ============
@@ -135,7 +135,7 @@ const ETHEREUM_MAINNET_EID = 30101; // EID of destination chain for second frxUS
 const TRANSFER_AMOUNT = 1_000_000_000_000_000_000n; // 1 frxUSD (18 decimals)
 ```
 
-### 2. Set up wallet client and public client
+### 2. Set up wallet and public clients
 
 The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet** and vice versa.
 
@@ -219,7 +219,7 @@ async function approveFrxUSDForArbitrumToEthereumTransfer() {
 
 ### 2. Retrieve FraxZero Quote
 
-In this step, you call the `quote` function from the RemoteHop contracts deployed on **Ethereum mainnet** and **Arbitrum mainnet** to get the native fee amounts required for each respective transfer. You specify the following parameters:
+In this step, you call the `quote` function on the RemoteHop contracts deployed on **Ethereum mainnet** and **Arbitrum mainnet** to get the native fee amounts required for each respective transfer. You specify the following parameters:
 
 - **OFT**: The contract address of the frxUSD token being transferred from the source chain. For transfers from Ethereum to Arbitrum or any other EVM chain (excluding Fraxtal), use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) instead of the frxUSD token address for this parameter.
 - **Destination EID**: The EID of the destination chain (EIDs can be found [here](/frxusd/fraxzero-supported-networks))
@@ -238,39 +238,41 @@ async function retrieveQuote(
   console.log('Retrieving quote...');
   const quote = await sourceChainClient.readContract({
     address: remoteHopAddress,
-    data: encodeFunctionData({
-      abi: [
-        {
-          inputs: [
-            { internalType: 'address', name: '_oft', type: 'address' },
-            { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
-            { internalType: 'bytes32', name: '_to', type: 'bytes32' },
-            { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
-          ],
-          name: 'quote',
-          outputs: [
-            {
-              components: [
-                { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
-                { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
-              ],
-              internalType: 'struct MessagingFee',
-              name: 'fee',
-              type: 'tuple',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      functionName: 'quote',
-      args: [
-        frxUsdTokenAddressOrEthereumLockboxAddress,
-        destinationEid,
-        DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
-        TRANSFER_AMOUNT,
-      ],
-    }),
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'lzTokenFee',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      frxUsdTokenAddressOrEthereumLockboxAddress,
+      destinationEid,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      TRANSFER_AMOUNT,
+    ],
   });
   const nativeFee = quote.nativeFee;
   return nativeFee;
@@ -384,7 +386,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Recipient address
-const DESTINATION_ADDRESS = '0x68a1e5b239BFa068d6231E80C64c5D7fFBf9CEe4'; // Enter your recipient wallet address here
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Enter your recipient wallet address here
 const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(
   2,
 )}`; // Convert to bytes32 format
@@ -597,7 +599,7 @@ async function main() {
   switch (command) {
     case 'ethereum-to-arbitrum':
       console.log('Running Ethereum → Arbitrum transfer...');
-      // await approveFrxUSDForEthereumToArbitrumTransfer();
+      await approveFrxUSDForEthereumToArbitrumTransfer();
       await transferFrxUSDForEthereumToArbitrum();
       break;
 

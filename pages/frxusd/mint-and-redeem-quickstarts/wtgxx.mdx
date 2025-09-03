@@ -102,7 +102,7 @@ Ensure that this section of the file includes your **private key** and associate
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses and Destination EID
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_WTGXX_CUSTODIAN =
@@ -266,7 +266,7 @@ Create a `mint-and-redeem.js` in your project directory and paste the following.
 ```javascript
 // ============ Setup (imports, account, client) ============
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 
@@ -274,7 +274,7 @@ import { mainnet } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_WTGXX_CUSTODIAN =
@@ -285,7 +285,7 @@ const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000
 const ETHEREUM_MAINNET_WTGXX_ADDRESS = '0xeac4269c9a01190b1400c4dc728864e61895fdf3'; // WTGXX address on Ethereum mainnet
 
 // Mint & Redeem Parameters
-const MINT_AMOUNT = 10_000_000n; // 10 WTGXX (6 decimals)
+const MINT_AMOUNT = 10_000_000_000_000_000_000n; // 10 WTGXX (18 decimals)
 const REDEEM_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
 
 // Wallet client
@@ -400,14 +400,24 @@ async function redeemFrxusdForWtgxx() {
 
 // ============ Main ============
 async function main() {
-  // Mint flow
-  await approveWtgxxForMint();
-  await mintFrxusdWithWtgxx();
-
-  // Redeem flow
-  await approveFrxusdForRedeem();
-  await redeemFrxusdForWtgxx();
-
+  const command = process.argv[2];
+  switch (command) {
+    case 'mint-with-wtgxx':
+      console.log('Running mint with WTGXX...');
+      await approveWtgxxForMint();
+      await mintFrxusdWithWtgxx();
+      break;
+    case 'redeem-for-wtgxx':
+      console.log('Running redeem with WTGXX...');
+      await approveFrxusdForRedeem();
+      await redeemFrxusdForWtgxx();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "mint-with-wtgxx" or "redeem-for-wtgxx".',
+      );
+      process.exit(1);
+  }
   console.log('Mint and redeem completed!');
 }
 
@@ -416,10 +426,16 @@ main().catch(console.error);
 
 ## Test the script
 
-To test the script, run the following command:
+To test minting frxUSD with WTGXX, run the following command:
 
 ```shell
-node mint-and-redeem.js
+node mint-and-redeem.js mint-with-wtgxx
+```
+
+To test redeeming frxUSD with WTGXX, run the following command:
+
+```shell
+node mint-and-redeem.js redeem-for-wtgxx
 ```
 
 Once the script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.

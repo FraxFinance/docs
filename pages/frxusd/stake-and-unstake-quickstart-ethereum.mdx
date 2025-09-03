@@ -1,15 +1,15 @@
 ---
-title: Stake & Unstake frxUSD on EVM chains
+title: Stake & Unstake frxUSD on Ethereum
 lang: en-US
 ---
 
-# Stake & Unstake frxUSD on EVM chains
+# Stake & Unstake frxUSD on Ethereum
 
-This guide shows how to use the viem framework to **stake frxUSD for sfrxUSD** and **unstake sfrxUSD back to frxUSD** on all EVM chains (excluding **Ethereum mainnet** and **Fraxtal mainnet**). We'll use **Arbitrum mainnet** as our example.
+This guide shows how to use the viem framework to **stake frxUSD for sfrxUSD** and **unstake sfrxUSD back to frxUSD** on **Ethereum mainnet**.
 
 To see a list of all supported networks, see the [Stake & Unstake Supported Networks and EIDs](/frxusd/stake-and-unstake-supported-networks) page.
 
-**Note:** The methods for staking and unstaking frxUSD on **Ethereum mainnet** and **Fraxtal mainnet** are different from the method for staking and unstaking frxUSD on all other EVM chains. See the [Stake & Unstake frxUSD on Fraxtal](/frxusd/stake-and-unstake-quickstart-fraxtal) guide or the [Stake & Unstake frxUSD on Ethereum](/frxusd/stake-and-unstake-quickstart-ethereum) guide for more information.
+**Note:** The method for staking and unstaking frxUSD on **Ethereum mainnet** is different from the method for staking and unstaking frxUSD on Fraxtal and all other EVM chains. See the [Stake & Unstake frxUSD on EVM chains](/frxusd/stake-and-unstake-quickstart-evm-chains) or the [Stake & Unstake frxUSD on Fraxtal](/frxusd/stake-and-unstake-quickstart-fraxtal) guide for more information.
 
 ## Prerequisites
 
@@ -23,12 +23,12 @@ Before you start building the sample app to perform frxUSD staking operations, e
 2. **Set up a non-custodial wallet** (for example, MetaMask)
 
    - You can download, install, and create a **MetaMask** wallet from its official website.
-   - During setup, create a wallet on **Arbitrum mainnet**.
+   - During setup, create a wallet on **Ethereum mainnet**.
    - Retrieve the **private key** for your wallet, as it will be required in the script below.
 
 3. **Fund your wallet with the gas token on the chain you want to stake from**
 
-   - For this guide, we will be staking and unstaking frxUSD on **Arbitrum mainnet**. Therefore, you will need to fund your wallet with **ETH** on **Arbitrum mainnet**.
+   - For this guide, we will be staking and unstaking frxUSD on **Ethereum mainnet**. Therefore, you will need to fund your wallet with **ETH** on **Ethereum mainnet**.
 
 ## Project setup
 
@@ -39,8 +39,8 @@ To build the script, first set up your project environment and install the requi
 Create a new directory and initialize a new `Node.js` project with default settings:
 
 ```shell
-mkdir frxusd-staking-arbitrum
-cd frxusd-staking-arbitrum
+mkdir frxusd-staking-ethereum
+cd frxusd-staking-ethereum
 npm init -y
 ```
 
@@ -62,7 +62,7 @@ Add `"type": "module"` to the `package.json` file:
 
 ```json
 {
-  "name": "frxusd-staking-arbitrum",
+  "name": "frxusd-staking-ethereum",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -93,13 +93,13 @@ echo "PRIVATE_KEY=your-private-key-here" > .env
 
 ## Script setup
 
-This section covers the necessary setup for the staking script, including defining contract addresses for Arbitrum mainnet and configuring the wallet client.
+This section covers the necessary setup for the staking script, including defining contract addresses for Ethereum mainnet and configuring the wallet client.
 
 ### 1. Replace with your private key and wallet address
 
 Ensure that this section of the file includes your **private key** for `PRIVATE_KEY` and associated **wallet address** for `DESTINATION_ADDRESS`.
 
-The script also predefines the **Hop contract address**, the **frxUSD contract address**, the **sfrxUSD contract address**, the **staking amount**, and the **unstaking amount**. These definitions are critical for successfully staking and unstaking frxUSD.
+The script also predefines the **Hop contract address**, the **Ethereum lockbox contract address**, the **frxUSD contract address**, the **sfrxUSD contract address**, the **staking amount**, and the **unstaking amount**. These definitions are critical for successfully staking and unstaking frxUSD.
 
 ```javascript
 // ============ Configuration Constants ============
@@ -113,11 +113,17 @@ const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Recip
 const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
 
 // Hop Contract Address
-const ARBITRUM_MAINNET_HOP_ADDRESS = '0xa46A266dCBf199a71532c76967e200994C5A0D6d';
+const ETHEREUM_MAINNET_HOP_ADDRESS = '0xa46A266dCBf199a71532c76967e200994C5A0D6d';
+
+// Ethereum Lockbox Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS =
+  '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0';
+const ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS =
+  '0x7311cea93ccf5f4f7b789ee31eba5d9b9290e126';
 
 // frxUSD and sfrxUSD Contract Addresses
-const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df';
-const ARBITRUM_MAINNET_SFRXUSD_ADDRESS = '0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0';
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df';
+const ETHEREUM_MAINNET_SFRXUSD_ADDRESS = '0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0';
 
 // Staking Parameters
 const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
@@ -126,26 +132,26 @@ const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
 
 ### 2. Set up clients
 
-The script creates a wallet client and a public client for Arbitrum network:
+The script creates a wallet client and a public client for Ethereum network:
 
 ```javascript
 // Set up wallet client
-const arbitrumWalletClient = createWalletClient({
-  chain: arbitrum,
+const ethereumWalletClient = createWalletClient({
+  chain: mainnet,
   transport: http(),
   account,
 });
 
 // Set up public client
-const arbitrumPublicClient = createPublicClient({
-  chain: arbitrum,
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
   transport: http(),
 });
 ```
 
 ## frxUSD staking and unstaking process
 
-The following sections outline the relevant staking and unstaking logic of the sample script. In this example, we are first staking 1 frxUSD on **Arbitrum mainnet** to receive 1 sfrxUSD. Then we are unstaking 1 sfrxUSD on **Arbitrum mainnet** to receive 1 frxUSD back. Follow the steps below to perform the staking and unstaking:
+The following sections outline the relevant staking and unstaking logic of the sample script. In this example, we are first staking 1 frxUSD on **Ethereum mainnet** to receive 1 sfrxUSD. Then we are unstaking 1 sfrxUSD on **Ethereum mainnet** to receive 1 frxUSD back. Follow the steps below to perform the staking and unstaking:
 
 ### 1. Approve frxUSD and sfrxUSD
 
@@ -153,8 +159,8 @@ Before staking or unstaking, approve frxUSD for the Hop contract so it can pull 
 
 ```javascript
 async function approveForStakingOrUnstaking(tokenAddress, amount) {
-  console.log(`Approving frxUSD for staking on Arbitrum mainnet...`);
-  const approveTx = await arbitrumWalletClient.sendTransaction({
+  console.log(`Approving frxUSD for staking on Ethereum mainnet...`);
+  const approveTx = await ethereumWalletClient.sendTransaction({
     to: tokenAddress,
     data: encodeFunctionData({
       abi: [
@@ -170,36 +176,36 @@ async function approveForStakingOrUnstaking(tokenAddress, amount) {
         },
       ],
       functionName: 'approve',
-      args: [ARBITRUM_MAINNET_HOP_ADDRESS, amount],
+      args: [ETHEREUM_MAINNET_HOP_ADDRESS, amount],
     }),
   });
-  console.log(`Arbitrum mainnet frxUSD Approval Tx: ${approveTx}`);
+  console.log(`Ethereum mainnet frxUSD Approval Tx: ${approveTx}`);
 }
 
 async function approveFrxusdForStaking() {
-  await approveForStakingOrUnstaking(ARBITRUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
 }
 
 async function approveSfrxusdForUnstaking() {
-  await approveForStakingOrUnstaking(ARBITRUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
 }
 ```
 
 ### 2. Retrieve FraxZero Quotes
 
-In this step, you call the `quote` function on the RemoteHop contract deployed on **Arbitrum mainnet** to get the native fee amounts required for the staking and unstaking operations. You specify the following parameters:
+In this step, you call the `quote` function on the RemoteHop contract deployed on **Ethereum mainnet** to get the native fee amounts required for the staking and unstaking operations. You specify the following parameters:
 
-- **OFT**: The contract address of the frxUSD token being staked or the sfrxUSD token being unstaked
+- **OFT**: The ethereum lockbox contract address
 - **Destination address**: The wallet address that will receive the frxUSD or sfrxUSD (in bytes32 format)
 - **Amount**: The amount of frxUSD to stake or the amount of sfrxUSD to unstake (in wei)
 
 The quote function returns the native fee amount required for the staking and unstaking operations.
 
 ```javascript
-async function retrieveQuote(tokenAddress, amount) {
+async function retrieveQuote(lockboxAddress, amount) {
   console.log('Retrieving quote...');
-  const quote = await arbitrumPublicClient.readContract({
-    address: ARBITRUM_MAINNET_HOP_ADDRESS,
+  const quote = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_HOP_ADDRESS,
     abi: [
       {
         inputs: [
@@ -225,7 +231,7 @@ async function retrieveQuote(tokenAddress, amount) {
     ],
     functionName: 'quote',
     args: [
-      tokenAddress,
+      lockboxAddress,
       DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
       amount,
     ],
@@ -240,10 +246,10 @@ async function retrieveQuote(tokenAddress, amount) {
 After approving frxUSD and retrieving the FraxZero quote, stake or unstake by calling the Hop contract's `mintRedeem` function to receive sfrxUSD or frxUSD back:
 
 ```javascript
-async function stakeOrUnstakeFrxusd(tokenAddress, amount) {
-  console.log(`Staking frxUSD for sfrxUSD on Arbitrum mainnet...`);
-  const txHash = await arbitrumWalletClient.sendTransaction({
-    to: ARBITRUM_MAINNET_HOP_ADDRESS,
+async function stakeOrUnstakeFrxusd(lockboxAddress, amount) {
+  console.log(`Staking frxUSD for sfrxUSD on Ethereum mainnet...`);
+  const txHash = await ethereumWalletClient.sendTransaction({
+    to: ETHEREUM_MAINNET_HOP_ADDRESS,
     data: encodeFunctionData({
       abi: [
         {
@@ -258,18 +264,18 @@ async function stakeOrUnstakeFrxusd(tokenAddress, amount) {
         },
       ],
       functionName: 'mintRedeem',
-      args: [tokenAddress, amount],
+      args: [lockboxAddress, amount],
     }),
   });
-  console.log(`Arbitrum mainnet Stake Tx: ${txHash}`);
+  console.log(`Ethereum mainnet Stake Tx: ${txHash}`);
 }
 
 async function stakeFrxusd() {
-  await stakeOrUnstakeFrxusd(ARBITRUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS, STAKE_AMOUNT);
 }
 
 async function unstakeFrxusd() {
-  await stakeOrUnstakeFrxusd(ARBITRUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS, UNSTAKE_AMOUNT);
 }
 ```
 
@@ -289,7 +295,7 @@ import {
   createPublicClient,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { arbitrum } from 'viem/chains';
+import { ethereum } from 'viem/chains';
 
 // ============ Configuration Constants ============
 
@@ -304,32 +310,35 @@ const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADD
 )}`; // Convert to bytes32 format
 
 // Hop Contract Address
-const ARBITRUM_MAINNET_HOP_ADDRESS = '0xa46A266dCBf199a71532c76967e200994C5A0D6d';
+const ETHEREUM_MAINNET_HOP_ADDRESS = '0xa46A266dCBf199a71532c76967e200994C5A0D6d';
+
+// Ethereum Lockbox Contract Address
+const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0';
 
 // frxUSD and sfrxUSD Contract Addresses
-const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df';
-const ARBITRUM_MAINNET_SFRXUSD_ADDRESS = '0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0';
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df';
+const ETHEREUM_MAINNET_SFRXUSD_ADDRESS = '0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0';
 
 // Staking Parameters
 const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
 const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
 
 // Set up wallet client
-const arbitrumWalletClient = createWalletClient({
-  chain: arbitrum,
+const ethereumWalletClient = createWalletClient({
+  chain: mainnet,
   transport: http(),
   account,
 });
 
 // Set up public client
-const arbitrumPublicClient = createPublicClient({
-  chain: arbitrum,
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
   transport: http(),
 });
 
 async function approveForStakingOrUnstaking(tokenAddress, amount) {
-  console.log(`Approving frxUSD for staking on Arbitrum mainnet...`);
-  const approveTx = await arbitrumWalletClient.sendTransaction({
+  console.log(`Approving frxUSD for staking on Ethereum mainnet...`);
+  const approveTx = await ethereumWalletClient.sendTransaction({
     to: tokenAddress,
     data: encodeFunctionData({
       abi: [
@@ -345,24 +354,24 @@ async function approveForStakingOrUnstaking(tokenAddress, amount) {
         },
       ],
       functionName: 'approve',
-      args: [ARBITRUM_MAINNET_HOP_ADDRESS, amount],
+      args: [ETHEREUM_MAINNET_HOP_ADDRESS, amount],
     }),
   });
-  console.log(`Arbitrum mainnet frxUSD Approval Tx: ${approveTx}`);
+  console.log(`Ethereum mainnet frxUSD Approval Tx: ${approveTx}`);
 }
 
 async function approveFrxusdForStaking() {
-  await approveForStakingOrUnstaking(ARBITRUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
 }
 
 async function approveSfrxusdForUnstaking() {
-  await approveForStakingOrUnstaking(ARBITRUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
 }
 
-async function retrieveQuote(tokenAddress, amount) {
+async function retrieveQuote(lockboxAddress, amount) {
   console.log('Retrieving quote...');
-  const quote = await arbitrumPublicClient.readContract({
-    address: ARBITRUM_MAINNET_HOP_ADDRESS,
+  const quote = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_HOP_ADDRESS,
     abi: [
       {
         inputs: [
@@ -388,7 +397,7 @@ async function retrieveQuote(tokenAddress, amount) {
     ],
     functionName: 'quote',
     args: [
-      tokenAddress,
+      lockboxAddress,
       DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
       amount,
     ],
@@ -397,11 +406,11 @@ async function retrieveQuote(tokenAddress, amount) {
   return nativeFee;
 }
 
-async function stakeOrUnstakeFrxusd(tokenAddress, amount) {
-  console.log(`Staking frxUSD for sfrxUSD on Arbitrum mainnet...`);
+async function stakeOrUnstakeFrxusd(lockboxAddress, amount) {
+  console.log(`Staking frxUSD for sfrxUSD on Ethereum mainnet...`);
   const nativeFee = await retrieveQuote(tokenAddress, amount);
-  const txHash = await arbitrumWalletClient.sendTransaction({
-    to: ARBITRUM_MAINNET_HOP_ADDRESS,
+  const txHash = await ethereumWalletClient.sendTransaction({
+    to: ETHEREUM_MAINNET_HOP_ADDRESS,
     data: encodeFunctionData({
       abi: [
         {
@@ -416,19 +425,19 @@ async function stakeOrUnstakeFrxusd(tokenAddress, amount) {
         },
       ],
       functionName: 'mintRedeem',
-      args: [tokenAddress, amount],
+      args: [lockboxAddress, amount],
       value: nativeFee,
     }),
   });
-  console.log(`Arbitrum mainnet Stake Tx: ${txHash}`);
+  console.log(`Ethereum mainnet Stake Tx: ${txHash}`);
 }
 
 async function stakeFrxusd() {
-  await stakeOrUnstakeFrxusd(ARBITRUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS, STAKE_AMOUNT);
 }
 
 async function unstakeSfrxusd() {
-  await stakeOrUnstakeFrxusd(ARBITRUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS, UNSTAKE_AMOUNT);
 }
 
 // ============ Main ============
@@ -481,5 +490,4 @@ Once each script runs and the staking and unstaking operations are finalized, th
 
 ## What's next
 
-- [Stake & Unstake frxUSD on Ethereum](/frxusd/stake-and-unstake-quickstart-ethereum)
 - [Stake & Unstake frxUSD on Fraxtal](/frxusd/stake-and-unstake-quickstart-fraxtal)

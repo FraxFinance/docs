@@ -113,7 +113,7 @@ Ensure that this section of the file includes your **private key** and associate
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Fraxnet Contract Addresses
 const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0x...'; // Fraxnet deposit factory address on Ethereum mainnet
@@ -479,6 +479,7 @@ import {
   toBytes32,
   zeroAddress,
   encodeFunctionData,
+  nonceManager,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, base } from 'viem/chains';
@@ -487,7 +488,7 @@ import { mainnet, base } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Fraxnet Contract Addresses
 const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0x...'; // Fraxnet deposit factory address on Ethereum mainnet

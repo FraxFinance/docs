@@ -104,7 +104,7 @@ The script defines addresses for **Fraxtal mainnet**:
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // frxUSD Stake & Unstake Contract Address (Fraxtal)
 const FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS = '0xBFc4D34Db83553725eC6c768da71D2D9c1456B55';
@@ -270,7 +270,7 @@ Create a `stake-and-unstake.js` file in your project directory and paste the fol
 ```javascript
 // ============ Setup (imports, account, clients) ============
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { fraxtal } from 'viem/chains';
 
@@ -278,7 +278,7 @@ import { fraxtal } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // frxUSD Stake & Unstake Contract Address (Fraxtal)
 const FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS = '0xBFc4D34Db83553725eC6c768da71D2D9c1456B55';

@@ -102,7 +102,7 @@ Ensure that this section of the file includes your **private key** and associate
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses and Destination EID
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_BUIDL_CUSTODIAN =
@@ -266,7 +266,7 @@ Create a `mint-and-redeem.js` in your project directory and paste the following.
 ```javascript
 // ============ Setup (imports, account, client) ============
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 
@@ -274,7 +274,7 @@ import { mainnet } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_BUIDL_CUSTODIAN =
@@ -400,14 +400,24 @@ async function redeemFrxusdForBuidl() {
 
 // ============ Main ============
 async function main() {
-  // Mint flow
-  await approveBuidlForMint();
-  await mintFrxusdWithBuidl();
-
-  // Redeem flow
-  await approveFrxusdForRedeem();
-  await redeemFrxusdForBuidl();
-
+  const command = process.argv[2];
+  switch (command) {
+    case 'mint-with-buidl':
+      console.log('Running mint with BUIDL...');
+      await approveBuidlForMint();
+      await mintFrxusdWithBuidl();
+      break;
+    case 'redeem-for-buidl':
+      console.log('Running mint with BUIDL...');
+      await approveFrxusdForRedeem();
+      await redeemFrxusdForBuidl();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "mint-with-buidl" or "redeem-for-buidl".',
+      );
+      process.exit(1);
+  }
   console.log('Mint and redeem completed!');
 }
 
@@ -416,16 +426,21 @@ main().catch(console.error);
 
 ## Test the script
 
-To test the script, run the following command:
+To test minting frxUSD with BUIDL, run the following command:
 
 ```shell
-node mint-and-redeem.js
+node mint-and-redeem.js mint-with-buidl
+```
+
+To test redeeming frxUSD with BUIDL, run the following command:
+
+```shell
+node mint-and-redeem.js redeem-for-buidl
 ```
 
 Once the script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.
 
 ## What's next
 
-- [Mint & Redeem frxUSD with BUIDL](/frxusd/mint-and-redeem-quickstarts/buidl)
 - [Mint & Redeem frxUSD with WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
 - [Mint & Redeem frxUSD with USDB](/frxusd/mint-and-redeem-quickstarts/usdb)

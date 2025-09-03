@@ -27,6 +27,7 @@
   "stake-and-unstake-overview": "Overview",
   "stake-and-unstake-supported-networks": "Supported Networks and EIDs",
   "stake-and-unstake-quickstart-evm-chains": "Quickstart: Stake & Unstake frxUSD on EVM chains",
+  "stake-and-unstake-quickstart-ethereum": "Quickstart: Stake & Unstake frxUSD on Ethereum",
   "stake-and-unstake-quickstart-fraxtal": "Quickstart: Stake & Unstake frxUSD on Fraxtal",
   "_white_label_stablecoin": {
     "title": "White-label Stablecoins",

@@ -5,7 +5,9 @@ lang: en-US
 
 # Transfer frxUSD with Fraxtal
 
-This guide demonstrates how to use the viem framework in a simple script that enables a user to transfer frxUSD with Fraxtal as the destination or source chain using the Lockbox addresses listed on the [FraxZero Lockbox addresses](/frxusd/fraxzero-supported-networks).
+This guide demonstrates how to use the viem framework in a simple script that enables a user to transfer frxUSD with Fraxtal as the destination and source chain using the Lockbox addresses listed on the [FraxZero Lockbox addresses](/frxusd/fraxzero-supported-networks).
+
+In this example, we will be transferring frxUSD from **Ethereum mainnet** to **Fraxtal mainnet**, **Fraxtal mainnet** to **Ethereum mainnet**, and **Arbitrum mainnet** to **Fraxtal mainnet**.
 
 **Note:** This guide does not support frxUSD transfers where Fraxtal is neither the source nor destination chain.
 
@@ -24,7 +26,13 @@ Before you start building the sample app to perform a frxUSD transfer, ensure yo
    - During setup, create a wallet on **Ethereum mainnet**.
    - Retrieve the **private key** for your wallet, as it will be required in the script below.
 
-3. **Fund your wallet with the gas token on the source chain**
+3. **Fund your wallet with the gas tokens on the source chains**
+
+   - For this guide, we will be transferring frxUSD from **Ethereum mainnet**, **Arbitrum mainnet**, and **Fraxtal mainnet**. Therefore, you will need to fund your wallet with **ETH** on **Ethereum mainnet** and **Arbitrum mainnet**, and **FRAX** on **Fraxtal mainnet**.
+
+4. **Fund your wallet with frxUSD on the source chains**
+
+   - For this guide, we will be transferring frxUSD from **Ethereum mainnet**, **Arbitrum mainnet**, and **Fraxtal mainnet**. Therefore, you will need to [fund your wallet](https://frax.com/swap) with **frxUSD** on each network.
 
 ## Project setup
 
@@ -93,83 +101,107 @@ This section covers the necessary setup for the transfer.js script, including de
 
 ### 1. Replace with your private key and wallet address
 
-Ensure that this section of the file includes your **private key** and associated **wallet address**. The script also predefines the **RemoteHop contract address**, the **transfer amount**, and the **max fee**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
+Ensure that this section of the file includes your **private key** for `PRIVATE_KEY` and associated **wallet address** for `DESTINATION_ADDRESS`.
+
+The script also predefines the **Lockbox contract addresses**, the **frxUSD contract addresses**, the destination **EIDs**, and the **transfer amount**. These definitions are critical for successfully transferring frxUSD between the intended wallets.
 
 ```javascript
 // ============ Configuration Constants ============
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Recipient address
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Enter your recipient wallet address here
+const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(
+  2,
+)}`; // Convert to bytes32 format
 
 // LockBox Contract Addresses and Destination EID
-const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E'; // Lockbox contract address (used for Ethereum -> Fraxtal transfers)
+const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0'; // Lockbox contract address (used for Ethereum -> Fraxtal transfers)
 const FRAXTAL_MAINNET_LOCKBOX_ADDRESS = '0x96A394058E2b84A89bac9667B19661Ed003cF5D4'; // Lockbox contract address (used for Fraxtal -> Ethereum transfers)
-const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A'; // frxUSD token contract address (used for Arbitrum -> Fraxtal transfers).
-const DESTINATION_ADDRESS = '0x1234567890123456789012345678901234567890'; // Recipient address
-const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
+
+// frxUSD token contract addresses
+const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df'; // frxUSD token contract address (used for Arbitrum -> Fraxtal transfers)
+const FRAXTAL_MAINNET_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000001'; // frxUSD token contract address on Fraxtal mainnet
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD contract address on Ethereum mainnet
+
+// EIDs for destination chains
+const FRAXTAL_MAINNET_EID = 30255; // EID of Fraxtal mainnet
+const ETHEREUM_MAINNET_EID = 30101; // EID of Ethereum mainnet
 
 // Transfer Parameters
-const TRANSFER_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD
+const TRANSFER_AMOUNT = 1_000_000_000_000_000_000n; // 1 frxUSD (18 decimals)
 ```
 
-### 2. Set up wallet clients
+### 2. Set up wallet and public clients
 
-The **wallet clients** configures the appropriate network settings using `viem`. In this example, the script will be transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet**.
+The **wallet clients** and **public clients** configure the appropriate network settings using `viem`. In this example guide, the script will be conducting the following frxUSD transfers:
+
+- **Ethereum mainnet** to **Fraxtal mainnet**
+- **Fraxtal mainnet** to **Ethereum mainnet**
+- **Arbitrum mainnet** to **Fraxtal mainnet**
 
 ```javascript
-// Set up a wallet client on the source chain
-const ethereumClient = createWalletClient({
+// Set up wallet clients
+const ethereumWalletClient = createWalletClient({
   chain: mainnet,
   transport: http(),
   account,
 });
 
-const fraxtalClient = createWalletClient({
+const fraxtalWalletClient = createWalletClient({
   chain: fraxtal,
   transport: http(),
   account,
 });
 
-const arbitrumClient = createWalletClient({
+const arbitrumWalletClient = createWalletClient({
   chain: arbitrum,
   transport: http(),
   account,
 });
+
+// Set up public clients for different chains
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const fraxtalPublicClient = createPublicClient({
+  chain: fraxtal,
+  transport: http(),
+});
+
+const arbitrumPublicClient = createPublicClient({
+  chain: arbitrum,
+  transport: http(),
+});
 ```
 
-### 3. Determine the spender address
+## frxUSD transfer process with Fraxtal
 
-The spender address is the address that will be used to transfer frxUSD. You should use the following table to determine the spender address for your transfer:
+The following sections outline the relevant transfer logic of the sample script. In this example, we are conducting the following frxUSD transfers:
 
-| Source Chain                   | Destination Chain | Spender Address                    |
-| ------------------------------ | ----------------- | ---------------------------------- |
-| Ethereum                       | Fraxtal           | `ETHEREUM_MAINNET_LOCKBOX_ADDRESS` |
-| Fraxtal                        | Ethereum          | `FRAXTAL_MAINNET_LOCKBOX_ADDRESS`  |
-| Arbitrum (or other EVM chains) | Fraxtal           | `ARBITRUM_MAINNET_FRXUSD_ADDRESS`  |
-
-**Note:** For Arbitrum, you can replace it with any other EVM-compatible chain where frxUSD is deployed (besides Fraxtal and Ethereum).
-
-In this example for our sample transfer, we will be transferring frxUSD from **Ethereum mainnet** to **Fraxtal mainnet**. Therefore, we will be using the `ARBITRUM_MAINNET_FRXUSD_ADDRESS` as our spender address.
-
-```javascript
-const spenderAddress = FRAXTAL_MAINNET_LOCKBOX_ADDRESS;
-const sourceChainClient = fraxtalClient;
-const FRAXTAL_MAINNET_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000001'; // frxUSD token contract address on Fraxtal mainnet
-```
-
-## frxUSD cross-chain transfer process
-
-The following sections outline the relevant transfer logic of the sample script. In this example, we are transferring frxUSD from **Ethereum mainnet** to **Arbitrum mainnet**. Follow the steps below to perform the transfer:
+- 1 frxUSD from **Ethereum mainnet** to **Fraxtal mainnet**
+- 1 frxUSD from **Fraxtal mainnet** to **Ethereum mainnet**
+- 1 frxUSD from **Arbitrum mainnet** to **Fraxtal mainnet**
 
 ### 1. Approve frxUSD
 
-The first step is to grant approval for the spender address:
+The first step is to grant approval for the lockbox address. To determine the lockbox address to approve for each transfer, you can use the following table:
 
-**Note:** If the source chain is **Arbitrum mainnet** (or other EVM chains) and the destination chain is **Fraxtal mainnet**, you do not need to approve the frxUSD token. The approval is only required between **Ethereum mainnet** and **Fraxtal mainnet**.
+| Source Chain                                                  | Destination Chain              | Lockbox Address                    |
+| ------------------------------------------------------------- | ------------------------------ | ---------------------------------- |
+| Ethereum                                                      | Fraxtal                        | `ETHEREUM_MAINNET_LOCKBOX_ADDRESS` |
+| Fraxtal                                                       | Ethereum (or other EVM chains) | `FRAXTAL_MAINNET_LOCKBOX_ADDRESS`  |
+| Arbitrum (or other EVM chains excluding Fraxtal and Ethereum) | Fraxtal                        | NO APPROVAL REQUIRED               |
+
+**Note:** If the source chain is **Arbitrum mainnet** (or other EVM chains excluding Fraxtal and Ethereum) and the destination chain is **Fraxtal mainnet**, you do not need to approve the frxUSD token. However, if the source chain is **Fraxtal mainnet** and the destination chain is **Arbitrum mainnet** (or other EVM chains), you do need to approve the frxUSD token.
 
 ```javascript
-async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, spenderAddress) {
+async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, lockboxAddress) {
   console.log('Approving frxUSD transfer...');
   const approveTx = await sourceChainClient.sendTransaction({
     to: frxUsdTokenAddress,
@@ -187,16 +219,42 @@ async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, spenderAddre
         },
       ],
       functionName: 'approve',
-      args: [spenderAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
+      args: [lockboxAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
     }),
   });
   console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+
+async function approveFrxUSDForEthereumToFraxtalTransfer() {
+  await approveFrxUSD(
+    ethereumWalletClient,
+    ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS,
+  );
+}
+
+async function approveFrxUSDForFraxtalToEthereumTransfer() {
+  await approveFrxUSD(
+    fraxtalWalletClient,
+    FRAXTAL_MAINNET_FRXUSD_ADDRESS,
+    FRAXTAL_MAINNET_LOCKBOX_ADDRESS,
+  );
 }
 ```
 
 ### 2. Retrieve FraxZero Quote
 
-In this step, you call the `quote` function on the spender address you determined in the prior step via the table:
+In this step, you call the `quoteSend` function on the following depending on the transfer direction:
+
+| Source Chain                                                  | Destination Chain              | Address to call `quoteSend` on     |
+| ------------------------------------------------------------- | ------------------------------ | ---------------------------------- |
+| Ethereum                                                      | Fraxtal                        | `ETHEREUM_MAINNET_LOCKBOX_ADDRESS` |
+| Fraxtal                                                       | Ethereum (or other EVM chains) | `FRAXTAL_MAINNET_LOCKBOX_ADDRESS`  |
+| Arbitrum (or other EVM chains excluding Fraxtal and Ethereum) | Fraxtal                        | `ARBITRUM_MAINNET_FRXUSD_ADDRESS`  |
+
+**Note:** If the source chain is **Arbitrum mainnet** (or other EVM chains excluding Fraxtal and Ethereum) and the destination chain is **Fraxtal mainnet**, you simply use the `frxUSD` token address.
+
+You then specify the following parameters:
 
 - **Destination EID**: The EID of the destination chain (EIDs can be found [here](/frxusd/fraxzero-supported-networks))
 - **Destination address**: The wallet address that will receive the transferred frxUSD (in bytes32 format)
@@ -206,63 +264,73 @@ In this step, you call the `quote` function on the spender address you determine
 - **Compose message**: The compose message for the transfer
 - **OFT command**: The OFT command for the transfer
 
-The quote function returns the native fee amount required for the transfer.
+The `quoteSend` function returns the native fee amount required for the transfer.
 
 ```javascript
-async function retrieveQuote(sourceChainClient, spenderAddress, destinationEid) {
+async function retrieveQuote(
+  sourceChainClient,
+  lockboxAddressOrFrxUsdTokenAddress,
+  destinationEid,
+) {
   console.log('Retrieving quote...');
   const quote = await sourceChainClient.readContract({
-    address: spenderAddress,
-    data: encodeFunctionData({
-      abi: [
-        {
-          inputs: [
-            {
-              components: [
-                { internalType: 'uint32', name: 'dstEid', type: 'uint32' },
-                { internalType: 'bytes32', name: 'to', type: 'bytes32' },
-                { internalType: 'uint256', name: 'amountLD', type: 'uint256' },
-                { internalType: 'uint256', name: 'minAmountLD', type: 'uint256' },
-                { internalType: 'bytes', name: 'extraOptions', type: 'bytes' },
-                { internalType: 'bytes', name: 'composeMsg', type: 'bytes' },
-                { internalType: 'bytes', name: 'oftCmd', type: 'bytes' },
-              ],
-              internalType: 'struct SendParam',
-              name: '_sendParam',
-              type: 'tuple',
-            },
-            { internalType: 'bool', name: '_payInLzToken', type: 'bool' },
-          ],
-          name: 'quoteSend',
-          outputs: [
-            {
-              components: [
-                { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
-                { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
-              ],
-              internalType: 'struct MessagingFee',
-              name: 'msgFee',
-              type: 'tuple',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      functionName: 'quoteSend',
-      args: [
-        {
-          dstEid: destinationEid,
-          to: DESTINATION_ADDRESS_BYTES32,
-          amountLD: TRANSFER_AMOUNT,
-          minAmountLD: (TRANSFER_AMOUNT * 99n) / 100n,
-          extraOptions: '0x',
-          composeMsg: '0x',
-          oftCmd: '0x',
-        },
-        false,
-      ],
-    }),
+    address: lockboxAddressOrFrxUsdTokenAddress,
+    abi: [
+      {
+        inputs: [
+          {
+            components: [
+              { internalType: 'uint32', name: 'dstEid', type: 'uint32' },
+              { internalType: 'bytes32', name: 'to', type: 'bytes32' },
+              { internalType: 'uint256', name: 'amountLD', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'minAmountLD',
+                type: 'uint256',
+              },
+              { internalType: 'bytes', name: 'extraOptions', type: 'bytes' },
+              { internalType: 'bytes', name: 'composeMsg', type: 'bytes' },
+              { internalType: 'bytes', name: 'oftCmd', type: 'bytes' },
+            ],
+            internalType: 'struct SendParam',
+            name: '_sendParam',
+            type: 'tuple',
+          },
+          { internalType: 'bool', name: '_payInLzToken', type: 'bool' },
+        ],
+        name: 'quoteSend',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'lzTokenFee',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'msgFee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quoteSend',
+    args: [
+      {
+        dstEid: destinationEid,
+        to: DESTINATION_ADDRESS_BYTES32,
+        amountLD: TRANSFER_AMOUNT,
+        minAmountLD: (TRANSFER_AMOUNT * 99n) / 100n,
+        extraOptions: '0x',
+        composeMsg: '0x',
+        oftCmd: '0x',
+      },
+      false,
+    ],
   });
   const nativeFee = quote.nativeFee;
   return nativeFee;
@@ -271,7 +339,17 @@ async function retrieveQuote(sourceChainClient, spenderAddress, destinationEid) 
 
 ### 3. Transfer frxUSD
 
-After retrieving the native fee amount, you can call the `send` function on the spender address you determined in the prior step via the table. This function takes the following parameters:
+After retrieving the native fee amounts, you can call the `send` function on the address you used in the prior step:
+
+| Source Chain                                                  | Destination Chain              | Address to call `send` on          |
+| ------------------------------------------------------------- | ------------------------------ | ---------------------------------- |
+| Ethereum                                                      | Fraxtal                        | `ETHEREUM_MAINNET_LOCKBOX_ADDRESS` |
+| Fraxtal                                                       | Ethereum (or other EVM chains) | `FRAXTAL_MAINNET_LOCKBOX_ADDRESS`  |
+| Arbitrum (or other EVM chains excluding Fraxtal and Ethereum) | Fraxtal                        | `ARBITRUM_MAINNET_FRXUSD_ADDRESS`  |
+
+**Note:** If the source chain is **Arbitrum mainnet** (or other EVM chains excluding Fraxtal and Ethereum) and the destination chain is **Fraxtal mainnet**, you simply use the `frxUSD` token address.
+
+This function takes the following parameters:
 
 - **Destination EID**: The EID of the destination chain
 - **Destination address**: The wallet address that will receive the transferred frxUSD (in bytes32 format)
@@ -285,11 +363,20 @@ After retrieving the native fee amount, you can call the `send` function on the 
 - **Refund address**: The refund address for the transfer
 
 ```javascript
-async function transferFrxUSD() {
+async function transferFrxUSD(
+  sourceWalletClient,
+  sourcePublicClient,
+  lockboxAddressOrFrxUsdTokenAddress,
+  destinationEid,
+) {
   console.log('Transferring frxUSD...');
-  const nativeFee = await retrieveQuote();
-  const transferTx = await ethereumClient.sendTransaction({
-    to: spenderAddress,
+  const nativeFee = await retrieveQuote(
+    sourcePublicClient,
+    lockboxAddressOrFrxUsdTokenAddress,
+    destinationEid,
+  );
+  const transferTx = await sourceWalletClient.sendTransaction({
+    to: lockboxAddressOrFrxUsdTokenAddress,
     value: nativeFee,
     data: encodeFunctionData({
       abi: [
@@ -375,7 +462,39 @@ async function transferFrxUSD() {
       value: nativeFee,
     }),
   });
+  console.log();
   console.log(`Transfer Tx: ${transferTx}`);
+  console.log(`View on LayerZero explorer: https://layerzeroscan.com/tx/${transferTx}`);
+}
+
+// Here, because Ethereum mainnet is the source chain for this transfer to Fraxtal, we use the lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForEthereumToFraxtal() {
+  await transferFrxUSD(
+    ethereumWalletClient,
+    ethereumPublicClient,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS,
+    FRAXTAL_MAINNET_EID,
+  );
+}
+
+// Here, because Fraxtal mainnet is the source chain for this transfer, we use the lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForFraxtalToEthereum() {
+  await transferFrxUSD(
+    fraxtalWalletClient,
+    fraxtalPublicClient,
+    FRAXTAL_MAINNET_LOCKBOX_ADDRESS,
+    ETHEREUM_MAINNET_EID,
+  );
+}
+
+// Here, because Arbitrum mainnet is the source chain for this transfer, we use the frxUSD token address instead of the lockbox address.
+async function transferFrxUSDForArbitrumToFraxtal() {
+  await transferFrxUSD(
+    arbitrumWalletClient,
+    arbitrumPublicClient,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    FRAXTAL_MAINNET_EID,
+  );
 }
 ```
 
@@ -390,7 +509,13 @@ Now that you understand the core steps for programmatically **transferring frxUS
 ```javascript
 // Import environment variables
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import {
+  createWalletClient,
+  createPublicClient,
+  http,
+  encodeFunctionData,
+  nonceManager,
+} from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet, arbitrum, fraxtal } from 'viem/chains';
 
@@ -398,87 +523,67 @@ import { mainnet, arbitrum, fraxtal } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Recipient address
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Enter your recipient wallet address here
+const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(
+  2,
+)}`; // Convert to bytes32 format
 
 // LockBox Contract Addresses and Destination EID
-const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E'; // Lockbox contract address (used for Ethereum -> Fraxtal transfers)
+const ETHEREUM_MAINNET_LOCKBOX_ADDRESS = '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0'; // Lockbox contract address (used for Ethereum -> Fraxtal transfers)
 const FRAXTAL_MAINNET_LOCKBOX_ADDRESS = '0x96A394058E2b84A89bac9667B19661Ed003cF5D4'; // Lockbox contract address (used for Fraxtal -> Ethereum transfers)
-const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A'; // frxUSD token contract address (used for Arbitrum -> Fraxtal transfers)
+
+// frxUSD token contract addresses
+const ARBITRUM_MAINNET_FRXUSD_ADDRESS = '0x80Eede496655FB9047dd39d9f418d5483ED600df'; // frxUSD token contract address (used for Arbitrum -> Fraxtal transfers)
 const FRAXTAL_MAINNET_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000001'; // frxUSD token contract address on Fraxtal mainnet
 const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD contract address on Ethereum mainnet
 
-// EIDs for different chains
-const FRAXTAL_MAINNET_EID = 30132; // EID of Fraxtal mainnet
+// EIDs for destination chains
+const FRAXTAL_MAINNET_EID = 30255; // EID of Fraxtal mainnet
 const ETHEREUM_MAINNET_EID = 30101; // EID of Ethereum mainnet
-const ARBITRUM_MAINNET_EID = 30110; // EID of Arbitrum mainnet
-
-const DESTINATION_ADDRESS = '0x1234567890123456789012345678901234567890'; // Recipient address
-const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
 
 // Transfer Parameters
-const TRANSFER_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD
+const TRANSFER_AMOUNT = 10_000_000_000_000_000n; // 1 frxUSD (18 decimals)
 
-// Set up wallet clients for different chains
-const ethereumClient = createWalletClient({
+// Set up wallet clients
+const ethereumWalletClient = createWalletClient({
   chain: mainnet,
   transport: http(),
   account,
 });
 
-const fraxtalClient = createWalletClient({
+const fraxtalWalletClient = createWalletClient({
   chain: fraxtal,
   transport: http(),
   account,
 });
 
-const arbitrumClient = createWalletClient({
+const arbitrumWalletClient = createWalletClient({
   chain: arbitrum,
   transport: http(),
   account,
 });
 
-// Configuration for transfer direction
-// Change these variables based on your transfer direction
-const SOURCE_CHAIN = 'ethereum'; // Options: 'ethereum', 'fraxtal', 'arbitrum'
-const DESTINATION_CHAIN = 'fraxtal'; // Options: 'ethereum', 'fraxtal', 'arbitrum'
+// Set up public clients for different chains
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
 
-// Determine spender address and client based on transfer direction
-function getTransferConfig() {
-  let spenderAddress, sourceChainClient, frxUsdTokenAddress, destinationEid;
+const fraxtalPublicClient = createPublicClient({
+  chain: fraxtal,
+  transport: http(),
+});
 
-  if (SOURCE_CHAIN === 'ethereum' && DESTINATION_CHAIN === 'fraxtal') {
-    spenderAddress = ETHEREUM_MAINNET_LOCKBOX_ADDRESS;
-    sourceChainClient = ethereumClient;
-    frxUsdTokenAddress = ETHEREUM_MAINNET_FRXUSD_ADDRESS;
-    destinationEid = FRAXTAL_MAINNET_EID;
-  } else if (SOURCE_CHAIN === 'fraxtal' && DESTINATION_CHAIN === 'ethereum') {
-    spenderAddress = FRAXTAL_MAINNET_LOCKBOX_ADDRESS;
-    sourceChainClient = fraxtalClient;
-    frxUsdTokenAddress = FRAXTAL_MAINNET_FRXUSD_ADDRESS;
-    destinationEid = ETHEREUM_MAINNET_EID;
-  } else if (SOURCE_CHAIN === 'arbitrum' && DESTINATION_CHAIN === 'fraxtal') {
-    spenderAddress = ARBITRUM_MAINNET_FRXUSD_ADDRESS;
-    sourceChainClient = arbitrumClient;
-    frxUsdTokenAddress = ARBITRUM_MAINNET_FRXUSD_ADDRESS;
-    destinationEid = FRAXTAL_MAINNET_EID;
-  } else {
-    throw new Error(
-      'Unsupported transfer direction. This script only supports transfers where Fraxtal is either source or destination.',
-    );
-  }
+const arbitrumPublicClient = createPublicClient({
+  chain: arbitrum,
+  transport: http(),
+});
 
-  return { spenderAddress, sourceChainClient, frxUsdTokenAddress, destinationEid };
-}
-
-async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, spenderAddress) {
+async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, lockboxAddress) {
   console.log('Approving frxUSD transfer...');
-
-  // Skip approval for Arbitrum -> Fraxtal transfers
-  if (SOURCE_CHAIN === 'arbitrum' && DESTINATION_CHAIN === 'fraxtal') {
-    console.log('Skipping approval for Arbitrum -> Fraxtal transfer');
-    return;
-  }
-
   const approveTx = await sourceChainClient.sendTransaction({
     to: frxUsdTokenAddress,
     data: encodeFunctionData({
@@ -495,80 +600,111 @@ async function approveFrxUSD(sourceChainClient, frxUsdTokenAddress, spenderAddre
         },
       ],
       functionName: 'approve',
-      args: [spenderAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
+      args: [lockboxAddress, TRANSFER_AMOUNT], // Set max allowance in wei (change as needed)
     }),
   });
   console.log(`frxUSD Approval Tx: ${approveTx}`);
 }
 
-async function retrieveQuote(sourceChainClient, spenderAddress, destinationEid) {
+async function approveFrxUSDForEthereumToFraxtalTransfer() {
+  await approveFrxUSD(
+    ethereumWalletClient,
+    ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS,
+  );
+}
+
+async function approveFrxUSDForFraxtalToEthereumTransfer() {
+  await approveFrxUSD(
+    fraxtalWalletClient,
+    FRAXTAL_MAINNET_FRXUSD_ADDRESS,
+    FRAXTAL_MAINNET_LOCKBOX_ADDRESS,
+  );
+}
+
+async function retrieveQuote(
+  sourceChainClient,
+  lockboxAddressOrFrxUsdTokenAddress,
+  destinationEid,
+) {
   console.log('Retrieving quote...');
   const quote = await sourceChainClient.readContract({
-    address: spenderAddress,
-    data: encodeFunctionData({
-      abi: [
-        {
-          inputs: [
-            {
-              components: [
-                { internalType: 'uint32', name: 'dstEid', type: 'uint32' },
-                { internalType: 'bytes32', name: 'to', type: 'bytes32' },
-                { internalType: 'uint256', name: 'amountLD', type: 'uint256' },
-                { internalType: 'uint256', name: 'minAmountLD', type: 'uint256' },
-                { internalType: 'bytes', name: 'extraOptions', type: 'bytes' },
-                { internalType: 'bytes', name: 'composeMsg', type: 'bytes' },
-                { internalType: 'bytes', name: 'oftCmd', type: 'bytes' },
-              ],
-              internalType: 'struct SendParam',
-              name: '_sendParam',
-              type: 'tuple',
-            },
-            { internalType: 'bool', name: '_payInLzToken', type: 'bool' },
-          ],
-          name: 'quoteSend',
-          outputs: [
-            {
-              components: [
-                { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
-                { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
-              ],
-              internalType: 'struct MessagingFee',
-              name: 'msgFee',
-              type: 'tuple',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      functionName: 'quoteSend',
-      args: [
-        {
-          dstEid: destinationEid,
-          to: DESTINATION_ADDRESS_BYTES32,
-          amountLD: TRANSFER_AMOUNT,
-          minAmountLD: (TRANSFER_AMOUNT * 99n) / 100n,
-          extraOptions: '0x',
-          composeMsg: '0x',
-          oftCmd: '0x',
-        },
-        false,
-      ],
-    }),
+    address: lockboxAddressOrFrxUsdTokenAddress,
+    abi: [
+      {
+        inputs: [
+          {
+            components: [
+              { internalType: 'uint32', name: 'dstEid', type: 'uint32' },
+              { internalType: 'bytes32', name: 'to', type: 'bytes32' },
+              { internalType: 'uint256', name: 'amountLD', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'minAmountLD',
+                type: 'uint256',
+              },
+              { internalType: 'bytes', name: 'extraOptions', type: 'bytes' },
+              { internalType: 'bytes', name: 'composeMsg', type: 'bytes' },
+              { internalType: 'bytes', name: 'oftCmd', type: 'bytes' },
+            ],
+            internalType: 'struct SendParam',
+            name: '_sendParam',
+            type: 'tuple',
+          },
+          { internalType: 'bool', name: '_payInLzToken', type: 'bool' },
+        ],
+        name: 'quoteSend',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              {
+                internalType: 'uint256',
+                name: 'lzTokenFee',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'msgFee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quoteSend',
+    args: [
+      {
+        dstEid: destinationEid,
+        to: DESTINATION_ADDRESS_BYTES32,
+        amountLD: TRANSFER_AMOUNT,
+        minAmountLD: (TRANSFER_AMOUNT * 99n) / 100n,
+        extraOptions: '0x',
+        composeMsg: '0x',
+        oftCmd: '0x',
+      },
+      false,
+    ],
   });
   const nativeFee = quote.nativeFee;
   return nativeFee;
 }
 
-async function transferFrxUSD(sourceChainClient, spenderAddress, destinationEid) {
+async function transferFrxUSD(
+  sourceWalletClient,
+  sourcePublicClient,
+  lockboxAddressOrFrxUsdTokenAddress,
+  destinationEid,
+) {
   console.log('Transferring frxUSD...');
   const nativeFee = await retrieveQuote(
-    sourceChainClient,
-    spenderAddress,
+    sourcePublicClient,
+    lockboxAddressOrFrxUsdTokenAddress,
     destinationEid,
   );
-  const transferTx = await sourceChainClient.sendTransaction({
-    to: spenderAddress,
+  const transferTx = await sourceWalletClient.sendTransaction({
+    to: lockboxAddressOrFrxUsdTokenAddress,
     value: nativeFee,
     data: encodeFunctionData({
       abi: [
@@ -651,22 +787,78 @@ async function transferFrxUSD(sourceChainClient, spenderAddress, destinationEid)
         { nativeFee: nativeFee, lzTokenFee: 0n },
         account.address,
       ],
+      value: nativeFee,
     }),
   });
+  console.log();
   console.log(`Transfer Tx: ${transferTx}`);
+  console.log(`View on LayerZero explorer: https://layerzeroscan.com/tx/${transferTx}`);
+}
+
+// Here, because Ethereum mainnet is the source chain for this transfer to Fraxtal, we use the lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForEthereumToFraxtal() {
+  await transferFrxUSD(
+    ethereumWalletClient,
+    ethereumPublicClient,
+    ETHEREUM_MAINNET_LOCKBOX_ADDRESS,
+    FRAXTAL_MAINNET_EID,
+  );
+}
+
+// Here, because Fraxtal mainnet is the source chain for this transfer, we use the lockbox address instead of the frxUSD token address.
+async function transferFrxUSDForFraxtalToEthereum() {
+  await transferFrxUSD(
+    fraxtalWalletClient,
+    fraxtalPublicClient,
+    FRAXTAL_MAINNET_LOCKBOX_ADDRESS,
+    ETHEREUM_MAINNET_EID,
+  );
+}
+
+// Here, because Arbitrum mainnet is the source chain for this transfer, we use the frxUSD token address instead of the lockbox address.
+async function transferFrxUSDForArbitrumToFraxtal() {
+  await transferFrxUSD(
+    arbitrumWalletClient,
+    arbitrumPublicClient,
+    ARBITRUM_MAINNET_FRXUSD_ADDRESS,
+    FRAXTAL_MAINNET_EID,
+  );
 }
 
 async function main() {
-  const { spenderAddress, sourceChainClient, frxUsdTokenAddress, destinationEid } =
-    getTransferConfig();
+  if (DESTINATION_ADDRESS === 'enter-your-recipient-wallet-address-here') {
+    console.error(
+      'Destination address is not set. Please set the DESTINATION_ADDRESS variable in the transfer.js file.',
+    );
+    process.exit(1);
+  }
+  const command = process.argv[2]; // Get command from CLI
 
-  console.log(`Transferring frxUSD from ${SOURCE_CHAIN} to ${DESTINATION_CHAIN}`);
-  console.log(`Using spender address: ${spenderAddress}`);
-  console.log(`Destination EID: ${destinationEid}`);
+  switch (command) {
+    case 'ethereum-to-fraxtal':
+      console.log('Running Ethereum → Fraxtal transfer...');
+      await approveFrxUSDForEthereumToFraxtalTransfer();
+      await transferFrxUSDForEthereumToFraxtal();
+      break;
 
-  await approveFrxUSD(sourceChainClient, frxUsdTokenAddress, spenderAddress);
-  await transferFrxUSD(sourceChainClient, spenderAddress, destinationEid);
-  console.log('frxUSD transfer completed!');
+    case 'fraxtal-to-ethereum':
+      console.log('Running Fraxtal → Ethereum transfer...');
+      await approveFrxUSDForFraxtalToEthereumTransfer();
+      await transferFrxUSDForFraxtalToEthereum();
+      break;
+    case 'arbitrum-to-fraxtal':
+      console.log('Running Arbitrum → Fraxtal transfer...');
+      await approveFrxUSDForFraxtalToEthereumTransfer();
+      await transferFrxUSDForFraxtalToEthereum();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "ethereum-to-arbitrum" or "arbitrum-to-ethereum".',
+      );
+      process.exit(1);
+  }
+
+  console.log('Transfer completed!');
 }
 
 main().catch(console.error);
@@ -676,13 +868,25 @@ The `transfer.js` script provides a complete **end-to-end** solution for transfe
 
 ## Test the script
 
-To test the script, run the following command:
+To test the Ethereum to Fraxtal transfer, run the following command:
 
 ```shell
-node transfer.js
+node transfer.js ethereum-to-fraxtal
 ```
 
-Once the script runs and the transfer is finalized, a **confirmation receipt** is logged in the console.
+To test the Fraxtal to Ethereum transfer, run the following command:
+
+```shell
+node transfer.js fraxtal-to-ethereum
+```
+
+To test the Arbitrum to Fraxtal transfer, run the following command:
+
+```shell
+node transfer.js arbitrum-to-fraxtal
+```
+
+Once each script runs and the transfer is finalized, a **confirmation receipt** and link on [LayerZero scan](https://layerzeroscan.com/) is logged in the console for each respective transfer. Each transfer takes approximately **4-5 minutes** to complete.
 
 ## What's next
 

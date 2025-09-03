@@ -5,9 +5,9 @@ lang: en-US
 
 # frxUSD Mint & Redeem Supported Routes & Networks
 
-Mint and redeem frxUSD 1:1 on Ethereum mainnet and cross-chain.
+Mint and redeem frxUSD 1:1 on any of the supported blockchain networks below.
 
-## Ethereum Mainnet Mint & Redeem Routes
+## Mint & Redeem Routes on Ethereum
 
 The following table shows the supported assets you can use to mint and redeem frxUSD 1:1 on Ethereum mainnet, along with their token addresses and the corresponding Mint & Redeem contracts.
 
@@ -21,11 +21,6 @@ The following table shows the supported assets you can use to mint and redeem fr
 | **WTGXX** | [`0x1fecf3d9d4fee7f2c02917a66028a48c6706c179`](https://etherscan.io/address/0x1fecf3d9d4fee7f2c02917a66028a48c6706c179) | [`0x860Cc723935FC9A15fF8b1A94237a711DFeF7857`](https://etherscan.io/address/0x860Cc723935FC9A15fF8b1A94237a711DFeF7857) | WisdomTree, Inc.            |
 | **USDB**  | [`0xeac4269c9a01190b1400c4dc728864e61895fdf3`](https://etherscan.io/address/0x4300000000000000000000000000000000000003) | [`0xFE2Ea8dE262d956e852F12DE108fda57171a0a29`](https://etherscan.io/address/0xFE2Ea8dE262d956e852F12DE108fda57171a0a29) | Bridge.xyz                  |
 
-### How to Use
-
-1. **Minting frxUSD**: Deposit the backing asset (USDC, USTB, BUIDL, WTGXX, or USDB) into the corresponding custodian contract to mint frxUSD
-2. **Redeeming frxUSD**: Burn frxUSD through the custodian contract to receive the backing asset
-
 ### Quickstart Guides
 
 - [Mint and redeem with USDC](/frxusd/mint-and-redeem-quickstarts/usdc)
@@ -36,13 +31,13 @@ The following table shows the supported assets you can use to mint and redeem fr
 
 ## Cross-Chain Mint & Redeem Routes
 
-Use the FraxNet contract system for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks including Fraxtal, Arbitrum, Base, and others using **USDC** as the payment or redemption asset. The same contract powers [FraxNet](https://net.frax.com):
+Te FraxNet contract system allows for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks including Fraxtal, Arbitrum, Base, and others using **USDC** as the payment or redemption asset. The same factory contract powers [FraxNet](https://net.frax.com):
 
 | **Mainnet**  | **FraxNet Factory Address**                                                                                             |
 | :----------- | :---------------------------------------------------------------------------------------------------------------------- |
 | **Ethereum** | [`0xA3D62f83C433e2A56Af392E08a705A52DEd63696`](https://etherscan.io/address/0xA3D62f83C433e2A56Af392E08a705A52DEd63696) |
 
-Cross-chain minting is supported on **all listed chains below** where EID is how to specify which chain to mint to.
+Cross-chain minting is supported on **all listed chains below** where EID is how to specify which chain to mint frxUSD to.
 
 **Follow the [quickstart guide](/frxusd/cross-chain-mint-and-redeem-quickstart) to see it in action.**
 
@@ -70,7 +65,3 @@ Cross-chain minting is supported on **all listed chains below** where EID is how
 | **Unichain**      | 30320   |
 | **XLayer**        | 30274   |
 | **zkSync**        | 30165   |
-
-### Quickstart Guide
-
-- [Mint and redeem frxUSD cross-chain](/frxusd/cross-chain-mint-and-redeem-quickstart)

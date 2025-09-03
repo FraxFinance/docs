@@ -100,7 +100,7 @@ Ensure that this section of the file includes your **private key** and associate
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses and Destination EID
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN =
@@ -264,7 +264,7 @@ Create a `mint-and-redeem.js` in your project directory and paste the following.
 ```javascript
 // ============ Setup (imports, account, client) ============
 import 'dotenv/config';
-import { createWalletClient, http, encodeFunctionData } from 'viem';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 
@@ -272,7 +272,7 @@ import { mainnet } from 'viem/chains';
 
 // Authentication
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const account = privateKeyToAccount(`0x${PRIVATE_KEY}`);
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
 
 // Mint & Redeem Contract Addresses
 const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN =
@@ -398,14 +398,24 @@ async function redeemFrxusdForUsdc() {
 
 // ============ Main ============
 async function main() {
-  // Mint flow
-  await approveUsdcForMint();
-  await mintFrxusdWithUsdc();
-
-  // Redeem flow
-  await approveFrxusdForRedeem();
-  await redeemFrxusdForUsdc();
-
+  const command = process.argv[2];
+  switch (command) {
+    case 'mint-with-usdc':
+      console.log('Running mint with USDC...');
+      await approveUsdcForMint();
+      await mintFrxusdWithUsdc();
+      break;
+    case 'redeem-for-usdc':
+      console.log('Running mint with USDC...');
+      await approveFrxusdForRedeem();
+      await redeemFrxusdForUsdc();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "mint-with-usdc" or "redeem-with-frxusd".',
+      );
+      process.exit(1);
+  }
   console.log('Mint and redeem completed!');
 }
 
@@ -414,13 +424,19 @@ main().catch(console.error);
 
 ## Test the script
 
-To test the script, run the following command:
+To test minting frxUSD with USDC, run the following command:
 
 ```shell
-node mint-and-redeem.js
+node mint-and-redeem.js mint-with-usdc
 ```
 
-Once the script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.
+To test redeeming frxUSD with USDC, run the following command:
+
+```shell
+node mint-and-redeem.js redeem-for-usdc
+```
+
+Once each script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.
 
 ## What's next
 
