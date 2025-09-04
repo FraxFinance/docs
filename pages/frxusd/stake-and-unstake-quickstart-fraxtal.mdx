@@ -9,7 +9,7 @@ This guide shows how to use the viem framework to **stake frxUSD for sfrxUSD** a
 
 To see a list of all supported networks, see the [Stake & Unstake Supported Networks and EIDs](/frxusd/stake-and-unstake-supported-networks) page.
 
-**Note:** The method for staking and unstaking frxUSD on Fraxtal is different from the method for staking and unstaking frxUSD on all other EVM chains. See the [Stake & Unstake frxUSD on EVM chains](/frxusd/stake-and-unstake-quickstart-evm-chains) guide for more information.
+**Note:** The method for staking and unstaking frxUSD on Fraxtal is different from the method for staking and unstaking frxUSD on all other EVM chains. See the [Stake & Unstake frxUSD on EVM chains](/frxusd/stake-and-unstake-quickstart-evm-chains) and [Stake & Unstake frxUSD on Ethereum](/frxusd/stake-and-unstake-quickstart-ethereum) guides for more information.
 
 ## Prerequisites
 
@@ -29,6 +29,10 @@ Before you start building the sample app to perform frxUSD staking operations, e
 3. **Fund your wallet with the gas token on Fraxtal**
 
    - For this guide, we will be staking and unstaking frxUSD on **Fraxtal mainnet**. Therefore, you will need to fund your wallet with **FRAX** on **Fraxtal mainnet**.
+
+4. **Fund your wallet with frxUSD and sfrxUSD on the chain you want to stake and unstake from**
+
+   - For this guide, we will be staking and unstaking frxUSD on **Fraxtal mainnet**. Therefore, you will need to fund your wallet with **frxUSD** and **sfrxUSD** on **Fraxtal mainnet**.
 
 ## Project setup
 
@@ -403,13 +407,23 @@ async function unstakeSfrxusd() {
 
 // ============ Main ============
 async function main() {
-  // Staking flow
-  await approveFrxusdForStaking();
-  await stakeFrxusd();
+  const command = process.argv[2];
 
-  // Unstaking flow
-  await approveSfrxusdForUnstaking();
-  await unstakeSfrxusd();
+  switch (command) {
+    case 'stake-frxusd':
+      console.log('Staking frxusd for sfrxusd...');
+      await approveFrxusdForStaking();
+      await stakeFrxusd();
+      break;
+    case 'unstake-sfrxusd':
+      console.log('Unstaking sfrxusd for frxusd...');
+      await approveSfrxusdForUnstaking();
+      await unstakeSfrxusd();
+      break;
+    default:
+      console.error('Invalid command. Please use "stake-frxusd" or "unstake-sfrxusd".');
+      process.exit(1);
+  }
 
   console.log('Staking and unstaking completed!');
 }
