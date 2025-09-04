@@ -5,4 +5,852 @@ lang: en-US
 
 # Cross-Chain frxUSD Minting with FraxNet
 
-Guide coming soon...
+Coming soon...
+
+## Overview
+
+The Fraxnet system enables cross-chain frxUSD minting by:
+
+1. Deploying a Fraxnet deposit contract via the factory on Ethereum mainnet
+2. Transferring USDC directly to the deployed Fraxnet contract (if you already have USDC on Ethereum)
+3. Minting frxUSD on the destination chain (Base mainnet in this example)
+4. Managing gas requirements on both chains (ETH on both Ethereum and Base)
+
+**Note**: If you don't have USDC on Ethereum mainnet, you'll need to bridge it from another chain using CCTP before proceeding with this guide.
+
+## Prerequisites
+
+Before you start building the sample app to perform cross-chain frxUSD minting, ensure you have met the following prerequisites:
+
+1. **Install Node.js and npm**
+
+   - Download and install **Node.js** directly or use a version manager like **nvm**.
+   - **npm** is included with Node.js.
+
+2. **Set up a non-custodial wallet** (for example, MetaMask)
+
+   - You can download, install, and create a **MetaMask** wallet from its official website.
+   - During setup, create a wallet on **Ethereum mainnet**.
+   - Retrieve the **private key** for your wallet, as it will be required in the script below.
+
+3. **Fund your wallet with gas tokens on both chains**
+
+   - **Ethereum mainnet**: You need **ETH** for gas fees
+   - **Base mainnet**: You need **ETH** for gas fees (Base uses ETH as its gas token)
+   - **USDC**: You need USDC on Ethereum mainnet (can be transferred directly or bridged via CCTP from other chains)
+
+## Project setup
+
+To build the script, first set up your project environment and install the required dependencies.
+
+### 1. Set up a new project
+
+Create a new directory and initialize a new `Node.js` project with default settings:
+
+```shell
+mkdir fraxnet-cross-chain-minting
+cd fraxnet-cross-chain-minting
+npm init -y
+```
+
+This also creates a default `package.json` file.
+
+### 2. Install dependencies
+
+In your project directory, install the required dependencies, including `viem`:
+
+```shell
+npm install dotenv@^16.4.7 viem@^2.23.4
+```
+
+This sets up your development environment with the necessary libraries for building the script. It also updates the `package.json` file with the dependencies.
+
+### 3. Add module type
+
+Add `"type": "module"` to the `package.json` file:
+
+```json
+{
+  "name": "fraxnet-cross-chain-minting",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node cross-chain-mint.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "viem": "^2.23.4"
+  }
+}
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in your project directory and add your wallet private key:
+
+```shell
+echo "PRIVATE_KEY=your-private-key-here" > .env
+```
+
+**Warning:** This is strictly for testing purposes. **Never share your private key**.
+
+## Script setup
+
+This section covers the necessary setup for the cross-chain minting script, including defining keys and addresses, and configuring the wallet and public clients for interacting with the source and destination chains.
+
+### 1. Replace with your private key and wallet address
+
+Ensure that this section of the file includes your **private key** and associated **wallet address**. The script also predefines the **Fraxnet contract addresses**, **chain EIDs**, and **mint amount**.
+
+```javascript
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Fraxnet Contract Addresses
+const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0x...'; // Fraxnet deposit factory address on Ethereum mainnet
+const FRAXNET_DEPOSIT_ABI = '';
+const FRAXNET_DEPOSIT_FACTORY_ABI = ''; // Fraxnet deposit factory ABI
+
+// Chain EIDs
+const ETHEREUM_MAINNET_EID = 1; // Ethereum mainnet EID
+const BASE_MAINNET_EID = 30184; // Base mainnet EID
+
+// Token Addresses
+const ETHEREUM_MAINNET_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC address on Ethereum mainnet
+const BASE_MAINNET_FRXUSD_ADDRESS = '0x...'; // frxUSD address on Base mainnet
+const BASE_MAINNET_REMOTE_HOP = '0x...'; // Remote Hop contract address on Base mainnet
+
+// Mint and Redeem Parameters
+const MINT_AMOUNT = 10_000_000n; // 10 USDC (6 decimals)
+const REDEEM_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const RECIPIENT_ADDRESS = '0x...'; // Address that will receive frxUSD on Base mainnet
+const DESTINATION_ADDRESS_BYTES32 = '0x...'; // Recipient address in bytes32 format for LayerZero transfer
+```
+
+### 2. Set up wallet and public clients
+
+The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be deploying Fraxnet contracts on **Ethereum mainnet** and minting frxUSD on **Base mainnet**.
+
+```javascript
+// Set up wallet and public clients
+const ethereumClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const baseClient = createWalletClient({
+  chain: base,
+  transport: http(),
+  account,
+});
+```
+
+## Fraxnet Cross-Chain Minting Process
+
+The following sections outline the cross-chain minting process using the Fraxnet system. Follow the steps below to perform cross-chain frxUSD minting:
+
+### 1. Deploy Fraxnet Deposit Contract
+
+Each Fraxnet deposit contract must be deployed via the Fraxnet deposit factory contract on Ethereum mainnet. This contract enables minting frxUSD on other chains or redeeming USDC on other chains.
+
+**Important**: Each Fraxnet contract deployed by the factory only has one recipient and one destination chain. Anyone can send USDC or frxUSD to the contract for minting or redeeming, but the actual minted frxUSD or redeemed USDC can only be sent to the address passed in when creating the Fraxnet contract, and newly minted frxUSD is only sent to the chain EID specified.
+
+```javascript
+async function deployFraxnetDepositContract() {
+  console.log('Deploying Fraxnet deposit contract...');
+
+  const txHash = await ethereumClient.writeContract({
+    chainId: ETHEREUM_MAINNET_EID,
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: FRAXNET_DEPOSIT_FACTORY_ABI,
+    functionName: 'createFraxNetDeposit',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID (Base mainnet)
+      toBytes32(RECIPIENT_ADDRESS), // Recipient address on Base mainnet
+      toBytes32(zeroAddress), // USDC ATA (only needed for Solana)
+    ],
+  });
+
+  console.log(`Fraxnet contract deployment Tx: ${txHash}`);
+  return txHash;
+}
+```
+
+**Note**: The `chainEid === 30168` check is for Solana which requires additional formatting for the address. For other chains like Base, use `toBytes32()` for the recipient address.
+
+### 2. Get Fraxnet Contract Address
+
+After deployment, retrieve the deployed Fraxnet contract address for the specific recipient and destination chain:
+
+```javascript
+async function getFraxnetDepositAddress() {
+  console.log('Getting Fraxnet deposit contract address...');
+
+  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: FRAXNET_DEPOSIT_FACTORY_ABI,
+    functionName: 'getDeploymentAddress',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID
+      toBytes32(RECIPIENT_ADDRESS), // Recipient address
+      toBytes32(zeroAddress), // USDC ATA (only needed for Solana)
+    ],
+  });
+
+  console.log(`Fraxnet deposit contract address: ${fraxnetDepositAddress}`);
+  return fraxnetDepositAddress;
+}
+```
+
+### 3. Approve USDC for Fraxnet Contract
+
+Before minting, approve USDC for the deployed Fraxnet contract so it can pull USDC from your wallet:
+
+```javascript
+async function approveUsdcForFraxnet(fraxnetDepositAddress) {
+  console.log('Approving USDC for Fraxnet contract...');
+
+  const approveTx = await ethereumClient.writeContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'approve',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'spender', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'approve',
+    args: [fraxnetDepositAddress, MINT_AMOUNT],
+  });
+
+  console.log(`USDC Approval Tx: ${approveTx}`);
+}
+```
+
+### 4. Transfer USDC to Fraxnet Contract
+
+Transfer USDC to the Fraxnet contract to initiate the minting process:
+
+```javascript
+async function transferUsdcToFraxnet(fraxnetDepositAddress) {
+  console.log('Transferring USDC to Fraxnet contract...');
+
+  const transferTx = await ethereumClient.writeContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'transfer',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'to', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'transfer',
+    args: [fraxnetDepositAddress, MINT_AMOUNT],
+  });
+
+  console.log(`USDC Transfer Tx: ${transferTx}`);
+}
+```
+
+### 5. Get Quote for Native Fee
+
+Calculate the FraxZero native fee required to process the frxUSD mint:
+
+```javascript
+async function getMintQuote(fraxnetDepositAddress) {
+  console.log('Getting mint quote...');
+
+  const quoteResult = await ethereumPublicClient.readContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'quote',
+    args: [MINT_AMOUNT],
+  });
+
+  const nativeFee = quoteResult.nativeFee;
+  console.log(`Native fee required: ${nativeFee} ETH`);
+
+  return nativeFee;
+}
+```
+
+### 6. Process Deposit and Mint frxUSD
+
+Call `processDeposit` on the Fraxnet contract to complete the minting process:
+
+```javascript
+async function processDeposit(fraxnetDepositAddress, nativeFee) {
+  console.log('Processing deposit and minting frxUSD...');
+
+  const processMintHash = await ethereumClient.writeContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'processDeposit',
+    args: [MINT_AMOUNT],
+    value: nativeFee,
+  });
+
+  console.log(`Process deposit Tx: ${processMintHash}`);
+  return processMintHash;
+}
+```
+
+## Fraxnet Cross-Chain Redemption Process
+
+After minting frxUSD on Base mainnet, you can redeem it back to USDC on Ethereum mainnet. The redemption process involves transferring frxUSD from Base to the Fraxnet contract on Ethereum, then calling `processRedemption`.
+
+### 1. Approve frxUSD for Transfer
+
+First, approve frxUSD on Base mainnet for the Remote Hop contract to enable cross-chain transfer:
+
+```javascript
+async function approveFrxUSD() {
+  console.log('Approving frxUSD transfer...');
+
+  const approveTx = await baseClient.writeContract({
+    address: BASE_MAINNET_FRXUSD_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'approve',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'spender', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'approve',
+    args: [BASE_MAINNET_REMOTE_HOP, REDEEM_AMOUNT], // Set max allowance in wei
+  });
+
+  console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+```
+
+### 2. Get Transfer Quote
+
+Retrieve the quote for the cross-chain transfer fee:
+
+```javascript
+async function retrieveQuote() {
+  console.log('Retrieving transfer quote...');
+
+  const quote = await baseClient.readContract({
+    address: BASE_MAINNET_REMOTE_HOP,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      BASE_MAINNET_FRXUSD_ADDRESS,
+      ETHEREUM_MAINNET_EID,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      REDEEM_AMOUNT,
+    ],
+  });
+
+  const nativeFee = quote.nativeFee;
+  console.log(`Transfer fee required: ${nativeFee} ETH`);
+  return nativeFee;
+}
+```
+
+### 3. Transfer frxUSD to Ethereum
+
+Transfer frxUSD from Base mainnet to the Fraxnet contract on Ethereum mainnet:
+
+```javascript
+async function transferFrxUSD() {
+  console.log('Transferring frxUSD to Ethereum...');
+
+  const nativeFee = await retrieveQuote();
+  const transferTx = await baseClient.writeContract({
+    address: BASE_MAINNET_REMOTE_HOP,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'sendOFT',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
+      },
+    ],
+    functionName: 'sendOFT',
+    args: [
+      BASE_MAINNET_FRXUSD_ADDRESS,
+      ETHEREUM_MAINNET_EID,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      REDEEM_AMOUNT,
+    ],
+    value: nativeFee,
+  });
+
+  console.log(`Transfer Tx: ${transferTx}`);
+  return transferTx;
+}
+```
+
+### 4. Process Redemption
+
+After the frxUSD has been transferred to the Fraxnet contract on Ethereum, call `processRedemption` to convert frxUSD back to USDC:
+
+```javascript
+async function processRedemption(fraxnetDepositAddress) {
+  console.log('Processing redemption...');
+
+  const redemptionTx = await ethereumClient.writeContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'processRedemption',
+    args: [REDEEM_AMOUNT],
+  });
+
+  console.log(`Redemption Tx: ${redemptionTx}`);
+  return redemptionTx;
+}
+```
+
+## Build the Complete Script
+
+Create a `cross-chain-mint.js` file in your project directory and paste the following complete script:
+
+### cross-chain-mint.js
+
+```javascript
+// ============ Setup (imports, account, clients) ============
+import 'dotenv/config';
+import {
+  createWalletClient,
+  createPublicClient,
+  http,
+  toBytes32,
+  zeroAddress,
+  encodeFunctionData,
+  nonceManager,
+} from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { mainnet, base } from 'viem/chains';
+
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Fraxnet Contract Addresses
+const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0x...'; // Fraxnet deposit factory address on Ethereum mainnet
+const FRAXNET_DEPOSIT_ABI = ''; // Fraxnet deposit contract ABI
+const FRAXNET_DEPOSIT_FACTORY_ABI = ''; // Fraxnet deposit factory ABI
+
+// Chain EIDs
+const ETHEREUM_MAINNET_EID = 1; // Ethereum mainnet EID
+const BASE_MAINNET_EID = 30184; // Base mainnet EID
+
+// Token Addresses
+const ETHEREUM_MAINNET_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC address on Ethereum mainnet
+const BASE_MAINNET_FRXUSD_ADDRESS = '0x...'; // frxUSD address on Base mainnet
+const BASE_MAINNET_REMOTE_HOP = '0x...'; // Remote Hop contract address on Base mainnet
+
+// Mint and Redeem Parameters
+const MINT_AMOUNT = 10_000_000n; // 10 USDC (6 decimals)
+const REDEEM_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const RECIPIENT_ADDRESS = '0x...'; // Address that will receive frxUSD on Base mainnet
+const DESTINATION_ADDRESS_BYTES32 = '0x...'; // Recipient address in bytes32 format for LayerZero transfer
+
+// Wallet and public clients
+const ethereumClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const baseClient = createWalletClient({
+  chain: base,
+  transport: http(),
+  account,
+});
+
+// ============ Minting Functions ============
+
+// 1) Deploy Fraxnet deposit contract
+async function deployFraxnetDepositContract() {
+  console.log('Deploying Fraxnet deposit contract...');
+
+  const txHash = await ethereumClient.writeContract({
+    chainId: ETHEREUM_MAINNET_EID,
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: FRAXNET_DEPOSIT_FACTORY_ABI,
+    functionName: 'createFraxNetDeposit',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID (Base mainnet)
+      toBytes32(RECIPIENT_ADDRESS), // Recipient address on Base mainnet
+      toBytes32(zeroAddress), // USDC ATA (only needed for Solana)
+    ],
+  });
+
+  console.log(`Fraxnet contract deployment Tx: ${txHash}`);
+  return txHash;
+}
+
+// 2) Get Fraxnet contract address
+async function getFraxnetDepositAddress() {
+  console.log('Getting Fraxnet deposit contract address...');
+
+  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: FRAXNET_DEPOSIT_FACTORY_ABI,
+    functionName: 'getDeploymentAddress',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID
+      toBytes32(RECIPIENT_ADDRESS), // Recipient address
+      toBytes32(zeroAddress), // USDC ATA (only needed for Solana)
+    ],
+  });
+
+  console.log(`Fraxnet deposit contract address: ${fraxnetDepositAddress}`);
+  return fraxnetDepositAddress;
+}
+
+// 3) Approve USDC for Fraxnet contract
+async function approveUsdcForFraxnet(fraxnetDepositAddress) {
+  console.log('Approving USDC for Fraxnet contract...');
+
+  const approveTx = await ethereumClient.writeContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'approve',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'spender', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'approve',
+    args: [fraxnetDepositAddress, MINT_AMOUNT],
+  });
+
+  console.log(`USDC Approval Tx: ${approveTx}`);
+}
+
+// 4) Transfer USDC to Fraxnet contract
+async function transferUsdcToFraxnet(fraxnetDepositAddress) {
+  console.log('Transferring USDC to Fraxnet contract...');
+
+  const transferTx = await ethereumClient.writeContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'transfer',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'to', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'transfer',
+    args: [fraxnetDepositAddress, MINT_AMOUNT],
+  });
+
+  console.log(`USDC Transfer Tx: ${transferTx}`);
+}
+
+// 5) Get mint quote
+async function getMintQuote(fraxnetDepositAddress) {
+  console.log('Getting mint quote...');
+
+  const quoteResult = await ethereumPublicClient.readContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'quote',
+    args: [MINT_AMOUNT],
+  });
+
+  const nativeFee = quoteResult.nativeFee;
+  console.log(`Native fee required: ${nativeFee} ETH`);
+
+  return nativeFee;
+}
+
+// 6) Process deposit and mint frxUSD
+async function processDeposit(fraxnetDepositAddress, nativeFee) {
+  console.log('Processing deposit and minting frxUSD...');
+
+  const processMintHash = await ethereumClient.writeContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'processDeposit',
+    args: [MINT_AMOUNT],
+    value: nativeFee,
+  });
+
+  console.log(`Process deposit Tx: ${processMintHash}`);
+  return processMintHash;
+}
+
+// ============ Redemption Functions ============
+
+// 1) Approve frxUSD for transfer
+async function approveFrxUSD() {
+  console.log('Approving frxUSD transfer...');
+
+  const approveTx = await baseClient.writeContract({
+    address: BASE_MAINNET_FRXUSD_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'approve',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'spender', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ],
+    functionName: 'approve',
+    args: [BASE_MAINNET_REMOTE_HOP, REDEEM_AMOUNT], // Set max allowance in wei
+  });
+
+  console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+
+// 2) Get transfer quote
+async function retrieveQuote() {
+  console.log('Retrieving transfer quote...');
+
+  const quote = await baseClient.readContract({
+    address: BASE_MAINNET_REMOTE_HOP,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      BASE_MAINNET_FRXUSD_ADDRESS,
+      ETHEREUM_MAINNET_EID,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      REDEEM_AMOUNT,
+    ],
+  });
+
+  const nativeFee = quote.nativeFee;
+  console.log(`Transfer fee required: ${nativeFee} ETH`);
+  return nativeFee;
+}
+
+// 3) Transfer frxUSD to Ethereum
+async function transferFrxUSD() {
+  console.log('Transferring frxUSD to Ethereum...');
+
+  const nativeFee = await retrieveQuote();
+  const transferTx = await baseClient.writeContract({
+    address: BASE_MAINNET_REMOTE_HOP,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'uint32', name: '_dstEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'sendOFT',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
+      },
+    ],
+    functionName: 'sendOFT',
+    args: [
+      BASE_MAINNET_FRXUSD_ADDRESS,
+      ETHEREUM_MAINNET_EID,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      REDEEM_AMOUNT,
+    ],
+    value: nativeFee,
+  });
+
+  console.log(`Transfer Tx: ${transferTx}`);
+  return transferTx;
+}
+
+// 4) Process redemption
+async function processRedemption(fraxnetDepositAddress) {
+  console.log('Processing redemption...');
+
+  const redemptionTx = await ethereumClient.writeContract({
+    address: fraxnetDepositAddress,
+    abi: FRAXNET_DEPOSIT_ABI,
+    functionName: 'processRedemption',
+    args: [REDEEM_AMOUNT],
+  });
+
+  console.log(`Redemption Tx: ${redemptionTx}`);
+  return redemptionTx;
+}
+
+// ============ Main Execution ============
+async function main() {
+  try {
+    console.log('=== Starting Cross-Chain frxUSD Minting Process ===');
+
+    // Step 1: Deploy Fraxnet deposit contract
+    await deployFraxnetDepositContract();
+
+    // Step 2: Get the deployed contract address
+    const fraxnetDepositAddress = await getFraxnetDepositAddress();
+
+    // Step 3: Approve USDC for the Fraxnet contract
+    await approveUsdcForFraxnet(fraxnetDepositAddress);
+
+    // Step 4: Transfer USDC to the Fraxnet contract
+    await transferUsdcToFraxnet(fraxnetDepositAddress);
+
+    // Step 5: Get quote for native fee
+    const nativeFee = await getMintQuote(fraxnetDepositAddress);
+
+    // Step 6: Process deposit and mint frxUSD
+    await processDeposit(fraxnetDepositAddress, nativeFee);
+
+    console.log('=== Cross-chain frxUSD minting completed! ===');
+    console.log(
+      `frxUSD has been minted on Base mainnet and sent to: ${RECIPIENT_ADDRESS}`,
+    );
+
+    console.log('\n=== Starting Cross-Chain frxUSD Redemption Process ===');
+
+    // Step 1: Approve frxUSD for transfer
+    await approveFrxUSD();
+
+    // Step 2: Transfer frxUSD to Ethereum
+    await transferFrxUSD();
+
+    // Step 3: Process redemption (wait for transfer to complete first)
+    console.log('Waiting for frxUSD transfer to complete...');
+    // Add appropriate delay or confirmation logic here
+    await processRedemption(fraxnetDepositAddress);
+
+    console.log('=== Cross-chain frxUSD redemption completed! ===');
+    console.log(`USDC has been redeemed and sent to: ${RECIPIENT_ADDRESS}`);
+  } catch (error) {
+    console.error('Error during cross-chain operations:', error);
+  }
+}
+
+main().catch(console.error);
+```
+
+## Important Notes
+
+1. **Gas Requirements**: You need ETH on both Ethereum mainnet (for contract deployment and USDC operations) and Base mainnet (for receiving and using the minted frxUSD).
+
+2. **USDC on Ethereum**: If you already have USDC on Ethereum mainnet, you can transfer it directly to the Fraxnet contract. If not, you'll need to bridge it from another chain using CCTP before proceeding.
+
+3. **Contract Addresses**: Replace the placeholder contract addresses and ABIs with the actual deployed contract addresses and ABIs.
+
+4. **Recipient Address**: The `RECIPIENT_ADDRESS` should be the address on Base mainnet that will receive the minted frxUSD.
+
+5. **One Recipient per Contract**: Each deployed Fraxnet contract can only send frxUSD to one specific recipient address on one specific destination chain.
+
+6. **Redemption Process**: The redemption process requires waiting for the LayerZero transfer to complete before calling `processRedemption`. Consider adding appropriate confirmation logic.
+
+## Test the Script
+
+To test the script, run the following command:
+
+```shell
+node cross-chain-mint.js
+```
+
+Once the script runs and all operations are finalized, the **confirmation receipts** are logged in the console, and frxUSD will be minted on Base mainnet and sent to the specified recipient address. The redemption process will then convert the frxUSD back to USDC on Ethereum mainnet.
+
+## What's next
+
+- [Fraxnet Contract Architecture](/fraxnet/contracts/proxyArchitecture)
+- [Fraxnet Deposit Factory](/fraxnet/contracts/fraxnetDepositFactory)
+- [Cross-Chain Transfers with Fraxnet](/frxusd/cross-chain-transfers-quickstarts)
+- [FraxZero Overview](/frxusd/frax-zero)
