@@ -1,0 +1,384 @@
+---
+title: Transfer frxUSD from Solana
+lang: en-US
+---
+
+# Transfer frxUSD from Solana
+
+This guide demonstrates how to use the LayerZero V2 Solana OFT SDK, solana/web3.js, and Metaplex framework to enable users to transfer frxUSD from **Solana** to **Ethereum** and **Fraxtal** directly from their browser.
+
+**Note:** This guide does not support frxUSD transfers where Solana is not the source chain. Ethereum mainnet and Fraxtal mainnet are the only destination chains supported if the source chain is Solana.
+
+**Important:** The frxUSD token on Solana only has **9 decimals** vs the typical 18 decimals on EVM chains.
+
+## Prerequisites
+
+Before you start building the sample app to perform a frxUSD transfer from Solana, ensure you have met the following prerequisites:
+
+1. **Create a React Vite or Next.js project**
+
+2. **Set up a non-custodial wallet** on Phantom
+
+   - You can download, install, and create a **Phantom** wallet from its official website.
+   - During setup, create a wallet on **Solana mainnet**.
+
+3. **Fund your wallet with the gas token SOL on Solana mainnet**
+
+4. **Fund your wallet with frxUSD on Solana mainnet**
+
+   - For this guide, we will be transferring frxUSD from **Solana mainnet** to **Ethereum mainnet** and **Fraxtal mainnet**. Therefore, you will need to [fund your wallet](https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) with **frxUSD** on **Solana mainnet**.
+
+## Project setup
+
+To get started, first set up your project environment and install the required dependencies.
+
+### 1. Set up a new project
+
+Create a new **React.js Typescript** project with either **Vite** or **Next.js**:
+
+This also creates a default `package.json` file.
+
+### 3. Solana OFT SDK dependencies setup
+
+Carefully follow all of the instructions in the [LayerZero V2 Solana OFT SDK](https://docs.layerzero.network/v2/developers/solana/oft/sdk) to setup and install the additional required dependencies and config for Vite or Next.js.
+
+> **Note:** It is recommended to use `@solana/web3.js` version `^1.98.0`.
+
+### 4. Install Solana wallet dependency
+
+In your project directory, run the following command to install the required dependencies:
+
+```bash
+npm install @solana/wallet-adapter-react@^0.15.35 @solana/wallet-adapter-wallets@^0.19.32
+```
+
+## SendOft.ts setup
+
+This section covers the necessary setup for the `SendOft.ts` file which includes the helper function for sending frxUSD from Solana to Ethereum mainnet and Fraxtal mainnet.
+
+### 1. Set up the file
+
+Create a new file called `SendOft.ts` in your project directory.
+
+### 2. Paste the following code
+
+```typescript
+import { publicKey, type Signer } from '@metaplex-foundation/umi';
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import {
+  safeFetchToken,
+  findAssociatedTokenPda,
+  mplToolbox,
+} from '@metaplex-foundation/mpl-toolbox';
+import {
+  ComputeBudgetProgram,
+  Connection,
+  PublicKey,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js';
+import { addressToBytes32 } from '@layerzerolabs/lz-v2-utilities';
+import { oft } from '@layerzerolabs/oft-v2-solana-sdk';
+import { toWeb3JsInstruction } from '@metaplex-foundation/umi-web3js-adapters';
+
+// Replace with your Solana mainnet RPC URL https://www.helius.dev/
+export const SOLANA_RPC_URL = 'https://example-mainnet.helius-rpc.com';
+
+export async function sendOftFromSolana({
+  amount,
+  to,
+  toEid,
+  programId,
+  mint,
+  escrow,
+  userSigner,
+}: {
+  amount: bigint;
+  to: string;
+  toEid: number;
+  programId: string;
+  mint: string;
+  escrow: string;
+  userSigner: Signer;
+}) {
+  const frxUsdProgramId = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+  const umi = createUmi(SOLANA_RPC_URL).use(mplToolbox());
+  const umiWalletSigner = userSigner;
+  const oftProgramId = publicKey(programId);
+  const oftMint = publicKey(mint);
+  const oftEscrow = publicKey(escrow);
+  const tokenProgramId = publicKey(frxUsdProgramId);
+  const tokenAccount = findAssociatedTokenPda(umi, {
+    mint: oftMint,
+    owner: userSigner.publicKey,
+    tokenProgramId,
+  });
+  console.log(tokenAccount);
+  if (!tokenAccount) {
+    throw new Error(
+      `No token account found for mint ${mint.toString()} and owner ${
+        umiWalletSigner.publicKey
+      } in program ${tokenProgramId}`,
+    );
+  }
+  const tokenAccountData = await safeFetchToken(umi, tokenAccount);
+  console.log(tokenAccountData);
+  const recipientAddressBytes32 = addressToBytes32(to);
+  const { nativeFee } = await oft.quote(
+    umi.rpc,
+    {
+      payer: userSigner.publicKey,
+      tokenMint: oftMint,
+      tokenEscrow: oftEscrow,
+    },
+    {
+      payInLzToken: false,
+      to: Buffer.from(recipientAddressBytes32),
+      dstEid: toEid,
+      amountLd: amount,
+      minAmountLd: (amount * 99n) / 100n,
+      options: Buffer.from(''),
+      composeMsg: undefined,
+    },
+    {
+      oft: oftProgramId,
+    },
+  );
+  console.log(nativeFee);
+  const ix = await oft.send(
+    umi.rpc,
+    {
+      payer: umiWalletSigner,
+      tokenMint: oftMint,
+      tokenEscrow: oftEscrow,
+      tokenSource: tokenAccount[0],
+    },
+    {
+      to: Buffer.from(recipientAddressBytes32),
+      dstEid: toEid,
+      amountLd: amount,
+      minAmountLd: (amount * 99n) / 100n,
+      options: Buffer.from(''),
+      composeMsg: undefined,
+      nativeFee,
+    },
+    {
+      oft: oftProgramId,
+      token: tokenProgramId,
+    },
+  );
+  const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
+  const ALT_ADDRESS = new PublicKey('AokBxha6VMLLgf97B5VYHEtqztamWmYERBmmFvjuTzJB');
+
+  const { value: lookupTableAccount } =
+    await connection.getAddressLookupTable(ALT_ADDRESS);
+  if (!lookupTableAccount) {
+    throw new Error('ALT not found');
+  }
+  const web3Instruction = toWeb3JsInstruction(ix.instruction);
+  const computeBudgetIx = ComputeBudgetProgram.setComputeUnitLimit({
+    units: 400000, // Increase to 400k units (default is 200k)
+  });
+  const { blockhash } = await connection.getLatestBlockhash();
+  const messageV0 = new TransactionMessage({
+    payerKey: new PublicKey(userSigner.publicKey),
+    recentBlockhash: blockhash,
+    instructions: [computeBudgetIx, web3Instruction],
+  }).compileToV0Message([lookupTableAccount]);
+  const transaction = new VersionedTransaction(messageV0);
+
+  return transaction;
+}
+```
+
+### 3. Get your Solana RPC URL
+
+Replace the `SOLANA_RPC_URL` variable in the `SendOft.ts` file with your Solana RPC URL.
+
+```typescript
+export const SOLANA_RPC_URL = 'https://example-mainnet.helius-rpc.com';
+```
+
+To get your Solana RPC URL, you can use a service like [Helius](https://www.helius.dev/).
+
+## TransferFrxusd.tsx setup
+
+This section covers the necessary setup for the `TransferFrxusd.tsx` file for transferring frxUSD from Solana to Ethereum and Fraxtal using the helper functions in the `SendOft.ts` file.
+
+### 1. Set up the file
+
+Create a new file called `TransferFrxusd.tsx` in your project directory.
+
+### 2. Paste the following code
+
+```tsx
+import { Connection } from '@solana/web3.js';
+import { parseUnits } from 'viem';
+import { sendOftFromSolana, SOLANA_RPC_URL } from './SendOft';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+
+function TransferFrxusd() {
+  const { wallets, select, publicKey, signTransaction, disconnect } = useWallet();
+
+  const phantomWallet = wallets.find((wallet) => wallet.adapter.name === 'Phantom');
+
+  if (!phantomWallet) {
+    throw new Error('No Phantom wallet found');
+  }
+  const FRXUSD_AMOUNT = '0.1'; // Amount in frxUSD (e.g., 0.1 frxUSD)
+
+  const handleTransfer = async (eid: number) => {
+    if (!publicKey || !signTransaction) {
+      throw new Error('No public key found');
+    }
+    // Example constants for demonstration
+    const RECIPIENT_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Enter your recipient wallet address here
+    const DESTINATION_CHAIN_EID = eid; // EID of the destination chain (either Ethereum mainnet or Fraxtal mainnet)
+    const SOLANA_FRXUSD_MINT = 'GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw'; // frxUSD mint on Solana
+    const SOLANA_FRXUSD_PROGRAM_ID = 'E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ'; // frxUSD Program ID on Solana
+    const SOLANA_FRXUSD_ESCROW_ADDRESS = '84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX'; // frxUSD escrow address on Solana
+
+    const tx = await sendOftFromSolana({
+      // amount: The amount of frxUSD to transfer in wei (smallest unit)
+      // Convert the string amount to bigint using parseUnits with 9 decimals (frxUSD standard on Solana). NOTE: This is different from the standard on EVM chains (18 decimals).
+      amount: parseUnits(FRXUSD_AMOUNT, 9),
+
+      // to: The recipient address on the destination chain (Ethereum/Fraxtal)
+      // Must be a valid EVM address (0x format)
+      to: RECIPIENT_ADDRESS,
+
+      // toEid: The LayerZero endpoint ID of the destination chain
+      // 1 = Ethereum mainnet, 2 = Fraxtal, etc.
+      toEid: DESTINATION_CHAIN_EID,
+
+      // programId: The Solana program ID that handles the OFT operations
+      // This is typically the Solana Token Program for frxUSD transfers
+      programId: SOLANA_FRXUSD_PROGRAM_ID,
+
+      // mint: The Solana mint address of the frxUSD token
+      // This identifies which token is being transferred
+      mint: SOLANA_FRXUSD_MINT,
+
+      // escrow: The escrow account address that temporarily holds tokens during transfer
+      // This is part of the LayerZero OFT protocol for cross-chain transfers
+      escrow: SOLANA_FRXUSD_ESCROW_ADDRESS,
+
+      // userSigner: The wallet signer object that provides signing capabilities
+      // Contains publicKey and signing methods for transaction authorization
+      userSigner: {
+        publicKey: fromWeb3JsPublicKey(publicKey),
+        signTransaction: async (tx) => tx,
+        signMessage: async (data) => data,
+        signAllTransactions: async (txs) => txs,
+      },
+    });
+
+    const signedTransaction = await signTransaction(tx);
+    const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
+    const txid = await connection.sendRawTransaction(signedTransaction.serialize());
+
+    console.log('Solana transaction ID:', txid);
+  };
+
+  const ETHEREUM_MAINNET_EID = 30101;
+  const FRAXTAL_MAINNET_EID = 30255;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        margin: 'auto',
+      }}
+    >
+      {!publicKey ? (
+        <button
+          onClick={() => {
+            try {
+              select(phantomWallet.adapter.name);
+              phantomWallet.adapter.connect();
+            } catch (error) {
+              console.error('Failed to connect:', error);
+            }
+          }}
+        >
+          Connect to Phantom Solana wallet
+        </button>
+      ) : (
+        <button onClick={() => disconnect()}>Disconnect {publicKey.toString()}</button>
+      )}
+      <button onClick={() => handleTransfer(ETHEREUM_MAINNET_EID)}>
+        Bridge {FRXUSD_AMOUNT} frxUSD from Solana to Ethereum
+      </button>
+      <button onClick={() => handleTransfer(FRAXTAL_MAINNET_EID)}>
+        Bridge {FRXUSD_AMOUNT} frxUSD from Solana to Fraxtal
+      </button>
+    </div>
+  );
+}
+
+export default TransferFrxusd;
+```
+
+### 3. Replace with your recipient wallet address
+
+Replace the `RECIPIENT_ADDRESS` variable in the `TransferFrxusd.tsx` file with your recipient wallet address on Ethereum mainnet and Fraxtal mainnet.
+
+## App.tsx setup
+
+### 1. Modify your `App.tsx` file in your project directory.
+
+```tsx
+'use client';
+
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import {
+  SolflareWalletAdapter,
+  PhantomWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
+import { useMemo } from 'react';
+import TransferFrxusd from './TransferFrxusd';
+import { SOLANA_RPC_URL } from './SendOft';
+
+function App() {
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
+
+  return (
+    <ConnectionProvider endpoint={SOLANA_RPC_URL}>
+      <WalletProvider wallets={wallets} autoConnect={true}>
+        <TransferFrxusd />
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+}
+
+export default App;
+```
+
+### 2. Test the code
+
+To test the code, run the following command:
+
+```bash
+npm run dev
+```
+
+## Parameter Reference
+
+The `sendOftFromSolana` function accepts the following parameters:
+
+| Parameter    | Type     | Description                                                                                                    | Example                                                    |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `amount`     | `bigint` | The amount of frxUSD to transfer . Use `parseUnits()` to convert from human-readable amounts.                  | `parseUnits('100', 9)` for 100 frxUSD                      |
+| `to`         | `string` | The recipient address on the destination chain (Ethereum/Fraxtal). Must be a valid EVM address in 0x format.   | `0xd8da6bf26964af9d7eed9e03e53415d37aa96045`               |
+| `toEid`      | `number` | The LayerZero endpoint ID of the destination chain.                                                            | `30101` for Ethereum mainnet. `30255` for Fraxtal mainnet. |
+| `programId`  | `string` | The Solana program ID that handles the OFT operations. For frxUSD, this is typically the Solana Token Program. | `E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ`             |
+| `mint`       | `string` | The Solana mint address of the frxUSD token. This identifies which token is being transferred.                 | `GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw`             |
+| `escrow`     | `string` | The escrow account address that temporarily holds tokens during the cross-chain transfer process.              | `84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX`             |
+| `userSigner` | `Signer` | The wallet signer object that provides signing capabilities for transaction authorization.                     | Wallet adapter signer object                               |
+
+## What's next
+
+- [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-with-fraxtal)

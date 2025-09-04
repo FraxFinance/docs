@@ -1,0 +1,446 @@
+---
+title: Mint & Redeem frxUSD with USDC
+lang: en-US
+---
+
+# Mint & Redeem frxUSD with USDC
+
+This guide demonstrates how to use the viem framework in a simple script that enables a user to mint and redeem frxUSD with **USDC** on **Ethereum mainnet**.
+
+## Prerequisites
+
+Before you start building the sample app to perform a frxUSD transfer, ensure you have met the following prerequisites:
+
+1. **Install Node.js and npm**
+
+   - Download and install **Node.js** directly or use a version manager like **nvm**.
+   - **npm** is included with Node.js.
+
+2. **Set up a non-custodial wallet** (for example, MetaMask)
+
+   - You can download, install, and create a **MetaMask** wallet from its official website.
+   - During setup, create a wallet on **Ethereum mainnet**.
+   - Retrieve the **private key** for your wallet, as it will be required in the script below.
+
+3. **Fund your wallet with the gas token and USDC on the source chain**
+
+   - For this guide, we will be minting and redeeming frxUSD with **USDC** on **Ethereum mainnet**. Therefore, you will need to fund your wallet with **USDC** and **ETH** on **Ethereum mainnet**.
+
+## Project setup
+
+To build the script, first set up your project environment and install the required dependencies.
+
+### 1. Set up a new project
+
+Create a new directory and initialize a new `Node.js` project with default settings:
+
+```shell
+mkdir frxusd-mint-and-redeem-with-usdc
+cd frxusd-mint-and-redeem-with-usdc
+npm init -y
+```
+
+This also creates a default `package.json` file.
+
+### 2. Install dependencies
+
+In your project directory, install the required dependencies, including `viem`:
+
+```shell
+npm install dotenv@^16.4.7 viem@^2.23.4
+```
+
+This sets up your development environment with the necessary libraries for building the script. It also updates the `package.json` file with the dependencies.
+
+### 3. Add module type
+
+Add `"type": "module"` to the `package.json` file:
+
+```json
+{
+  "name": "frax-mint-and-redeem-with-usdc",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node mint-and-redeem.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "viem": "^2.23.4"
+  }
+}
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in your project directory and add your wallet private key:
+
+```shell
+echo "PRIVATE_KEY=your-private-key-here" > .env
+```
+
+**Warning:** This is strictly for testing purposes. **Never share your private key**.
+
+## Script setup
+
+This section covers the necessary setup for the mint-and-redeem.js script, including defining keys and addresses, and configuring the wallet client for interacting with the source and destination chains.
+
+### 1. Replace with your private key and wallet address
+
+Ensure that this section of the file includes your **private key** and associated **wallet address**. The script also predefines the **Mint & Redeem contract address**, the **frxUSD address**, the **USDC address**, the **mint amount**, and the **redeem amount**. These definitions are critical for successfully minting and redeeming frxUSD between the intended wallets.
+
+```javascript
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Mint & Redeem Contract Addresses and Destination EID
+const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN =
+  '0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c'; // Mint & Redeem contract address using USDC
+
+// frxUSD and USDC Addresses
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD address on Ethereum mainnet
+const ETHEREUM_MAINNET_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC address on Ethereum mainnet
+
+// Mint & Redeem Parameters
+const MINT_AMOUNT = 10_000_000n; // 10 USDC
+const REDEEM_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD
+```
+
+### 2. Set up wallet client
+
+The **wallet client** configures the appropriate network settings using `viem`. In this example, the script will be minting and redeeming frxUSD with **USDC** on **Ethereum mainnet**.
+
+```javascript
+// Set up a wallet client on the source chain
+const ethereumClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+```
+
+## frxUSD mint & redeem process
+
+The following sections outline the relevant mint & redeem logic of the sample script. In this example, we are minting and redeeming frxUSD with **USDC** on **Ethereum mainnet**. Follow the steps below to perform the mint & redeem:
+
+### 1. Approve USDC & frxUSD
+
+Before minting, approve USDC for the [Mint & Redeem contract](/frxusd/frax-zero) on **Ethereum mainnet** so it can pull USDC from your wallet. Before redeeming, approve frxUSD for the same contract so it can pull frxUSD. For other assets, use the appropriate contract address from the [frxUSD Mint & Redeem addresses](/frxusd/mint-and-redeem-routes) page.
+
+```javascript
+async function approveUsdcForMint() {
+  console.log('Approving USDC for mint...');
+  const approveTx = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_USDC_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN, MINT_AMOUNT],
+    }),
+  });
+  console.log(`USDC Approval Tx: ${approveTx}`);
+}
+
+async function approveFrxusdForRedeem() {
+  console.log('Approving frxUSD for redeem...');
+  const approveTx = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN, REDEEM_AMOUNT],
+    }),
+  });
+  console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+```
+
+- Both approvals are now explicit: approve USDC for mint, approve frxUSD for redeem, both to `ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN`.
+
+### 2. Mint frxUSD with USDC
+
+After approving USDC, mint by calling the Mint & Redeem contract's `deposit` to receive frxUSD.
+
+```javascript
+async function mintFrxusdWithUsdc() {
+  console.log('Minting frxUSD with USDC...');
+  const txHash = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_assetsIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+          ],
+          name: 'deposit',
+          outputs: [{ internalType: 'uint256', name: '_sharesOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'deposit',
+      args: [MINT_AMOUNT, account.address],
+    }),
+  });
+  console.log(`Mint Tx: ${txHash}`);
+}
+```
+
+- Call `await approveUsdcForMint()` first, then `await mintFrxusdWithUsdc()`.
+
+### 3. Redeem frxUSD with USDC
+
+After approving frxUSD, redeem by calling the Mint & Redeem contract's `redeem` to receive USDC.
+
+```javascript
+async function redeemFrxusdForUsdc() {
+  console.log('Redeeming frxUSD for USDC...');
+  const txHash = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_sharesIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+            { internalType: 'address', name: '_owner', type: 'address' },
+          ],
+          name: 'redeem',
+          outputs: [{ internalType: 'uint256', name: '_assetsOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'redeem',
+      args: [REDEEM_AMOUNT, account.address, account.address],
+    }),
+  });
+  console.log(`Redeem Tx: ${txHash}`);
+}
+```
+
+- Call `await approveFrxusdForRedeem()` first, then `await redeemFrxusdForUsdc()`.
+
+## Build the script
+
+Create a `mint-and-redeem.js` in your project directory and paste the following. It groups the script setup and helper functions together at the top, followed by the main execution flow.
+
+**Note:** The wallet must contain **mainnet ETH** (gas) and **USDC** to mint, and **frxUSD** to redeem.
+
+### mint-and-redeem.js
+
+```javascript
+// ============ Setup (imports, account, client) ============
+import 'dotenv/config';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { mainnet } from 'viem/chains';
+
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// Mint & Redeem Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN =
+  '0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c'; // Mint & Redeem contract address using USDC
+
+// frxUSD and USDC Addresses
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29'; // frxUSD address on Ethereum mainnet
+const ETHEREUM_MAINNET_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; // USDC address on Ethereum mainnet
+
+// Mint & Redeem Parameters
+const MINT_AMOUNT = 10_000_000n; // 10 USDC (6 decimals)
+const REDEEM_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+
+// Wallet client
+const ethereumClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+
+// ============ Helpers ============
+
+// 1) Approve USDC for mint
+async function approveUsdcForMint() {
+  console.log('Approving USDC for mint...');
+  const approveTx = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_USDC_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN, MINT_AMOUNT],
+    }),
+  });
+  console.log(`USDC Approval Tx: ${approveTx}`);
+}
+
+// 2) Mint frxUSD with USDC
+async function mintFrxusdWithUsdc() {
+  console.log('Minting frxUSD with USDC...');
+  const txHash = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_assetsIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+          ],
+          name: 'deposit',
+          outputs: [{ internalType: 'uint256', name: '_sharesOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'deposit',
+      args: [MINT_AMOUNT, account.address],
+    }),
+  });
+  console.log(`Mint Tx: ${txHash}`);
+}
+
+// 3) Approve frxUSD for redeem
+async function approveFrxusdForRedeem() {
+  console.log('Approving frxUSD for redeem...');
+  const approveTx = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN, REDEEM_AMOUNT],
+    }),
+  });
+  console.log(`frxUSD Approval Tx: ${approveTx}`);
+}
+
+// 4) Redeem frxUSD for USDC
+async function redeemFrxusdForUsdc() {
+  console.log('Redeeming frxUSD for USDC...');
+  const txHash = await ethereumClient.sendTransaction({
+    to: ETHEREUM_MAINNET_FRXUSD_MINT_AND_REDEEM_USDC_CUSTODIAN,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_sharesIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+            { internalType: 'address', name: '_owner', type: 'address' },
+          ],
+          name: 'redeem',
+          outputs: [{ internalType: 'uint256', name: '_assetsOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'redeem',
+      args: [REDEEM_AMOUNT, account.address, account.address],
+    }),
+  });
+  console.log(`Redeem Tx: ${txHash}`);
+}
+
+// ============ Main ============
+async function main() {
+  const command = process.argv[2];
+  switch (command) {
+    case 'mint-with-usdc':
+      console.log('Running mint with USDC...');
+      await approveUsdcForMint();
+      await mintFrxusdWithUsdc();
+      break;
+    case 'redeem-for-usdc':
+      console.log('Running mint with USDC...');
+      await approveFrxusdForRedeem();
+      await redeemFrxusdForUsdc();
+      break;
+    default:
+      console.error(
+        'Invalid command. Please use "mint-with-usdc" or "redeem-with-frxusd".',
+      );
+      process.exit(1);
+  }
+  console.log('Mint and redeem completed!');
+}
+
+main().catch(console.error);
+```
+
+## Test the script
+
+To test minting frxUSD with USDC, run the following command:
+
+```shell
+node mint-and-redeem.js mint-with-usdc
+```
+
+To test redeeming frxUSD with USDC, run the following command:
+
+```shell
+node mint-and-redeem.js redeem-for-usdc
+```
+
+Once each script runs and the mint & redeem operations are finalized, the **confirmation receipts** are logged in the console.
+
+## What's next
+
+- [Mint & Redeem frxUSD with USTB](/frxusd/mint-and-redeem-quickstarts/ustb)
+- [Mint & Redeem frxUSD with BUIDL](/frxusd/mint-and-redeem-quickstarts/buidl)
+- [Mint & Redeem frxUSD with WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
+- [Mint & Redeem frxUSD with USDB](/frxusd/mint-and-redeem-quickstarts/usdb)

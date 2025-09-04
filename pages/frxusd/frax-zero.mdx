@@ -1,0 +1,94 @@
+---
+title: FraxZero Overview
+lang: en-US
+---
+
+# FraxZero Overview
+
+FraxZero is Frax's cross-chain infrastructure that enables seamless asset movement and liquidity. Built on a robust hub-and-spoke architecture, FraxZero provides users with flexibility to interact with **frxUSD** and **other Frax assets** across **20+ blockchain networks**.
+
+## Core Architecture
+
+### Hub and Spoke Model
+
+FraxZero operates on a hub-and-spoke architecture where **Fraxtal**, Frax's native L1 EVM chain, serves as the central hub for all cross-chain operations. This design ensures:
+
+- **Centralized Liquidity Management**: All bridged assets are routed through the Fraxtal Hub
+- **Efficient Asset Routing**: Optimized paths between [any supported chain](/frxusd/fraxzero-supported-networks) for 1:1 cross-chain transfers
+- **Unified Security Model**: Consistent security standards across all connected networks
+
+### Multi-Chain Asset Support
+
+FraxZero supports 6 Frax assets across 20+ blockchain networks, including:
+
+- **frxUSD** - Frax's stablecoin
+- **sfrxUSD** - Frax's yield-bearing stablecoin
+- **WFRAX** - Frax's wrapped governance token
+- **frxETH** - Frax's liquid staking derivative
+- **sfrxETH** - Frax's staked liquid staking derivative
+- **FPI** - Frax's price index stablecoin
+
+## Key Features
+
+### Dual Lockbox System
+
+FraxZero implements a dual lockbox mechanism that:
+
+- **Unlocks Native Liquidity**: Provides access to native Frax assets on multiple chains
+- **Enhanced Security**: Multiple security layers protect user assets during cross-chain transfers
+- **Instant Availability**: Assets are immediately available as native tokens on destination chains
+
+### Flexible Security Model
+
+The platform features a **3 of 3 Data Validation Network (DVN) requirement** that includes:
+
+- **Frax Team-Run DVN**: Direct oversight from Frax's security team
+- **Multi-Party Validation**: Distributed security across multiple validation networks
+- **Configurable Requirements**: Adaptable security parameters based on asset type and transfer size
+
+### Cross-Chain Asset Swapping
+
+FraxZero enables seamless asset swapping across chains with:
+
+- **Fraxtal Liquidity Access**: Users can access Fraxtal's deep liquidity from [any supported chain](/frxusd/fraxzero-supported-networks)
+- **No Chain Hopping Required**: Complete transactions without leaving the source network
+
+## Benefits for Users
+
+### For Traders
+
+- **Liquidity Access**: Tap into Fraxtal's deep liquidity from [any supported chain](/frxusd/fraxzero-supported-networks)
+- **1:1 Transfers**: Transfers between chains are always 1:1
+- **Faster Execution**: Transfers are faster than traditional cross-chain transfers such as Circle's CCTP
+
+### For Developers
+
+- **Simplified Integration**: Easy-to-use APIs for cross-chain operations
+- **Consistent Experience**: Uniform interface across all supported networks
+- **Security Assurance**: Built-in security features reduce integration complexity
+
+### For Liquidity Providers
+
+- **Cross-Chain Yield**: Earn rewards across multiple networks
+- **Risk Distribution**: Spread liquidity across multiple chains
+- **Enhanced Capital Efficiency**: Optimize asset utilization across the ecosystem
+
+## Supported Networks
+
+FraxZero currently supports **20+ blockchain networks**, providing comprehensive coverage across:
+
+- **Ethereum Mainnet** and EVM Layer 2 solutions
+- **Alternative Layer 1s** including Solana
+- **Frax-Native Networks** like Fraxtal
+
+## What's next
+
+To begin using FraxZero, check out our [FraxZero Contracts](/frxusd/fraxzero-supported-networks) and follow our quickstarts:
+
+- [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quickstarts/transfer-from-evm)
+- [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-solana)
+- [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-with-fraxtal)
+
+---
+
+_FraxZero represents the future of cross-chain finance, bringing seamless asset movement and unified liquidity access to the entire Frax ecosystem._

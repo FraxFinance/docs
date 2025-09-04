@@ -1,0 +1,37 @@
+{
+  "_frxusd_header": {
+    "title": "Frax USD (frxUSD)",
+    "type": "separator"
+  },
+  "index": "frxUSD Overview",
+  "frxusd-contracts": "frxUSD Contract Addresses",
+  "_cross_chain_transfers": {
+    "title": "Cross-Chain Transfers",
+    "type": "separator"
+  },
+  "frax-zero": "FraxZero Overview",
+  "fraxzero-supported-networks": "Supported Networks and EIDs",
+  "cross-chain-transfers-quickstarts": "Quickstarts: frxUSD Cross-Chain Transfers",
+  "_mint_and_redeem": {
+    "title": "Mint & Redeem",
+    "type": "separator"
+  },
+  "mint-and-redeem-overview": "Overview",
+  "mint-and-redeem-routes": "Supported Routes & Networks",
+  "mint-and-redeem-quickstarts": "Quickstarts: Mint & Redeem frxUSD on Ethereum",
+  "cross-chain-mint-and-redeem-quickstart": "Quickstart: Mint & Redeem frxUSD Cross-Chain",
+  "_stake_and_unstake": {
+    "title": "Stake & Unstake",
+    "type": "separator"
+  },
+  "stake-and-unstake-overview": "Overview",
+  "stake-and-unstake-supported-networks": "Supported Networks and EIDs",
+  "stake-and-unstake-quickstart-evm-chains": "Quickstart: Stake & Unstake frxUSD on EVM chains",
+  "stake-and-unstake-quickstart-ethereum": "Quickstart: Stake & Unstake frxUSD on Ethereum",
+  "stake-and-unstake-quickstart-fraxtal": "Quickstart: Stake & Unstake frxUSD on Fraxtal",
+  "_white_label_stablecoin": {
+    "title": "White-label Stablecoins",
+    "type": "separator"
+  },
+  "white-label-stablecoin-overview": "Overview"
+}

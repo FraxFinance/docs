@@ -1,0 +1,67 @@
+---
+title: Supported frxUSD Mint Redeem Routes & Networks
+lang: en-US
+---
+
+# frxUSD Mint & Redeem Supported Routes & Networks
+
+Mint and redeem frxUSD 1:1 on any of the supported blockchain networks below.
+
+## Mint & Redeem Routes on Ethereum
+
+The following table shows the supported assets you can use to mint and redeem frxUSD 1:1 on Ethereum mainnet, along with their token addresses and the corresponding Mint & Redeem contracts.
+
+**Note:** Please ensure the sender and recipient addresses are onboarded to hold **BUIDL**, **USTB**, or **WTGXX** in order to mint and redeem frxUSD using these assets.
+
+| Asset     | Asset Address                                                                                                           | Mint & Redeem Contract                                                                                                  | Issuer                      |
+| --------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| **USDC**  | [`0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48`](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48) | [`0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c`](https://etherscan.io/address/0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c) | Circle Internet Group, Inc. |
+| **USTB**  | [`0x43415eb6ff9db7e26a15b704e7a3edce97d31c4e`](https://etherscan.io/address/0x43415eb6ff9db7e26a15b704e7a3edce97d31c4e) | [`0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33`](https://etherscan.io/address/0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33) | Superstate Inc.             |
+| **BUIDL** | [`0x7712c34205737192402172409a8f7ccef8aa2aec`](https://etherscan.io/address/0x7712c34205737192402172409a8f7ccef8aa2aec) | [`0xe827abf9f462ac4f147753d86bc5f91e186e4e9c`](https://etherscan.io/address/0xe827abf9f462ac4f147753d86bc5f91e186e4e9c) | BlackRock, Inc.             |
+| **WTGXX** | [`0x1fecf3d9d4fee7f2c02917a66028a48c6706c179`](https://etherscan.io/address/0x1fecf3d9d4fee7f2c02917a66028a48c6706c179) | [`0x860Cc723935FC9A15fF8b1A94237a711DFeF7857`](https://etherscan.io/address/0x860Cc723935FC9A15fF8b1A94237a711DFeF7857) | WisdomTree, Inc.            |
+| **USDB**  | [`0xeac4269c9a01190b1400c4dc728864e61895fdf3`](https://etherscan.io/address/0x4300000000000000000000000000000000000003) | [`0xFE2Ea8dE262d956e852F12DE108fda57171a0a29`](https://etherscan.io/address/0xFE2Ea8dE262d956e852F12DE108fda57171a0a29) | Bridge.xyz                  |
+
+### Quickstart Guides
+
+- [Mint and redeem with USDC](/frxusd/mint-and-redeem-quickstarts/usdc)
+- [Mint and redeem with Superstate's USTB](/frxusd/mint-and-redeem-quickstarts/ustb)
+- [Mint and redeem with Blackrock's BUIDL](/frxusd/mint-and-redeem-quickstarts/buidl)
+- [Mint and redeem with WisdomTree's WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
+- [Mint and redeem with Bridge.xyz's USDB](/frxusd/mint-and-redeem-quickstarts/usdb)
+
+## Cross-Chain Mint & Redeem Routes
+
+Te FraxNet contract system allows for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks including Fraxtal, Arbitrum, Base, and others using **USDC** as the payment or redemption asset. The same factory contract powers [FraxNet](https://net.frax.com):
+
+| **Mainnet**  | **FraxNet Factory Address**                                                                                             |
+| :----------- | :---------------------------------------------------------------------------------------------------------------------- |
+| **Ethereum** | [`0xA3D62f83C433e2A56Af392E08a705A52DEd63696`](https://etherscan.io/address/0xA3D62f83C433e2A56Af392E08a705A52DEd63696) |
+
+Cross-chain minting is supported on **all listed chains below** where EID is how to specify which chain to mint frxUSD to.
+
+**Follow the [quickstart guide](/frxusd/cross-chain-mint-and-redeem-quickstart) to see it in action.**
+
+| **Mainnet**       | **EID** |
+| :---------------- | :------ |
+| **Ethereum**      | 30101   |
+| **Abstract**      | 30324   |
+| **Arbitrum**      | 30110   |
+| **Aurora**        | 30211   |
+| **Avalanche**     | 30106   |
+| **Base**          | 30184   |
+| **Berachain**     | 30362   |
+| **BSC**           | 30102   |
+| **Ink**           | 30339   |
+| **Katana**        | 30375   |
+| **Linea**         | 30183   |
+| **Mode**          | 30260   |
+| **Optimism**      | 30111   |
+| **Plume**         | 30370   |
+| **Polygon**       | 30109   |
+| **Polygon zkEVM** | 30158   |
+| **Scroll**        | 30214   |
+| **Sei**           | 30280   |
+| **Sonic**         | 30332   |
+| **Unichain**      | 30320   |
+| **XLayer**        | 30274   |
+| **zkSync**        | 30165   |

@@ -1,8 +1,8 @@
 {
   "proxyArchitecture": "Proxy Architecture",
-  "fraxnetDepositFactory": "Fraxnet Deposit Factory",
-  "fraxnetDeposit": "Fraxnet Deposit",
+  "fraxnetDepositFactory": "FraxNet Deposit Factory",
+  "fraxnetDeposit": "FraxNet Deposit",
   "rwaRedemptionCoordinator": "RWA Redemption Coordinator",
-  "fraxBeacon": "Fraxnet Beacon",
-  "frxUsdCustodians": "Fraxnet Custodians"
+  "fraxBeacon": "FraxNet Beacon",
+  "frxUsdCustodians": "FraxNet Custodians"
 }

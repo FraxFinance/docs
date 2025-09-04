@@ -1,0 +1,446 @@
+---
+title: Stake & Unstake frxUSD on Fraxtal
+lang: en-US
+---
+
+# Stake & Unstake frxUSD on Fraxtal
+
+This guide shows how to use the viem framework to **stake frxUSD for sfrxUSD** and **unstake sfrxUSD back to frxUSD** on **Fraxtal mainnet**.
+
+To see a list of all supported networks, see the [Stake & Unstake Supported Networks and EIDs](/frxusd/stake-and-unstake-supported-networks) page.
+
+**Note:** The method for staking and unstaking frxUSD on Fraxtal is different from the method for staking and unstaking frxUSD on all other EVM chains. See the [Stake & Unstake frxUSD on EVM chains](/frxusd/stake-and-unstake-quickstart-evm-chains) and [Stake & Unstake frxUSD on Ethereum](/frxusd/stake-and-unstake-quickstart-ethereum) guides for more information.
+
+## Prerequisites
+
+Before you start building the sample app to perform frxUSD staking operations, ensure you have met the following prerequisites:
+
+1. **Install Node.js and npm**
+
+   - Download and install **Node.js** directly or use a version manager like **nvm**.
+   - **npm** is included with Node.js.
+
+2. **Set up a non-custodial wallet** (for example, MetaMask)
+
+   - You can download, install, and create a **MetaMask** wallet from its official website.
+   - During setup, create a wallet on **Fraxtal mainnet**.
+   - Retrieve the **private key** for your wallet, as it will be required in the script below.
+
+3. **Fund your wallet with the gas token on Fraxtal**
+
+   - For this guide, we will be staking and unstaking frxUSD on **Fraxtal mainnet**. Therefore, you will need to fund your wallet with **FRAX** on **Fraxtal mainnet**.
+
+4. **Fund your wallet with frxUSD and sfrxUSD on the chain you want to stake and unstake from**
+
+   - For this guide, we will be staking and unstaking frxUSD on **Fraxtal mainnet**. Therefore, you will need to fund your wallet with **frxUSD** and **sfrxUSD** on **Fraxtal mainnet**.
+
+## Project setup
+
+To build the script, first set up your project environment and install the required dependencies.
+
+### 1. Set up a new project
+
+Create a new directory and initialize a new `Node.js` project with default settings:
+
+```shell
+mkdir frxusd-staking-fraxtal
+cd frxusd-staking-fraxtal
+npm init -y
+```
+
+This also creates a default `package.json` file.
+
+### 2. Install dependencies
+
+In your project directory, install the required dependencies, including `viem`:
+
+```shell
+npm install dotenv@^16.4.7 viem@^2.23.4
+```
+
+This sets up your development environment with the necessary libraries for building the script. It also updates the `package.json` file with the dependencies.
+
+### 3. Add module type
+
+Add `"type": "module"` to the `package.json` file:
+
+```json
+{
+  "name": "frxusd-staking-fraxtal",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node stake-and-unstake.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "viem": "^2.23.4"
+  }
+}
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in your project directory and add your wallet private key:
+
+```shell
+echo "PRIVATE_KEY=your-private-key-here" > .env
+```
+
+**Warning:** This is strictly for testing purposes. **Never share your private key**.
+
+## Script setup
+
+This section covers the necessary setup for the staking script, including defining contract addresses for Fraxtal mainnet and configuring the wallet client.
+
+### 1. Contract addresses and configuration
+
+The script defines addresses for **Fraxtal mainnet**:
+
+```javascript
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// frxUSD Stake & Unstake Contract Address (Fraxtal)
+const FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS = '0xBFc4D34Db83553725eC6c768da71D2D9c1456B55';
+
+// frxUSD and sfrxUSD Contract Addresses
+const FRAXTAL_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000001';
+const FRAXTAL_SFRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000008';
+
+// Staking Parameters
+const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
+```
+
+### 2. Set up wallet client
+
+The script creates a wallet client for Fraxtal network:
+
+```javascript
+// Set up wallet client for Fraxtal network
+const fraxtalClient = createWalletClient({
+  chain: fraxtal,
+  transport: http(),
+  account,
+});
+```
+
+## frxUSD staking process
+
+The following sections outline the staking and unstaking logic for Fraxtal network. The process involves:
+
+1. **Approving frxUSD** for the frxUSD Stake & Unstake contract to stake frxUSD
+2. **Staking frxUSD** to receive sfrxUSD using the `deposit` function
+3. **Approving sfrxUSD** for the frxUSD Stake & Unstake contract to unstake sfrxUSD
+4. **Unstaking sfrxUSD** to receive frxUSD back using the `redeem` function
+
+### 1. Approve frxUSD for staking
+
+Before staking, approve frxUSD for the frxUSD Stake & Unstake contract so it can pull frxUSD from your wallet:
+
+```javascript
+async function approveFrxusdForStaking() {
+  console.log(`Approving frxUSD for staking on Fraxtal...`);
+  const approveTx = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS, STAKE_AMOUNT],
+    }),
+  });
+  console.log(`Fraxtal frxUSD Approval Tx: ${approveTx}`);
+}
+```
+
+### 2. Stake frxUSD for sfrxUSD
+
+After approving frxUSD, stake by calling the frxUSD Stake & Unstake contract's `deposit` function to receive sfrxUSD:
+
+```javascript
+async function stakeFrxusd() {
+  console.log(`Staking frxUSD for sfrxUSD on Fraxtal...`);
+  const txHash = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_assetsIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+          ],
+          name: 'deposit',
+          outputs: [{ internalType: 'uint256', name: '_sharesOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'deposit',
+      args: [STAKE_AMOUNT, account.address],
+    }),
+  });
+  console.log(`Fraxtal Stake Tx: ${txHash}`);
+}
+```
+
+### 3. Approve sfrxUSD for unstaking
+
+Before unstaking, approve sfrxUSD for the same contract so it can pull sfrxUSD:
+
+```javascript
+async function approveSfrxusdForUnstaking() {
+  console.log(`Approving sfrxUSD for unstaking on Fraxtal...`);
+  const approveTx = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_SFRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS, UNSTAKE_AMOUNT],
+    }),
+  });
+  console.log(`Fraxtal sfrxUSD Approval Tx: ${approveTx}`);
+}
+```
+
+### 4. Unstake sfrxUSD for frxUSD
+
+After approving sfrxUSD, unstake by calling the frxUSD Stake & Unstake contract's `redeem` function to receive frxUSD back:
+
+```javascript
+async function unstakeSfrxusd() {
+  console.log(`Unstaking sfrxUSD for frxUSD on Fraxtal...`);
+  const txHash = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_sharesIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+            { internalType: 'address', name: '_owner', type: 'address' },
+          ],
+          name: 'redeem',
+          outputs: [{ internalType: 'uint256', name: '_assetsOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'redeem',
+      args: [UNSTAKE_AMOUNT, account.address, account.address],
+    }),
+  });
+  console.log(`Fraxtal Unstake Tx: ${txHash}`);
+}
+```
+
+## Build the script
+
+Create a `stake-and-unstake.js` file in your project directory and paste the following complete script:
+
+### stake-and-unstake.js
+
+```javascript
+// ============ Setup (imports, account, clients) ============
+import 'dotenv/config';
+import { createWalletClient, http, encodeFunctionData, nonceManager } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { fraxtal } from 'viem/chains';
+
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// frxUSD Stake & Unstake Contract Address (Fraxtal)
+const FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS = '0xBFc4D34Db83553725eC6c768da71D2D9c1456B55';
+
+// frxUSD and sfrxUSD Contract Addresses
+const FRAXTAL_FRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000001';
+const FRAXTAL_SFRXUSD_ADDRESS = '0xfc00000000000000000000000000000000000008';
+
+// Staking Parameters
+const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
+
+// Wallet client
+const fraxtalClient = createWalletClient({
+  chain: fraxtal,
+  transport: http(),
+  account,
+});
+
+// ============ Helper Functions ============
+
+// 1) Approve frxUSD for staking
+async function approveFrxusdForStaking() {
+  console.log(`Approving frxUSD for staking on Fraxtal...`);
+  const approveTx = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS, STAKE_AMOUNT],
+    }),
+  });
+  console.log(`Fraxtal frxUSD Approval Tx: ${approveTx}`);
+}
+
+// 2) Stake frxUSD for sfrxUSD
+async function stakeFrxusd() {
+  console.log(`Staking frxUSD for sfrxUSD on Fraxtal...`);
+  const txHash = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_assetsIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+          ],
+          name: 'deposit',
+          outputs: [{ internalType: 'uint256', name: '_sharesOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'deposit',
+      args: [STAKE_AMOUNT, account.address],
+    }),
+  });
+  console.log(`Fraxtal Stake Tx: ${txHash}`);
+}
+
+// 3) Approve sfrxUSD for unstaking
+async function approveSfrxusdForUnstaking() {
+  console.log(`Approving sfrxUSD for unstaking on Fraxtal...`);
+  const approveTx = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_SFRXUSD_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS, UNSTAKE_AMOUNT],
+    }),
+  });
+  console.log(`Fraxtal sfrxUSD Approval Tx: ${approveTx}`);
+}
+
+// 4) Unstake sfrxUSD for frxUSD
+async function unstakeSfrxusd() {
+  console.log(`Unstaking sfrxUSD for frxUSD on Fraxtal...`);
+  const txHash = await fraxtalClient.sendTransaction({
+    to: FRAXTAL_FRXUSD_STAKE_UNSTAKE_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'uint256', name: '_sharesIn', type: 'uint256' },
+            { internalType: 'address', name: '_receiver', type: 'address' },
+            { internalType: 'address', name: '_owner', type: 'address' },
+          ],
+          name: 'redeem',
+          outputs: [{ internalType: 'uint256', name: '_assetsOut', type: 'uint256' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'redeem',
+      args: [UNSTAKE_AMOUNT, account.address, account.address],
+    }),
+  });
+  console.log(`Fraxtal Unstake Tx: ${txHash}`);
+}
+
+// ============ Main ============
+async function main() {
+  const command = process.argv[2];
+
+  switch (command) {
+    case 'stake-frxusd':
+      console.log('Staking frxusd for sfrxusd...');
+      await approveFrxusdForStaking();
+      await stakeFrxusd();
+      break;
+    case 'unstake-sfrxusd':
+      console.log('Unstaking sfrxusd for frxusd...');
+      await approveSfrxusdForUnstaking();
+      await unstakeSfrxusd();
+      break;
+    default:
+      console.error('Invalid command. Please use "stake-frxusd" or "unstake-sfrxusd".');
+      process.exit(1);
+  }
+
+  console.log('Staking and unstaking completed!');
+}
+
+main().catch(console.error);
+```
+
+## Test the script
+
+To test the script, run the following command:
+
+```shell
+node stake-and-unstake.js
+```
+
+The script will execute staking and unstaking operations on **Fraxtal mainnet**, logging all transaction hashes to the console.
+
+## What's next
+
+- [White-label Stablecoins](/frxusd/white-label-stablecoin-overview)

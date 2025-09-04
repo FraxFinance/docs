@@ -1,0 +1,78 @@
+---
+title: Mint & Redeem frxUSD Overview
+lang: en-US
+---
+
+# Mint & Redeem frxUSD Overview
+
+frxUSD can be minted and redeemed through multiple pathways, offering users flexibility in how they access and utilize the stablecoin. This overview covers the main minting and redemption methods available.
+
+## frxUSD Minting & Redeeming on Ethereum
+
+The most straightforward way to mint and redeem frxUSD is through direct interaction with the frxUSD Mint & Redeem contracts on Ethereum mainnet.
+
+### Supported Assets for Minting
+
+frxUSD can be minted using any of these assets:
+
+- **Stablecoins**: USDC, USDB
+- **Tokenized Treasuries**: BUIDL (by BlackRock), USTB (by Superstate), WTGXX (by WisdomTree)
+
+### How It Works
+
+1. **Approve your asset** for the frxUSD minting contract
+2. **Deposit your asset** to mint frxUSD at a 1:1 ratio
+3. **Hold frxUSD** to earn Treasury yields automatically via [FraxNet](https://net.frax.com)
+4. **Redeem anytime** by converting frxUSD back to your chosen asset
+
+Get started with the following quickstarts:
+
+- [Mint and redeem with USDC](/frxusd/mint-and-redeem-quickstarts/usdc)
+- [Mint and redeem with Superstate's USTB](/frxusd/mint-and-redeem-quickstarts/ustb)
+- [Mint and redeem with Blackrock's BUIDL](/frxusd/mint-and-redeem-quickstarts/buidl)
+- [Mint and redeem with WisdomTree's WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
+- [Mint and redeem with Bridge.xyz's USDB](/frxusd/mint-and-redeem-quickstarts/usdb)
+
+## Cross-Chain Minting & Redeeming with FraxNet
+
+### Overview
+
+If users want to mint and redeem frxUSD on any of the other [supported blockchain networks](/frxusd/mint-and-redeem-routes), they can use the FraxNet contract system which leverages [FraxZero's cross-chain messaging protocol](/frxusd/frax-zero).
+
+### Key Benefits
+
+- **Asset Flexibility**: Mint frxUSD on any of the [supported blockchain networks](/frxusd/mint-and-redeem-routes)
+- **Gas Optimization**: Choose the most cost-effective network for your operations
+- **Unified Experience**: Manage cross-chain operations through a single interface
+- **Institutional Grade**: Built on [FraxZero's cross-chain messaging protocol](/frxusd/frax-zero)
+
+### How Cross-Chain Minting Works
+
+Mint frxUSD across 20+ supported blockchain networks with the following steps:
+
+1. **Contract Deployment**: Deploy a FraxNet contract via the factory on Ethereum mainnet for a specific recipient address and destination chain
+2. **Asset Transfer**: Transfer USDC directly to your deployed FraxNet contract on Ethereum mainnet
+3. **Cross-Chain Minting**: Using the transferred USDC, mint frxUSD to the specified recipient address and destination chain
+
+### How Cross-Chain Redemption Works
+
+Redeem frxUSD on 20+ supported blockchain networks with the following steps:
+
+1. **Cross-Chain Transfer**: Send frxUSD on any supported blockchain network back to your FraxNet contract on Ethereum mainnet via a [cross-chain transfer](/frxusd/cross-chain-transfers-quickstarts)
+2. **Asset Conversion**: Call `processRedemption` to convert frxUSD back to USDC
+3. **Asset Delivery**: Receive USDC directly to your specified address on Ethereum mainnet or any [supported CCTP chains](https://developers.circle.com/cctp/cctp-supported-blockchains)
+
+## Getting Started
+
+### Supported Blockchain Networks
+
+- [Supported Routes & Networks](/frxusd/mint-and-redeem-routes)
+
+### Quick Start Guides
+
+- [Mint & Redeem frxUSD with USDC](/frxusd/mint-and-redeem-quickstarts/usdc)
+- [Mint & Redeem frxUSD with USTB](/frxusd/mint-and-redeem-quickstarts/ustb)
+- [Mint & Redeem frxUSD with BUIDL](/frxusd/mint-and-redeem-quickstarts/buidl)
+- [Mint & Redeem frxUSD with WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
+- [Mint & Redeem frxUSD with USDB](/frxusd/mint-and-redeem-quickstarts/usdb)
+- [Mint & Redeem frxUSD Cross-Chain](/frxusd/cross-chain-mint-and-redeem-quickstart)

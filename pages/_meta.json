@@ -21,5 +21,13 @@
   "protocol": {
     "title": "Protocol",
     "type": "page"
+  },
+  "fraxnet": {
+    "title": "FraxNet",
+    "type": "page"
+  },
+  "frxusd": {
+    "title": "frxUSD",
+    "type": "page"
   }
 }

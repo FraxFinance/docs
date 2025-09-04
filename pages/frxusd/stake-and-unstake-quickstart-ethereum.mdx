@@ -1,0 +1,500 @@
+---
+title: Stake & Unstake frxUSD on Ethereum
+lang: en-US
+---
+
+# Stake & Unstake frxUSD on Ethereum
+
+This guide shows how to use the viem framework to **stake frxUSD for sfrxUSD** and **unstake sfrxUSD back to frxUSD** on **Ethereum mainnet**.
+
+To see a list of all supported networks, see the [Stake & Unstake Supported Networks and EIDs](/frxusd/stake-and-unstake-supported-networks) page.
+
+**Note:** The method for staking and unstaking frxUSD on **Ethereum mainnet** is different from the method for staking and unstaking frxUSD on Fraxtal and all other EVM chains. See the [Stake & Unstake frxUSD on EVM chains](/frxusd/stake-and-unstake-quickstart-evm-chains) or the [Stake & Unstake frxUSD on Fraxtal](/frxusd/stake-and-unstake-quickstart-fraxtal) guide for more information.
+
+## Prerequisites
+
+Before you start building the sample app to perform frxUSD staking operations, ensure you have met the following prerequisites:
+
+1. **Install Node.js and npm**
+
+   - Download and install **Node.js** directly or use a version manager like **nvm**.
+   - **npm** is included with Node.js.
+
+2. **Set up a non-custodial wallet** (for example, MetaMask)
+
+   - You can download, install, and create a **MetaMask** wallet from its official website.
+   - During setup, create a wallet on **Ethereum mainnet**.
+   - Retrieve the **private key** for your wallet, as it will be required in the script below.
+
+3. **Fund your wallet with the gas token on the chain you want to stake from**
+
+   - For this guide, we will be staking and unstaking frxUSD on **Ethereum mainnet**. Therefore, you will need to fund your wallet with **ETH** on **Ethereum mainnet**.
+
+4. **Fund your wallet with frxUSD and sfrxUSD on the chain you want to stake and unstake from**
+
+   - For this guide, we will be staking and unstaking frxUSD on **Ethereum mainnet**. Therefore, you will need to fund your wallet with **frxUSD** and **sfrxUSD** on **Ethereum mainnet**.
+
+## Project setup
+
+To build the script, first set up your project environment and install the required dependencies.
+
+### 1. Set up a new project
+
+Create a new directory and initialize a new `Node.js` project with default settings:
+
+```shell
+mkdir frxusd-staking-ethereum
+cd frxusd-staking-ethereum
+npm init -y
+```
+
+This also creates a default `package.json` file.
+
+### 2. Install dependencies
+
+In your project directory, install the required dependencies, including `viem`:
+
+```shell
+npm install dotenv@^16.4.7 viem@^2.23.4
+```
+
+This sets up your development environment with the necessary libraries for building the script. It also updates the `package.json` file with the dependencies.
+
+### 3. Add module type
+
+Add `"type": "module"` to the `package.json` file:
+
+```json
+{
+  "name": "frxusd-staking-ethereum",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node stake-and-unstake.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "viem": "^2.23.4"
+  }
+}
+```
+
+### 4. Configure environment variables
+
+Create a `.env` file in your project directory and add your wallet private key:
+
+```shell
+echo "PRIVATE_KEY=your-private-key-here" > .env
+```
+
+**Warning:** This is strictly for testing purposes. **Never share your private key**.
+
+## Script setup
+
+This section covers the necessary setup for the staking script, including defining contract addresses for Ethereum mainnet and configuring the wallet client.
+
+### 1. Replace with your private key and wallet address
+
+Ensure that this section of the file includes your **private key** for `PRIVATE_KEY` and associated **wallet address** for `DESTINATION_ADDRESS`.
+
+The script also predefines the **Hop contract address**, the **Ethereum lockbox contract address**, the **frxUSD contract address**, the **sfrxUSD contract address**, the **staking amount**, and the **unstaking amount**. These definitions are critical for successfully staking and unstaking frxUSD.
+
+```javascript
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// FILL IN THE FOLLOWING VARIABLE
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Recipient address
+const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
+
+// Hop Contract Address
+const ETHEREUM_MAINNET_HOP_ADDRESS = '0x99b5587ab54a49e3f827d10175caf69c0187bfa8';
+
+// Ethereum Lockbox Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS =
+  '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0';
+const ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS =
+  '0x7311cea93ccf5f4f7b789ee31eba5d9b9290e126';
+
+// frxUSD and sfrxUSD Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29';
+const ETHEREUM_MAINNET_SFRXUSD_ADDRESS = '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6';
+
+// Staking Parameters
+const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
+```
+
+### 2. Set up clients
+
+The script creates a wallet client and a public client for Ethereum network:
+
+```javascript
+// Set up wallet client
+const ethereumWalletClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+
+// Set up public client
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+```
+
+## frxUSD staking and unstaking process
+
+The following sections outline the relevant staking and unstaking logic of the sample script. In this example, we are first staking 1 frxUSD on **Ethereum mainnet** to receive 1 sfrxUSD. Then we are unstaking 1 sfrxUSD on **Ethereum mainnet** to receive 1 frxUSD back. Follow the steps below to perform the staking and unstaking:
+
+### 1. Approve frxUSD and sfrxUSD
+
+Before staking or unstaking, approve frxUSD for the Hop contract so it can pull frxUSD and sfrxUSD from your wallet:
+
+```javascript
+async function approveForStakingOrUnstaking(tokenAddress, amount) {
+  console.log(`Approving frxUSD for staking on Ethereum mainnet...`);
+  const approveTx = await ethereumWalletClient.sendTransaction({
+    to: tokenAddress,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_HOP_ADDRESS, amount],
+    }),
+  });
+  console.log(`Ethereum mainnet frxUSD Approval Tx: ${approveTx}`);
+}
+
+async function approveFrxusdForStaking() {
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+}
+
+async function approveSfrxusdForUnstaking() {
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+}
+```
+
+### 2. Retrieve FraxZero Quotes
+
+In this step, you call the `quote` function on the RemoteHop contract deployed on **Ethereum mainnet** to get the native fee amounts required for the staking and unstaking operations. You specify the following parameters:
+
+- **OFT**: The ethereum lockbox contract address
+- **Destination address**: The wallet address that will receive the frxUSD or sfrxUSD (in bytes32 format)
+- **Amount**: The amount of frxUSD to stake or the amount of sfrxUSD to unstake (in wei)
+
+The quote function returns the native fee amount required for the staking and unstaking operations.
+
+```javascript
+async function retrieveQuote(lockboxAddress, amount) {
+  console.log('Retrieving quote...');
+  const quote = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_HOP_ADDRESS,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      lockboxAddress,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      amount,
+    ],
+  });
+  const nativeFee = quote.nativeFee;
+  return nativeFee;
+}
+```
+
+### 3. Stake and unstake frxUSD
+
+After approving frxUSD and retrieving the FraxZero quote, stake or unstake by calling the Hop contract's `mintRedeem` function to receive sfrxUSD or frxUSD back:
+
+```javascript
+async function stakeOrUnstakeFrxusd(lockboxAddress, amount) {
+  console.log(`Staking frxUSD for sfrxUSD on Ethereum mainnet...`);
+  const nativeFee = await retrieveQuote(lockboxAddress, amount);
+  const txHash = await ethereumWalletClient.sendTransaction({
+    to: ETHEREUM_MAINNET_HOP_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'address', name: '_oft', type: 'address' },
+            { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+          ],
+          name: 'mintRedeem',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+      ],
+      functionName: 'mintRedeem',
+      args: [lockboxAddress, amount],
+    }),
+    value: nativeFee,
+  });
+  console.log(`Ethereum mainnet Stake Tx: ${txHash}`);
+}
+
+async function stakeFrxusd() {
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS, STAKE_AMOUNT);
+}
+
+async function unstakeFrxusd() {
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS, UNSTAKE_AMOUNT);
+}
+```
+
+## Build the script
+
+Create a `stake-and-unstake.js` file in your project directory and paste the following complete script:
+
+### stake-and-unstake.js
+
+```javascript
+import 'dotenv/config';
+import {
+  createWalletClient,
+  http,
+  encodeFunctionData,
+  nonceManager,
+  createPublicClient,
+} from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { mainnet } from 'viem/chains';
+
+// ============ Configuration Constants ============
+
+// Authentication
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const account = privateKeyToAccount(`0x${PRIVATE_KEY}`, { nonceManager });
+
+// FILL IN THE FOLLOWING VARIABLE
+const DESTINATION_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Recipient address
+const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADDRESS.slice(2)}`; // Convert to bytes32 format
+
+// Hop Contract Address
+const ETHEREUM_MAINNET_HOP_ADDRESS = '0x99b5587ab54a49e3f827d10175caf69c0187bfa8';
+
+// Ethereum Lockbox Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS =
+  '0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0';
+const ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS =
+  '0x7311cea93ccf5f4f7b789ee31eba5d9b9290e126';
+
+// frxUSD and sfrxUSD Contract Addresses
+const ETHEREUM_MAINNET_FRXUSD_ADDRESS = '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29';
+const ETHEREUM_MAINNET_SFRXUSD_ADDRESS = '0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6';
+
+// Staking Parameters
+const STAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 frxUSD (18 decimals)
+const UNSTAKE_AMOUNT = 10_000_000_000_000_000_000n; // 10 sfrxUSD (18 decimals)
+
+// Set up wallet client
+const ethereumWalletClient = createWalletClient({
+  chain: mainnet,
+  transport: http(),
+  account,
+});
+
+// Set up public client
+const ethereumPublicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+async function approveForStakingOrUnstaking(tokenAddress, amount) {
+  console.log(`Approving frxUSD for staking on Ethereum mainnet...`);
+  const approveTx = await ethereumWalletClient.sendTransaction({
+    to: tokenAddress,
+    data: encodeFunctionData({
+      abi: [
+        {
+          type: 'function',
+          name: 'approve',
+          stateMutability: 'nonpayable',
+          inputs: [
+            { name: 'spender', type: 'address' },
+            { name: 'amount', type: 'uint256' },
+          ],
+          outputs: [{ name: '', type: 'bool' }],
+        },
+      ],
+      functionName: 'approve',
+      args: [ETHEREUM_MAINNET_HOP_ADDRESS, amount],
+    }),
+  });
+  console.log(`Ethereum mainnet frxUSD Approval Tx: ${approveTx}`);
+}
+
+async function approveFrxusdForStaking() {
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_FRXUSD_ADDRESS, STAKE_AMOUNT);
+}
+
+async function approveSfrxusdForUnstaking() {
+  await approveForStakingOrUnstaking(ETHEREUM_MAINNET_SFRXUSD_ADDRESS, UNSTAKE_AMOUNT);
+}
+
+async function retrieveQuote(lockboxAddress, amount) {
+  console.log('Retrieving quote...');
+  const quote = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_HOP_ADDRESS,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'address', name: '_oft', type: 'address' },
+          { internalType: 'bytes32', name: '_to', type: 'bytes32' },
+          { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+        ],
+        name: 'quote',
+        outputs: [
+          {
+            components: [
+              { internalType: 'uint256', name: 'nativeFee', type: 'uint256' },
+              { internalType: 'uint256', name: 'lzTokenFee', type: 'uint256' },
+            ],
+            internalType: 'struct MessagingFee',
+            name: 'fee',
+            type: 'tuple',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'quote',
+    args: [
+      lockboxAddress,
+      DESTINATION_ADDRESS_BYTES32, // Use bytes32 format
+      amount,
+    ],
+  });
+  const nativeFee = quote.nativeFee;
+  return nativeFee;
+}
+
+async function stakeOrUnstakeFrxusd(lockboxAddress, amount) {
+  console.log(`Staking frxUSD for sfrxUSD on Ethereum mainnet...`);
+  const nativeFee = await retrieveQuote(lockboxAddress, amount);
+  const txHash = await ethereumWalletClient.sendTransaction({
+    to: ETHEREUM_MAINNET_HOP_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            { internalType: 'address', name: '_oft', type: 'address' },
+            { internalType: 'uint256', name: '_amountLD', type: 'uint256' },
+          ],
+          name: 'mintRedeem',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+      ],
+      functionName: 'mintRedeem',
+      args: [lockboxAddress, amount],
+    }),
+    value: nativeFee,
+  });
+  console.log(`Ethereum mainnet Stake Tx: ${txHash}`);
+}
+
+async function stakeFrxusd() {
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_FRXUSD_LOCKBOX_ADDRESS, STAKE_AMOUNT);
+}
+
+async function unstakeSfrxusd() {
+  await stakeOrUnstakeFrxusd(ETHEREUM_MAINNET_SFRXUSD_LOCKBOX_ADDRESS, UNSTAKE_AMOUNT);
+}
+
+// ============ Main ============
+async function main() {
+  if (DESTINATION_ADDRESS === 'enter-your-recipient-wallet-address-here') {
+    console.error(
+      'Destination address is not set. Please set the DESTINATION_ADDRESS variable in the transfer.js file.',
+    );
+    process.exit(1);
+  }
+  const command = process.argv[2];
+
+  switch (command) {
+    case 'stake-frxusd':
+      console.log('Staking frxusd for sfrxusd...');
+      await approveFrxusdForStaking();
+      await stakeFrxusd();
+      break;
+    case 'unstake-sfrxusd':
+      console.log('Unstaking sfrxusd for frxusd...');
+      await approveSfrxusdForUnstaking();
+      await unstakeSfrxusd();
+      break;
+    default:
+      console.error('Invalid command. Please use "stake-frxusd" or "unstake-sfrxusd".');
+      process.exit(1);
+  }
+
+  console.log('Transaction completed!');
+}
+
+main().catch(console.error);
+```
+
+## Test the script
+
+To test staking frxUSD for sfrxUSD, run the following command:
+
+```shell
+node stake-and-unstake.js stake-frxusd
+```
+
+To test unstaking sfrxUSD for frxUSD, run the following command:
+
+```shell
+node stake-and-unstake.js unstake-sfrxusd
+```
+
+Once each script runs and the staking and unstaking operations are finalized, the **confirmation receipts** are logged in the console.
+
+## What's next
+
+- [Stake & Unstake frxUSD on Fraxtal](/frxusd/stake-and-unstake-quickstart-fraxtal)
