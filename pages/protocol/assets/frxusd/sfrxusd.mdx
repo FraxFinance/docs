@@ -5,7 +5,9 @@ lang: en-US
 
 # The Staked Frax USD Yielding Stablecoin
 ## Overview
-**Staked Frax USD (sfrxUSD)** is the yielding stablecoin implemented as an ERC4626 token. sfrxUSD is fully redeemable for frxUSD at an increasing rate proportional to the yield mechanism (described below). sfrxUSD is not rebasing and can always be redeemed for the underlying frxUSD with no unstaking fee or price impact. <br />
+**Staked Frax USD (sfrxUSD)** is the yielding stablecoin implemented as an ERC4626-like token. 
+sfrxUSD is fully redeemable for frxUSD at an increasing rate proportional to the yield mechanism (described below). 
+sfrxUSD is not rebasing and can be redeemed for the underlying frxUSD with no price impact, via the [FraxtalERC4626MintRedeemer.](https://fraxscan.com/address/0xBFc4D34Db83553725eC6c768da71D2D9c1456B55#readProxyContract)  <br />
 sfrxUSD is unique in yielding design in that it targets a benchmark-rate strategy that alternates between the best of three governance-approved strategies: **carry-trade, algorithmic market operations (AMOs), and the Interest on Reserve Balances/T-Bill (IORB) rate**. This insures that sfrxUSD’s APY is the most competitive yield onchain.
 
 <img
