@@ -90,6 +90,16 @@
       "telegramUrl": "https://t.me/floxdotlol"
     },
     {
+      "key": "gronkfrax",
+      "name": "Gronk",
+      "url": "https://gronkfrax.com/",
+      "description": "Gronk is based on one of Ethereum's most significant cultural icons and the Champion of FRAX.",
+      "tags": ["MEME"],
+      "imageUrl": "https://gronkfrax.com/icon.ico",
+      "twitterXUrl": "https://twitter.com/gronkfrax",
+      "telegramUrl": "https://t.me/gronkfrax"
+    },
+    {
       "key": "glyph",
       "name": "Glyph",
       "url": "https://www.glyph.fi/",
@@ -204,6 +214,15 @@
       "twitterXUrl": "https://twitter.com/redstone_defi",
       "discordUrl": "https://discord.com/invite/PVxBZKFr46",
       "telegramUrl": "https://t.me/redstonefinance"
+    },
+    {
+      "key": "cs",
+      "name": "CryptoSports",
+      "url": "https://www.playcryptosports.com/",
+      "description": "DFS on the blockchain. A fantasy team that is truly yours",
+      "tags": ["NFT", "GameFi"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/cryptosports.png",
+      "discordURL": "https://discord.gg/NpAw6nmzbS"
     },
     {
       "key": "qidao",
@@ -458,6 +477,17 @@
       "twitterXUrl": "https://x.com/CryptoRubic",
       "discordUrl": "https://discord.gg/7EYzPbWKFQ",
       "telegramUrl": "https://t.me/cryptorubic_chat"
+    },
+    {
+      "key": "mt-pelerin",
+      "name": "Mt Pelerin",
+      "url": "https://www.mtpelerin.com",
+      "description": "Invest in FRAX and other assets the easy way! Buy, swap and sell crypto with the lowest fees, zero hidden costs and full control over your cryptoassets.",
+      "tags": ["DeFi", "Bridge", "OnRamp"],
+      "imageUrl": "https://www.mtpelerin.com/images/logo.svg",
+      "twitterXUrl": "https://x.com/intent/user?screen_name=mtpelerin",
+      "discordUrl": "https://discord.gg/WErDKTvMr7",
+      "telegramUrl": "https://t.me/mtpelerinchat/"
     },
     {
       "key": "EchoMarket",
