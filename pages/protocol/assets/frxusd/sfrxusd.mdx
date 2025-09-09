@@ -5,7 +5,9 @@ lang: en-US
 
 # The Staked Frax USD Yielding Stablecoin
 ## Overview
-**Staked Frax USD (sfrxUSD)** is the yielding stablecoin implemented as an ERC4626 token. sfrxUSD is fully redeemable for frxUSD at an increasing rate proportional to the yield mechanism (described below). sfrxUSD is not rebasing and can always be redeemed for the underlying frxUSD with no unstaking fee or price impact. <br />
+**Staked Frax USD (sfrxUSD)** is the yielding stablecoin implemented as an ERC4626-like token. 
+sfrxUSD is fully redeemable for frxUSD at an increasing rate proportional to the yield mechanism (described below). 
+sfrxUSD is not rebasing and can be redeemed for the underlying frxUSD with no price impact, via the [FraxtalERC4626MintRedeemer.](https://fraxscan.com/address/0xBFc4D34Db83553725eC6c768da71D2D9c1456B55#readProxyContract)  <br />
 sfrxUSD is unique in yielding design in that it targets a benchmark-rate strategy that alternates between the best of three governance-approved strategies: **carry-trade, algorithmic market operations (AMOs), and the Interest on Reserve Balances/T-Bill (IORB) rate**. This insures that sfrxUSD’s APY is the most competitive yield onchain.
 
 <img
@@ -37,18 +39,23 @@ If carry-trade yield is higher than DeFi yields, then all frxUSD staked in the y
 ### BYS Strategies
 
 **BYS Carry-Trade venues:**
-- Ethena
-- Superstate
+- [Ethena](https://ethena.fi/)
+- [Superstate](https://superstate.com/)
 <br />
 
 **BYS DeFi venues:**
-  - Aave
-  - Curve Finance
-  - Convex Finance
-  - Compound Finance
+  - [Aave](https://aave.com/)
+  - [Curve Finance](https://www.curve.finance/dex/ethereum/pools)
+  - [Convex Finance](https://www.convexfinance.com/)
+  - [Euler Finance](https://www.euler.finance/)
+  - [Fraxlend](https://frax.com/pools?view=fraxlend)
+  - [dTrinity lending](https://www.dtrinity.org/)
 <br />
 
 **BYS IORB/T-Bill venues:**
-  - Blackrock
+  - [Blackrock](https://www.blackrock.com/us/individual)
   - FinresPBC
 <br />
+
+
+Users are encouraged to submit additional Blue chip Defi yield strategies for discussion on our [governance forum.](https://gov.frax.finance/)
