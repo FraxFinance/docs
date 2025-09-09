@@ -30,16 +30,6 @@
       "twitterXUrl": "https://x.com/0xspiralstake"
     },
     {
-      "key": "enkrypt",
-      "name": "Enkrypt",
-      "url": "https://www.enkrypt.com/",
-      "description": "A multichain crypto wallet Hold, buy, send, receive, and swap tokens. Manage your NFTs. Access web3 apps across multiple blockchains.",
-      "tags": ["Infra"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/Enkrypt.png",
-      "twitterXUrl": "https://twitter.com/enkrypt",
-      "discordUrl": "https://discord.gg/Gz8vBneyKe"
-    },
-    {
       "key": "teahouse-finance",
       "name": "Teahouse Finance",
       "url": "https://teahouse.finance/",
@@ -49,17 +39,6 @@
       "twitterXUrl": "https://x.com/TeahouseFinance",
       "telegramUrl": "https://t.me/tgteahousefinance",
       "discordUrl": "https://discord.gg/teahouse-finance"
-    },
-    {
-      "key": "layerswap",
-      "name": "Layerswap",
-      "url": "https://layerswap.io/",
-      "description": "Layerswap is a reliable and cost-efficient solution for transferring crypto assets across 45+ blockchain networks.",
-      "tags": ["DeFi", "Bridge"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/Layerswap-logo.png",
-      "twitterXUrl": "https://x.com/layerswap",
-      "telegramUrl": "https://t.me/layerswap_io",
-      "discordUrl": "https://discord.gg/layerswap"
     },
     {
       "key": "ionic",
@@ -80,17 +59,6 @@
       "imageUrl": "https://raw.githubusercontent.com/dtrinity/public-assets/9076ed5d1a4b53a2f8c6738f9e224512d8e6e86e/logos/dtrinity/dTRINITY%20-%20White%20Mark.png",
       "twitterXUrl": "https://twitter.com/dtrinity_defi",
       "discordUrl": "https://discord.gg/dtrinity"
-    },
-    {
-      "key": "come2top",
-      "name": "Come2Top",
-      "url": "https://come2.top/",
-      "description": "Come2Top is a secure, automated, and fully decentralized GameFi platform built on top of the Fraxtal Mainnet, integrated with the Beefy, Curve, and Frax Protocols.",
-      "tags": ["GameFi", "DeFi"],
-      "imageUrl": "https://raw.githubusercontent.com/come2top/assets/main/Come2Top-SocialLogo.png",
-      "twitterXUrl": "https://x.com/come2top",
-      "telegramUrl": "https://t.me/come2top_official",
-      "discordUrl": "https://discord.gg/2C6F2FdNcS"
     },
     {
       "key": "floxdotlol",
@@ -152,16 +120,6 @@
       "twitterXUrl": "https://twitter.com/etherscan"
     },
     {
-      "key": "gravita-protocol",
-      "name": "Gravita Protocol",
-      "url": "https://app.gravitaprotocol.com/",
-      "description": "An ETH-centric Borrowing Protocol for LSTs and Productive Collateral. Fueling decentralization. ",
-      "tags": ["DeFi", "Lending"],
-      "imageUrl": "https://www.gravitaprotocol.com/images/logo-gravita.svg",
-      "twitterXUrl": "https://twitter.com/gravitaprotocol",
-      "discordUrl": "https://discord.gg/gravitaprotocol"
-    },
-    {
       "key": "convex",
       "name": "Convex",
       "url": "https://www.convexfinance.com/",
@@ -217,16 +175,6 @@
       "telegramUrl": "https://t.me/everipedia"
     },
     {
-      "key": "galaxycash",
-      "name": "Galaxy Cash",
-      "url": "https://galaxycash.finance",
-      "description": "GalaxyCash is an innovative decentralized financial ecosystem designed to protect and grow your assets with its unique compound interest mechanism.",
-      "tags": ["DeFi"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/galaxycash.png",
-      "twitterXUrl": "https://twitter.com/galaxy_cash",
-      "telegramUrl": "https://t.me/Galaxy_Cash"
-    },
-    {
       "key": "axelar",
       "name": "Axelar",
       "url": "https://axelar.network",
@@ -270,36 +218,6 @@
       "telegramUrl": "https://t.me/QiDaoProtocol"
     },
     {
-      "key": "wombat",
-      "name": "Wombat Exchange",
-      "url": "https://wombat.exchange",
-      "description": "The only multi-chain and cross-chain, single-sided DEX. Introducing an innovative Bribe Market 2.0.",
-      "tags": ["DeFi", "DEX"],
-      "imageUrl": "https://s2.coinmarketcap.com/static/img/coins/64x64/19623.png",
-      "twitterXUrl": "https://twitter.com/WombatExchange",
-      "discordUrl": "https://discord.gg/Wombat"
-    },
-    {
-      "key": "yieldnest",
-      "name": "YieldNest",
-      "url": "https://yieldnest.finance",
-      "description": "Restake with YieldNest. A protocol delivering next-gen ETH Yield with isolated and tailored restaking strategies powered by EigenLayer. Simple, secure, and high-yielding LRTs.",
-      "tags": ["DeFi"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/yieldnest.png",
-      "twitterXUrl": "https://x.com/YieldNestFi",
-      "discordUrl": "https://discord.com/invite/ayAZuQgFaE",
-      "telegramUrl": "https://t.me/YieldNest"
-    },
-    {
-      "key": "realworldabs",
-      "name": "Real World Abs",
-      "url": "https://realworldabs.io/",
-      "description": "$RWA is a pure meme coin with no utility barriers. The Frax universe can be complicated, but meme coins are not. Our single aim is to increase awareness of Fraxtal’s next gen tech.",
-      "tags": ["MEME"],
-      "imageUrl": "https://pbs.twimg.com/profile_images/1749959606561099776/_E-hXm9c_400x400.jpg",
-      "twitterXUrl": "https://twitter.com/realworldabs"
-    },
-    {
       "key": "asymmetry",
       "name": "Asymmetry Finance",
       "url": "https://asymmetry.finance",
@@ -308,16 +226,6 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/asym_logo.png",
       "twitterXUrl": "https://twitter.com/AsymmetryFin",
       "discordUrl": "https://discord.gg/7wzMaUS4tS"
-    },
-    {
-      "key": "JokeRace",
-      "name": "JokeRace",
-      "url": "https://jokerace.io",
-      "description": "JokeRace is the contest platform for communities to run, grow, and monetize by deploying a contest on any EVM chain. Contests enable communities to submit and vote on entries… and winners to earn rewards. Use cases include bounties, hackathons, grants, awards ceremonies, “best tweet/meme/essay” competitions, persuasion games, feature requests, governance, elections, amendments, etc.",
-      "tags": ["DAO"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/jokerace.png",
-      "twitterXUrl": "https://twitter.com/jokerace_io",
-      "telegramUrl": "https://t.me/+rW5X0MqnTXBkOGIx"
     },
     {
       "key": "adamant",
@@ -329,25 +237,6 @@
       "twitterXUrl": "https://twitter.com/Adamantvault"
     },
     {
-      "key": "fraxdoge",
-      "name": "Frax Doge",
-      "url": "https://fraxdoge.xyz",
-      "description": "Wow! Much first! FXD Doge is very first meme on Frax, so pioneer, much trailblaze! Went to dark side of moon, now all in black and white! Fraxchain cool, like moon, but with more Doge. No colors, no worries, just Doge doing moon things. Join FXD, be part of first meme adventure on Frax, wow so historic!",
-      "tags": ["MEME"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/fraxdoge.png",
-      "twitterXUrl": "https://twitter.com/FraxDoge",
-      "telegramUrl": "https://t.me/frxdoge"
-    },
-    {
-      "key": "kfc",
-      "name": "Krypto Fraxtal Chicken",
-      "url": "https://www.kryptochicken.com",
-      "description": "The first fair-launched meme coin on Fraxtal, driven by the community.",
-      "tags": ["MEME"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/kfc.png",
-      "twitterXUrl": "https://twitter.com/krypto_chicken"
-    },
-    {
       "key": "geckoterminal",
       "name": "GeckoTerminal",
       "url": "https://www.geckoterminal.com/",
@@ -356,36 +245,6 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/geckoterminal.png",
       "twitterXUrl": "https://twitter.com/GeckoTerminal",
       "telegramUrl": "https://t.me/geckoterminal"
-    },
-    {
-      "key": "owlto",
-      "name": "Owlto Finance",
-      "url": "https://owlto.finance/",
-      "description": "Owlto Finance is a decentralized cross-rollup bridge that focuses on L2, providing 'safe, fast, cheap, and easy-to-use' services.",
-      "tags": ["DeFi", "Bridge"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/owlto.png",
-      "twitterXUrl": "https://twitter.com/Owlto_Finance",
-      "discordUrl": "https://discord.gg/owlto"
-    },
-    {
-      "key": "FRAXAdventures",
-      "name": "FRAX Adventures",
-      "url": "https://www.fraxadventures.xyz/",
-      "description": "FRAX Adventures are choose-your-own-adventure type fully onchain stories",
-      "tags": ["Entertainment", "GameFi"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/FraxAds.png",
-      "twitterXUrl": "https://twitter.com/FraxAdventures",
-      "telegramUrl": "https://t.me/+SpvwdGuuEDxkZDU1"
-    },
-    {
-      "key": "CR100",
-      "name": "CR100",
-      "url": "https://www.cr100.finance",
-      "description": "Community-Driven Meme Coin with Unique Burn Mechanism to Propel FXS Deflation and Achieve 100% CR",
-      "tags": ["MEME"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/CR100.png",
-      "twitterXUrl": "https://twitter.com/Cr100Frax",
-      "telegramUrl": "https://t.me/cr100Frax"
     },
     {
       "key": "goldsky",
@@ -406,15 +265,6 @@
       "discordUrl": "https://discord.gg/nZQZ2Br9yc",
       "telegramUrl": "https://t.me/ArchlyFinance",
       "twitterXUrl": "https://twitter.com/ArchlyFinance"
-    },
-    {
-      "key": "vaultcraft",
-      "name": "VaultCraft",
-      "url": "https://vaultcraft.io/",
-      "description": "Build, deploy, and zap into automated yield strategies with VaultCraft.",
-      "tags": ["DeFi"],
-      "imageUrl": "https://app.vaultcraft.io/images/tokens/vcx.svg",
-      "twitterXUrl": "https://twitter.com/VaultCraft_io"
     },
     {
       "key": "tellor",
@@ -466,16 +316,6 @@
       "discordURL": "https://discord.gg/api3dao"
     },
     {
-      "key": "dein",
-      "name": "DEIN",
-      "url": "https://dein.fi/",
-      "description": "An AI-driven, omni-chain, decentralized marketplace and adjudication system providing infrastructure for insurance and credit default swaps on anything.",
-      "tags": ["Infra", "DeFi", "Insurance", "Credit default swap"],
-      "imageUrl": "https://3538207768-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F3q3w8sHRweEMFlACufqe%2Fuploads%2FgZ3nhm97pBUKunUcSsMc%2FDEIN%20logo%20cube%20color.png?alt=media&token=20492592-c32e-453f-9f57-9b89b70ccd32",
-      "twitterXUrl": "https://twitter.com/DEIN_fi",
-      "discordURL": "https://discord.gg/dein"
-    },
-    {
       "key": "lagr",
       "name": "Lagrange",
       "url": "https://www.lagrange.dev/",
@@ -484,27 +324,6 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/lagrange.png",
       "twitterXUrl": "https://twitter.com/lagrangedev",
       "discordURL": "https://discord.gg/Jkxvhmq2"
-    },
-    {
-      "key": "comet",
-      "name": "Comet Protocol",
-      "url": "https://cometbridge.app/",
-      "description": "The First Seamless Interlink Communication Protocol Between All Bitcoin and Ethereum Ecosystems.",
-      "tags": ["Infra", "Bridge"],
-      "imageUrl": "https://raw.githubusercontent.com/cometbridge/assets/main/comet.png",
-      "twitterXUrl": "https://x.com/Comet_Protocol",
-      "discordURL": "https://discord.com/invite/ZTFQNNXcYs"
-    },
-    {
-      "key": "Cycnus",
-      "name": "Cycnus University",
-      "url": "https://www.cycnus.org",
-      "description": "The Cycnus University is committed to promoting the development of Web 3.0 + X disciplines, using Fraxtal as the digitalized infrastructure to build an innovative and dynamic educational platform that allows everyone to realize their blockchain dreams.",
-      "tags": ["DAO", "Infra", "Education"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/CycnusUniversity.png",
-      "twitterXUrl": "https://x.com/CycnusDAO",
-      "discordURL": "https://discord.gg/mSDfzsEbxJ",
-      "telegramUrl": "https://t.me/CycnusUniversity"
     },
     {
       "key": "gemach",
@@ -528,16 +347,6 @@
       "discordURL": "https://discord.com/invite/gasdotzip"
     },
     {
-      "key": "memebridge",
-      "name": "MemeBridge",
-      "url": "https://memebridge.xyz/#/bridge",
-      "description": "The cheapest Layer2 bridge. Earn points and bridge through Layer2s within seconds.",
-      "tags": ["Infra", "Bridge"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/memebridge.png",
-      "twitterXUrl": "https://x.com/MemebridgeB",
-      "discordURL": "https://discord.com/invite/UFFmGzryMX"
-    },
-    {
       "key": "snailminting",
       "name": "Snailminting",
       "url": "https://snailmint.ing",
@@ -555,26 +364,6 @@
       "discordURL": "https://discord.gg/NpAw6nmzbS"
     },
     {
-      "key": "pumpfaxt",
-      "name": "Pumpfaxt",
-      "url": "https://pumpfaxt.com",
-      "description": "Welcome to PumpFaxt.com, where fun meets blockchain innovation! Pumpfaxt is your go-to platform for engaging with memecoins and tokens in a unique and entertaining way. Our platform leverages smart contracts for all significant operations, ensuring transparency and security, while our server primarily acts as a caching layer to enhance performance.",
-      "tags": ["DeFi", "MEME"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/pumpfaxt.png",
-      "twitterXUrl": "https://x.com/pumpfaxt",
-      "telegramUrl": "https://t.me/pumpfaxt_bot"
-    },
-    {
-      "key": "upnode",
-      "name": "Upnode",
-      "url": "https://upnode.org",
-      "description": "Upnode provides an infrastructure for launching a full-stack L3 OP Stack chain on Frax. Beyond this, Upnode offers professional validator services, advanced identity solutions, and low-latency on-chain gaming infrastructure.",
-      "tags": ["Infra"],
-      "imageUrl": "https://res.cloudinary.com/duv0g402y/raw/upload/src/assets/upnodewhitebg.png",
-      "twitterXUrl": "https://twitter.com/upnodeIntern",
-      "telegramUrl": "https://t.me/upnodeIntern"
-    },
-    {
       "key": "popcoin",
       "name": "PopCoin.Fun",
       "url": "https://popcoin.fun",
@@ -585,17 +374,6 @@
       "telegramUrl": "https://t.me/popcoinfun"
     },
     {
-      "key": "zeroway",
-      "name": "ZeroWay",
-      "url": "https://zeroway.io/",
-      "description": "Zeroway: Simple and cheap ETH bridge using Hyperlane decentralised omnichain technology.",
-      "tags": ["Infra", "Bridge", "NFT"],
-      "imageUrl": "https://ipfs.io/ipfs/QmfNE2Ud3B7V8AWK4EWN2qYthwftDWode4hp6jGSJRfkhY",
-      "twitterXUrl": "https://x.com/zeroway_io",
-      "discordURL": "https://discord.gg/bQNEWkXdDG",
-      "telegramUrl": "https://t.me/zeroway_announcements"
-    },
-    {
       "key": "balancer",
       "name": "Balancer",
       "url": "https://balancer.fi/",
@@ -604,16 +382,6 @@
       "imageUrl": "https://raw.githubusercontent.com/balancer/brand-assets/refs/heads/main/logo/circle-container/logo-balancer-black-128x128.png",
       "twitterXUrl": "https://x.com/Balancer",
       "discordURL": "https://discord.balancer.fi/"
-    },
-    {
-      "key": "kado",
-      "name": "Kado",
-      "url": "https://www.kado.money/",
-      "description": "Buy and sell cryptocurrency instantly with Kado using your card or bank transfer.",
-      "tags": ["Infra", "OnRamp"],
-      "imageUrl": "https://docs.frax.com/images/ecosystem/kado.png",
-      "twitterXUrl": "https://x.com/kado_money",
-      "telegramUrl": "https://t.me/joinchat/DBTEybbbFugwZjgx"
     },
     {
       "key": "odos",
@@ -665,17 +433,6 @@
       "imageUrl": "https://vnx.li/wp-content/uploads/2025/01/VNX_logo_square.png",
       "twitterXUrl": "https://x.com/vnx_platform",
       "telegramUrl": "https://t.me/vnx_li"
-    },
-    {
-      "key": "inceptionlrt",
-      "name": "InceptionLRT",
-      "url": "https://www.inceptionlrt.com/",
-      "description": "Modular Infrastructure for Liquid Restaking. Scalable rewards and enhanced strategies powered by a modular framework for risk management",
-      "tags": ["DeFi", "Infra", "Bridge"],
-      "imageUrl": "https://2674700783-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FH5cQR703CA1JD1dlB1kD%2Fuploads%2Fn21CQgJx8t1LdxGhATBc%2FVector.svg?alt=media",
-      "twitterXUrl": "https://x.com/InceptionLRT",
-      "discordUrl": "https://discord.com/invite/RSAtmyXcSk",
-      "telegramUrl": "https://t.me/inceptionlrt"
     },
     {
       "key": "symbiosis",
@@ -731,6 +488,16 @@
       "twitterXUrl": "https://x.com/intent/user?screen_name=mtpelerin",
       "discordUrl": "https://discord.gg/WErDKTvMr7",
       "telegramUrl": "https://t.me/mtpelerinchat/"
+    },
+    {
+      "key": "EchoMarket",
+      "name": "Echo Market",
+      "url": "https://www.echomarket.app",
+      "description": "New and innovative marketing platform. Projects can create campaigns to activate their communities and spread new messages. Members can create content and get rewarded",
+      "tags": ["Marketing"],
+      "imageUrl": "https://docs.frax.com/images/ecosystem/echomarket.png",
+      "twitterXUrl": "https://x.com/echo_market",
+      "telegramUrl": "https://t.me/echomarket_community"
     }
   ]
 }
