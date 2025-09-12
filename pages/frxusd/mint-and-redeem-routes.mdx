@@ -31,15 +31,17 @@ The following table shows the supported assets you can use to mint and redeem fr
 
 ## Cross-Chain Mint & Redeem Routes
 
-Te FraxNet contract system allows for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks including Fraxtal, Arbitrum, Base, and others using **USDC** as the payment or redemption asset. The same factory contract powers [FraxNet](https://net.frax.com):
+The FraxNet contract system allows for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks using **USDC**. The same factory contract powers [FraxNet](https://net.frax.com):
 
 | **Mainnet**  | **FraxNet Factory Address**                                                                                             |
 | :----------- | :---------------------------------------------------------------------------------------------------------------------- |
 | **Ethereum** | [`0xA3D62f83C433e2A56Af392E08a705A52DEd63696`](https://etherscan.io/address/0xA3D62f83C433e2A56Af392E08a705A52DEd63696) |
 
-Cross-chain minting is supported on **all listed chains below** where EID is how to specify which chain to mint frxUSD to.
-
 **Follow the [quickstart guide](/frxusd/cross-chain-mint-and-redeem-quickstart) to see it in action.**
+
+### Supported Chains for Minting
+
+Below are the supported chains you can receive newly minted frxUSD on:
 
 | **Mainnet**       | **EID** |
 | :---------------- | :------ |
@@ -65,3 +67,22 @@ Cross-chain minting is supported on **all listed chains below** where EID is how
 | **Unichain**      | 30320   |
 | **XLayer**        | 30274   |
 | **zkSync**        | 30165   |
+
+### Supported Chains for Redeeming
+
+Below are the supported chains you can receive USDC on via [Circle's CCTP V2](https://developers.circle.com/cctp/cctp-supported-blockchains) after redeeming frxUSD:
+
+| **Mainnet**         | **Domain** |
+| :------------------ | :--------- |
+| **Ethereum**        | 0          |
+| **Avalanche**       | 1          |
+| **Optimism**        | 2          |
+| **Arbitrum**        | 3          |
+| **Solana**          | 5          |
+| **Base**            | 6          |
+| **Polygon PoS**     | 7          |
+| **Unichain**        | 10         |
+| **Linea**           | 11         |
+| **Sonic**           | 13         |
+| **Sei**             | 16         |
+| **BNB Smart Chain** | 17         |
