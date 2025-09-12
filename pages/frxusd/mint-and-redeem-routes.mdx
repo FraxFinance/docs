@@ -72,17 +72,19 @@ Below are the supported chains you can receive newly minted frxUSD on:
 
 Below are the supported chains you can receive USDC on via [Circle's CCTP V2](https://developers.circle.com/cctp/cctp-supported-blockchains) after redeeming frxUSD:
 
-| **Mainnet**         | **Domain** |
-| :------------------ | :--------- |
-| **Ethereum**        | 0          |
-| **Avalanche**       | 1          |
-| **Optimism**        | 2          |
-| **Arbitrum**        | 3          |
-| **Solana**          | 5          |
-| **Base**            | 6          |
-| **Polygon PoS**     | 7          |
-| **Unichain**        | 10         |
-| **Linea**           | 11         |
-| **Sonic**           | 13         |
-| **Sei**             | 16         |
-| **BNB Smart Chain** | 17         |
+**Important:** CCTP V1 is not supported.
+
+**Note:** If you want to redeem frxUSD and receive USDC on Ethereum mainnet, there is no need to use CCTP V2. You can simply call `processRedemption` to redeem frxUSD back to USDC directly on Ethereum mainnet.
+
+| **Mainnet**     | **Domain** |
+| :-------------- | :--------- |
+| **Avalanche**   | 1          |
+| **Optimism**    | 2          |
+| **Arbitrum**    | 3          |
+| **Solana**      | 5          |
+| **Base**        | 6          |
+| **Polygon PoS** | 7          |
+| **Unichain**    | 10         |
+| **Linea**       | 11         |
+| **Sonic**       | 13         |
+| **Sei**         | 16         |
