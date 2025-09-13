@@ -134,7 +134,7 @@ const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADD
 
 ### 2. Set up wallet and public clients
 
-The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be deploying Fraxnet contracts on **Ethereum mainnet** and minting frxUSD on **Base mainnet**.
+The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be deploying Fraxnet contracts on **Ethereum mainnet** to deposit USDC to mint frxUSD on **Base mainnet** and redeem frxUSD to receive USDC on **Ethereum mainnet**.
 
 ```javascript
 // Set up wallet and public clients
@@ -146,6 +146,17 @@ const ethereumWalletClient = createWalletClient({
 
 const ethereumPublicClient = createPublicClient({
   chain: mainnet,
+  transport: http(),
+});
+
+const baseWalletClient = createWalletClient({
+  chain: base,
+  transport: http(),
+  account,
+});
+
+const basePublicClient = createPublicClient({
+  chain: base,
   transport: http(),
 });
 ```
@@ -471,7 +482,7 @@ async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress) {
 
 ### 10. Receive USDC from Base mainnet via Circle's CCTP V2
 
-Check if `receiveMessage` has already been called on the Circle's CCTP V2 contract to receive the USDC from Base mainnet. If not, call `receiveMessage` on the Circle's CCTP V2 contract to receive the USDC from Base mainnet:
+Check if `receiveMessage` has already been called on the Circle's CCTP V2 contract to receive the USDC from Ethereum mainnet on Base mainnet. If not, call `receiveMessage` on the Circle's CCTP V2 contract to receive the USDC on Base mainnet:
 
 **Note:** Some chains such as **Base mainnet** have third-party bots that automatically call `receiveMessage` on behalf of users. Therefore, we need to check if `receiveMessage` has already been called via the `usedNonces` function.
 
@@ -489,7 +500,7 @@ async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
   const attestation = messageResponse.attestation;
   const eventNonce = messageResponse.eventNonce;
 
-  const usedNonces = await ethereumPublicClient.readContract({
+  const usedNonces = await basePublicClient.readContract({
     address: BASE_MESSAGE_TRANSMITTER_ADDRESS,
     abi: [
       {
@@ -506,7 +517,7 @@ async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
 
   if (usedNonces === 0n) {
     console.log('receiveMessage has not been called yet, calling receiveMessage...');
-    const receiveMessageHash = await ethereumWalletClient.sendTransaction({
+    const receiveMessageHash = await baseWalletClient.sendTransaction({
       to: BASE_MESSAGE_TRANSMITTER_ADDRESS,
       data: encodeFunctionData({
         abi: [
@@ -601,6 +612,17 @@ const ethereumWalletClient = createWalletClient({
 
 const ethereumPublicClient = createPublicClient({
   chain: mainnet,
+  transport: http(),
+});
+
+const baseWalletClient = createWalletClient({
+  chain: base,
+  transport: http(),
+  account,
+});
+
+const basePublicClient = createPublicClient({
+  chain: base,
   transport: http(),
 });
 
@@ -885,7 +907,7 @@ async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
   const attestation = messageResponse.attestation;
   const eventNonce = messageResponse.eventNonce;
 
-  const usedNonces = await ethereumPublicClient.readContract({
+  const usedNonces = await basePublicClient.readContract({
     address: BASE_MESSAGE_TRANSMITTER_ADDRESS,
     abi: [
       {
