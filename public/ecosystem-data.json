@@ -498,6 +498,16 @@
       "imageUrl": "https://docs.frax.com/images/ecosystem/echomarket.png",
       "twitterXUrl": "https://x.com/echo_market",
       "telegramUrl": "https://t.me/echomarket_community"
+    },
+    {
+      "key": "dRPC",
+      "name": "dRPC",
+      "url": "https://www.drpc.org",
+      "description": "AI-powered RPC infrastructure for dApss and chains. Want plug-n-play access to 185 networks? Try NodeCloud. Want full control of an open source, on-premise package? Join the NodeCore waitlist, launching fall '25.",
+      "tags": ["Infra"],
+      "imageUrl": "https://drpc.org/_next/static/media/dRPC_fullcollor_white.0c615983.svg",
+      "twitterXUrl": "https://x.com/drpcorg",
+      "discordURL": "https://discord.gg/dcVQZxWM8r"
     }
   ]
 }
