@@ -5,8 +5,8 @@ lang: en-US
 
 # The Frax USD Stablecoin
 ## Overview
-**Frax USD (frxUSD)** is a fiat-redeemable, fully-collateralized stablecoin issued by the Frax Finance Protocol. Frax USD uses a hybrid model that allows for governance-approved enshrined custodians to mint/redeem the stablecoin by holding cash-equivalent reserves while also having onchain mechanisms built by the Frax Finance Protocol.
-
+**Frax USD (frxUSD)** is a fiat-redeemable, fully collateralized stablecoin issued by the Frax Protocol.
+Each frxUSD is backed 1-to-1 by permitted cash-equivalent reserves such as tokenized U.S. Treasury funds (e.g., BUIDL, USTB, JTRSY, WTGXX, AUSD), held with regulated custodians and managed by **Frax Inc** under delegation from the Frax DAO.
 <img
   src="/images/protocol/frxUSD.png"
   alt="frxUSD Logo"
@@ -14,24 +14,27 @@ lang: en-US
   style={{ display: 'block', margin: 'auto', marginTop: '20px' }}
 />
 
+## Governance & Structure
+The Frax DAO retains ownership and ultimate control of the protocol and may amend or revoke delegated authority at any time. Per **[FIP-432](https://gov.frax.finance/t/fip-432-transfer-of-compliance-collateral-management-of-frxusd-to-frax-inc/3748),**
+the DAO has delegated *issuer-level compliance and collateral management* for frxUSD to **Frax Inc**, a public-benefit corporation.
+
+Frax Inc is responsible for:
+- Managing custodians and reserve composition
+- Coordinating audits and attestations
+- Overseeing KYC/KYB compliance
+- Maintaining fiat redemption operations and disclosures
+
+Frax Inc may retain only the funds required for these operations. Any surplus revenue from issuer activities is returned to the Frax DAO treasury.
+
 ## Enshrined Custodians
 
 **An enshrined custodian** is a real-world entity that can mint and burn **frxUSD** 1-to-1 in exchange for \$1.00 of cash-equivalent reserves that they custody. This means that an enshrined custodian can mint 1 frxUSD for \$1.00 of provable reserves they hold and release \$1.00 of reserve they custody when they burn 1 frxUSD. <br />
 
-**Real-world entities** can be added as an enshrined custodian through **governance** along with a custodian cap which signifies the maximum amount of frxUSD they can mint for holding reserves. A ```frxUSDCustodian``` contract is deployed through a governance process signifying the allotted minting cap and a token representing the asset they custody (ie: Blackrock BUIDL). <br />
-Any user is able to interact with any ```frxUSDCustodian``` contract; however, the underlying reserve token itself might have further requirements such as whitelists. This allows the frxUSD stablecoin to function in a permissionless manner while allowing real-world entities & institutions to onboard frxUSD while complying with their own internal requirements. frxUSD is redeemable for any custodian asset on demand meaning that there is no guarantee that frxUSD is redeemable for a particular asset or from a particular enshrined custodian.
+**Real-world entities** can be added as an enshrined custodian through **Frax Inc** under delegation from the **Frax DAO**, along with a custodian cap which signifies the maximum amount of frxUSD they can mint for holding reserves. A ```frxUSDCustodian``` contract is deployed through this delegated process, signifying the allotted minting cap and a token representing the asset they custody (ie: Blackrock BUIDL). <br />
+Any user is able to interact with any ```frxUSDCustodian``` contract; however, the underlying reserve token itself might have further requirements such as whitelists. This allows the frxUSD stablecoin to function in a permissionless manner while allowing real-world entities & institutions to onboard frxUSD while complying with their own internal requirements. frxUSD is redeemable for any custodian asset on demand, meaning that there is no guarantee that frxUSD is redeemable for a particular asset or from a particular enshrined custodian.
 
 For example, if Blackrock BUIDL and Superstate USTB are enshrined custodian assets, there is no guarantee that frxUSD is always redeemable for both BUIDL and USTB if all supply of BUIDL is redeemed against from the Blackrock ```frxUSDCustodian``` contract (or vice versa). As long as ```frxUSDCustodian``` contracts have collateral tokens within them, frxUSD is redeemable on demand from them.
 
-### Added Custodians
-| Entity Name | Asset | Governance Proposal | frxUSDCustodian Address |
-| :---------- | :---- | :------------------ | :---------------------- |
-| Circle Internet Group, Inc. | USDC | N/A | [`0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c`](https://etherscan.io/address/0x4F95C5bA0C7c69FB2f9340E190cCeE890B3bd87c)|
-| Securitize Markets, LLC | BUIDL  |  [FIP - 418](https://gov.frax.finance/t/fip-418-buidl-as-a-backing-asset-for-frax-usd/3533) |[`0xe827abf9f462ac4f147753d86bc5f91e186e4e9c`](https://etherscan.io/address/0xe827abf9f462ac4f147753d86bc5f91e186e4e9c)|
-| Superstate Inc. | USCC | [FIP - 420](https://gov.frax.finance/t/fip-420-uscc-as-collateral-and-custodian-asset-for-frxusd/3540) | TBD |
-| Superstate Inc. | USTB | [FIP - 421](https://gov.frax.finance/t/fip-421-ustb-as-collateral-and-custodian-asset-for-frxusd/3539) |[`0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33`](https://etherscan.io/address/0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33)|
-| Agora | AUSD | [FIP - 425](https://gov.frax.finance/t/fip-425-ausd-as-collateral-and-custodian-asset-for-frxusd/3589) | TBD |
-| Centrifuge | JTRSY | [FIP - 426](https://gov.frax.finance/t/fip-426-jtrsy-as-a-custodian-asset-for-frxusd-launching-centrifuge-on-fraxtal/3605) | TBD |
-| WisdomTree, Inc. | WTGXX | [FIP - 427](https://gov.frax.finance/t/fip-427-wtgxx-as-reserve-asset-for-frax-usd/3649) |[`0x860Cc723935FC9A15fF8b1A94237a711DFeF7857`](https://etherscan.io/address/0x860Cc723935FC9A15fF8b1A94237a711DFeF7857)|
+---
 
-
+_Last updated after [FIP-432: Transfer of Compliance & Collateral Management of frxUSD to Frax Inc](https://gov.frax.finance/t/fip-432-transfer-of-compliance-collateral-management-of-frxusd-to-frax-inc/3748)._
