@@ -26,11 +26,59 @@ All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2
 - WFRAX (prev. FXS)
 - FPI
 
-## Lockbox Design
+### Contract design
 
-Frax operates a dual-lockbox design where users can exit their OFT token into the native Frax-asset token on both Ethereum and Fraxtal. Utilizing a dual-lockbox design is a novel solution to bridging as liquidity is unlocked from more than one location.
+Overall, there are three types of LayerZero contracts that provide liquidity for users upon bridging:
 
-**NOTE**: FRAX is a single-lockbox design, with liquidity hosted on Fraxtal. Users bridging FRAX to Ethereum will receive the WFRAX OFT if using LayerZero. Using the native Optimism bridge from Fraxtal will return FXS on Ethereum.
+1. `OFT`
+
+- Operates as an ERC20
+- When tokens are received on the chain, the OFT is minted
+- When tokens are sent from the chain, the OFT is burned
+
+2. `Adapter` (aka lockbox)
+
+- Holds a running balance of a Frax-protocol token
+- When tokens are received on the chain, the Adapter sends the Frax token from its' balance to the recipient
+- When tokens are sent from the chain, the sender sends the Frax token to the Adapter
+
+3. `Mintable Adapter` (aka mint/burn lockbox)
+
+- Holds no balance of Frax-protocol token
+- When tokens are received on the chain, the Mintable Adapter mints the Frax token to the recipient
+- When tokens are sent from the chain, the Mintable Adapter burns the Frax token
+
+With the exception of Ethereum and Fraxtal, Frax tokens are represented as an OFT. For Ethereum and Fraxtal, Frax tokens are utilized in the following:
+
+#### frxUSD
+
+- Fraxtal: `Mintable Adapter`
+- Ethereum: `Mintable Adapter`
+
+#### sfrxUSD
+
+- Fraxtal: `Mintable Adapter`
+- Ethereum: `Mintable Adapter`
+
+#### frxETH
+
+- Fraxtal: `Mintable Adapter`
+- Ethereum: `Adapter`
+
+#### sfrxETH
+
+- Fraxtal: `Mintable Adapter`
+- Ethereum: `Adapter`
+
+#### WFRAX
+
+- Fraxtal: `Adapter`
+- Ethereum: `OFT`
+
+#### FPI
+
+- Fraxtal: `Mintable Adapter`
+- Ethereum: `Mintable Adapter`
 
 ## Hub Design
 
