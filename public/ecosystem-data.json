@@ -508,6 +508,16 @@
       "imageUrl": "https://drpc.org/_next/static/media/dRPC_fullcollor_white.0c615983.svg",
       "twitterXUrl": "https://x.com/drpcorg",
       "discordURL": "https://discord.gg/dcVQZxWM8r"
+    },
+    {
+      "key": "RZR",
+      "name": "Rezerve Money",
+      "url": "https://rezerve.money",
+      "description": "Rezerve Money is a DeFi protocol that combines dynamic rebasing, staking, bonding, and liquid staking mechanisms.",
+      "tags": ["DeFi"],
+      "imageUrl": "",
+      "twitterXUrl": "https://x.com/rezervemoney",
+      "discordURL": "https://discord.rezerve.money/"
     }
   ]
 }
