@@ -4,7 +4,7 @@ lang: en-US
 ---
 
 import * as mainnet from "~/misc/constants/mainnet";
-
+import Image from 'next/image';
 
 # $FRAX token
 
@@ -24,6 +24,24 @@ import * as mainnet from "~/misc/constants/mainnet";
 Frax is not a governance token. It is a **Commodity Asset** used as base money on Fraxtal. It is entirely issued natively on the Fraxtal L1 blockchain with no provenance on Ethereum or other blockchains (although wrapped bridged versions are available). While users and projects can build protocols that can use Frax as a staking and governance token, Frax itself is not a governance token. It is the sole asset of the Fraxtal blockchain.
 
 Frax Finance’s DeFi stack uses Frax as a restakable asset that provides cryptoeconomic security and governance voting rights to manage certain parameters of various Frax Finance DeFi protocols (such as veFRAX). These contracts are built on top of the Frax asset and not the underlying utility of the Frax asset. This is similar to a project using restaked ETH as its governance rights token. The restaked ETH token provides voting rights, utility, and cryptoeconomic security to the protocol, but the underlying protocol does not have ETH minting rights nor control of the ETH asset. The protocol using restaked ETH cannot stabilize asset pegs or change the ETH supply as part of its protocol function. This is the same relationship between the Frax ($FRAX) asset and the DeFi protocols using Frax as cryptoeconomic security including Frax Finance’s DeFi protocols.
+
+## FXS Upgrade to FRAX
+
+Since April 28th, 2025, users can upgrade their token 1:1 from [FXS (ERC20)](https://etherscan.io/token/0x3432b6a60d23ca0dfca7761b7ab56459d9c964d0) to FRAX (Fraxtal native gas token) by bridging it to Fraxtal chain. Which can be done using this UI https://frax.com/upgrade-fxs
+
+Users can wrap their native FRAX on Fraxtal to receive [WFRAX (an ERC20 representation)](https://fraxscan.com/token/0xfc00000000000000000000000000000000000002). WFRAX is compatible with Frax Mesh, allowing seamless transfers of WFRAX to other integrated chains in the Frax ecosystem.
+
+<p align="center">
+  <Image
+  src="/images/fraxtal-Gas.png"
+  alt="FRAX"
+  width={600}
+  height={600}
+  style={{ paddingTop: 50 }}
+/>
+</p>
+
+
 
 ## Commodity-like Properties
 
