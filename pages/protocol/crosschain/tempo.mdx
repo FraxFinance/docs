@@ -1,0 +1,219 @@
+---
+title: Tempo (TIP-20)
+lang: en-US
+---
+
+# frxUSD on Tempo
+
+frxUSD is the first stablecoin to implement Tempo's [TIP-20 standard](https://docs.tempo.xyz/protocol/tip20/overview) with full support for **stablecoin-denominated gas payments** and **cross-chain reward distribution**.
+
+For details on the TIP-20 standard itself, see [Tempo's official documentation](https://docs.tempo.xyz/protocol/tip20/overview).
+
+## Frax's TIP-20 Implementation
+
+Frax is the first to leverage TIP-20's capabilities for:
+
+- **Stablecoin Gas**: Users pay bridge fees in frxUSD—no need to hold native gas tokens
+- **Cross-Chain Supply Tracking**: Real-time visibility into frxUSD distribution for reward calculations
+- **TIP-403 Compliance**: Protocol-level freeze/thaw via Tempo's policy registry
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      TEMPO PRECOMPILES                          │
+├─────────────────┬─────────────────┬─────────────────────────────┤
+│ TIP403_REGISTRY │ STABLECOIN_DEX  │ TIP_FEE_MANAGER             │
+│ Policy control  │ Token swaps     │ User gas preferences        │
+└────────┬────────┴────────┬────────┴──────────────┬──────────────┘
+         │                 │                       │
+         ▼                 ▼                       ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    FRAX CONTRACTS                               │
+├─────────────────────────────────────────────────────────────────┤
+│ FrxUSDPolicyAdminTempo     - Freeze/thaw via TIP-403            │
+│ FraxOFTMintableAdapterTIP20 - LayerZero bridge with mint/burn   │
+│ FraxOFTUpgradeableTempo    - OFT with stablecoin gas payment    │
+│ RemoteHopV2Tempo           - Hub routing for cross-chain        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Key Features
+
+### Stablecoin-Denominated Gas
+
+Users pay bridge fees in their preferred stablecoin. The adapter automatically:
+
+1. Checks the user's preferred gas token via `TIP_FEE_MANAGER`
+2. If whitelisted: wraps directly via `LZEndpointDollar`
+3. If not whitelisted: swaps to PATH_USD via `STABLECOIN_DEX`, then wraps
+
+**Users never need to hold native gas tokens to bridge frxUSD.**
+
+### Cross-Chain Supply Tracking
+
+The `SupplyTrackingModule` maintains real-time visibility into token distribution across all chains, enabling governance to distribute rewards proportionally based on actual circulating supply:
+
+```solidity
+// Track per-chain supply for reward calculations
+function totalSupply(uint32 _eid) external view returns (uint256);
+
+// Get transfer flows
+function totalTransferFrom(uint32 _eid) external view returns (uint256);
+function totalTransferTo(uint32 _eid) external view returns (uint256);
+```
+
+### TIP-403 Policy Compliance
+
+Transfer restrictions are enforced at the protocol level via Tempo's [TIP-403 Registry](https://docs.tempo.xyz/protocol/tip403/overview):
+
+```solidity
+function freeze(address account) external;   // Block account transfers
+function thaw(address account) external;     // Unblock account
+function isFrozen(address account) external view returns (bool);
+```
+
+## Integration Guide
+
+### Quoting Bridge Fees
+
+When bridging from Tempo, fees are quoted in the user's preferred stablecoin:
+
+```solidity
+import { SendParam, MessagingFee, IOFT } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contracts/oft/interfaces/IOFT.sol";
+import { OptionsBuilder } from "@fraxfinance/layerzero-v2-upgradeable/oapp/contracts/oapp/libs/OptionsBuilder.sol";
+
+address oft = 0x...; // FraxOFTUpgradeableTempo address
+uint32 dstEid = 30101; // Destination chain EID
+uint256 amount = 1e18;
+
+bytes memory options = OptionsBuilder.newOptions();
+SendParam memory sendParam = SendParam({
+    dstEid: dstEid,
+    to: bytes32(uint256(uint160(msg.sender))),
+    amountLD: amount,
+    minAmountLD: amount,
+    extraOptions: options,
+    composeMsg: '',
+    oftCmd: ''
+});
+
+// Fee returned in user's preferred token, NOT native gas
+MessagingFee memory fee = IOFT(oft).quoteSend(sendParam, false);
+```
+
+### Sending Cross-Chain
+
+Unlike standard OFTs, Tempo OFTs **do not accept `msg.value`**. Fees are paid via ERC-20 approval:
+
+```solidity
+// 1. Approve the OFT to spend fee tokens
+IERC20(feeToken).approve(oft, fee.nativeFee);
+
+// 2. Send WITHOUT msg.value
+IOFT(oft).send(
+    sendParam,
+    fee,
+    payable(msg.sender)  // refund address
+);
+```
+
+### Reading Supply Data
+
+Query cross-chain supply for analytics or reward distribution:
+
+```solidity
+ISupplyTracking adapter = ISupplyTracking(adapterAddress);
+
+// Total sent from this chain
+uint256 outflows = adapter.totalTransferFromSum();
+
+// Total received on this chain
+uint256 inflows = adapter.totalTransferToSum();
+
+// Per-chain breakdown
+uint256 sentToEthereum = adapter.totalTransferFrom(30101);
+uint256 receivedFromArbitrum = adapter.totalTransferTo(30110);
+
+// Expected supply on a specific chain
+uint256 supplyOnBase = adapter.totalSupply(30184);
+```
+
+## Contract Reference
+
+### FraxOFTUpgradeableTempo
+
+Tempo-specific OFT with stablecoin gas payment:
+
+| Function | Description |
+|----------|-------------|
+| `send()` | Bridge tokens (no msg.value) |
+| `quoteSend()` | Get fee in user's preferred token |
+
+### FrxUSDPolicyAdminTempo
+
+Policy management for compliance:
+
+| Function | Description |
+|----------|-------------|
+| `freeze(address)` | Block account transfers |
+| `thaw(address)` | Unblock account |
+| `isFrozen(address)` | Check freeze status |
+| `addFreezer(address)` | Grant freeze permissions |
+| `removeFreezer(address)` | Revoke freeze permissions |
+| `policyId()` | Get TIP-403 policy ID |
+
+### FraxOFTMintableAdapterUpgradeableTIP20
+
+Bridge adapter with supply tracking:
+
+| Function | Description |
+|----------|-------------|
+| `totalSupply(uint32)` | Expected supply on chain |
+| `totalTransferFrom(uint32)` | Outflows to chain |
+| `totalTransferTo(uint32)` | Inflows from chain |
+| `totalTransferFromSum()` | Total outflows |
+| `totalTransferToSum()` | Total inflows |
+
+## Events
+
+### Supply Tracking
+
+```solidity
+event AddToTotalTransferFromEid(uint32 indexed eid, uint256 previousAmount, uint256 amount);
+event AddToTotalTransferFromSum(uint256 previousAmount, uint256 amount);
+event AddToTotalTransferToEid(uint32 indexed eid, uint256 previousAmount, uint256 amount);
+event AddToTotalTransferToSum(uint256 previousAmount, uint256 amount);
+event SetInitialTotalSupply(uint32 indexed eid, uint256 amount);
+```
+
+### Policy
+
+```solidity
+event AccountFrozen(address indexed account);
+event AccountThawed(address indexed account);
+event AddFreezer(address indexed account);
+event RemoveFreezer(address indexed account);
+```
+
+## Contract Addresses
+
+### Testnet (Moderato)
+
+| Contract | Address |
+|----------|---------|
+| frxUSD TIP-20 | `0x20c000000000000000000000cf5b0F48F7fEDC7F` |
+| FraxOFTMintableAdapterUpgradeableTIP20 (Proxy) | `0x16FBfCF4970D4550791faF75AE9BaecE75C85A27` |
+| FrxUSDPolicyAdminTempo (Proxy) | `0x667daf76CC0fC083B88caa20D8Bd8565884aE97C` |
+| Policy ID | `375842` |
+
+### Mainnet (Presto) - Coming Soon
+
+Deployment in progress.
+
+## Source Code
+
+- [Tempo Integration Specs](https://github.com/FraxFinance/frax-oft-upgradeable/tree/master/contracts/modules/tempo-specs)
+- [FraxOFTUpgradeableTempo](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/contracts/FraxOFTUpgradeableTempo.sol)
+- [FraxOFTMintableAdapterUpgradeableTIP20](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/contracts/FraxOFTMintableAdapterUpgradeableTIP20.sol)
+- [FrxUSDPolicyAdminTempo](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/contracts/frxUsd/FrxUSDPolicyAdminTempo.sol)
