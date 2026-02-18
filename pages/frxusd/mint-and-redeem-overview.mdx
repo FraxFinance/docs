@@ -62,6 +62,27 @@ Redeem frxUSD on 20+ supported blockchain networks with the following steps:
 2. **Asset Conversion**: Call `processRedemption` to convert frxUSD back to USDC
 3. **Asset Delivery**: Receive USDC directly to your specified address on Ethereum mainnet or any [supported CCTP chains](https://developers.circle.com/cctp/cctp-supported-blockchains)
 
+## Fiat On-Ramp & Off-Ramp with FraxNet
+
+FraxNet provides direct fiat-to-frxUSD and frxUSD-to-fiat pathways, allowing users to convert between traditional currencies (USD, EUR, GBP, MXN, BRL) and frxUSD without needing to hold intermediate crypto assets.
+
+### On-Ramp: Fiat to frxUSD
+
+Two methods are available for converting fiat currency into frxUSD:
+
+- **Virtual Accounts (Bank Transfer)**: Create a permanent virtual bank account that accepts ACH or Wire deposits. Funds are automatically converted to frxUSD and delivered to your wallet on your chosen destination chain.
+- **Coinbase Pay**: Purchase frxUSD directly using credit/debit cards, ACH, or bank wire through the integrated Coinbase Pay widget.
+
+### Off-Ramp: frxUSD to Fiat
+
+- **Bank Transfer (Wire/ACH)**: Connect a U.S. bank account via Plaid and send frxUSD to your liquidation address. Funds are automatically converted to USD and transferred to your bank via ACH or wire.
+
+### KYC Verification Required
+
+Fiat on-ramp and off-ramp services require identity verification through Persona (KYC/KYB) and Bridge.xyz before use. Both individual and business verification types are supported.
+
+For detailed documentation on the fiat on-ramp and off-ramp process, see [Fiat On-Ramp & Off-Ramp](/frxusd/fiat-onramp-offramp).
+
 ## Getting Started
 
 ### Supported Blockchain Networks

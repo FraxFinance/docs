@@ -1,0 +1,135 @@
+---
+title: Fiat On-Ramp & Off-Ramp
+lang: en-US
+---
+
+# Fiat On-Ramp & Off-Ramp
+
+FraxNet enables direct conversion between fiat currencies and frxUSD, removing the need to hold intermediate crypto assets. Users can deposit fiat via bank transfer or Coinbase Pay to receive frxUSD, and convert frxUSD back to fiat via bank wire/ACH.
+
+## Prerequisites
+
+Before using fiat on-ramp or off-ramp services, you must complete identity verification:
+
+1. **Email Verification**: Verify your email address on [FraxNet](https://net.frax.com)
+2. **Persona KYC/KYB**: Complete identity verification through Persona as either an individual or a business
+3. **Bridge.xyz Verification**: Automatically initiated after Persona approval, enabling bank transfer functionality
+
+Verification status can be tracked in **Settings > Account** on [FraxNet](https://net.frax.com). Persona verification typically takes 1-3 business days.
+
+## On-Ramp: Fiat to frxUSD
+
+### Virtual Accounts (Bank Transfer)
+
+Virtual accounts provide permanent, reusable bank account details that accept fiat deposits. When funds arrive, they are automatically converted to frxUSD and delivered to your wallet on your chosen destination chain.
+
+#### Supported Currencies & Payment Rails
+
+| Currency | Payment Rail | Region | Status |
+|----------|-------------|--------|--------|
+| USD | ACH / Wire Transfer | United States | Live |
+| EUR | SEPA | Europe | Live |
+| GBP | Faster Payments | United Kingdom | Coming Soon |
+| MXN | SPEI | Mexico | Coming Soon |
+| BRL | PIX | Brazil | Coming Soon |
+
+#### How It Works
+
+1. **Create a Virtual Account**: Navigate to **Virtual Accounts** on [FraxNet](https://net.frax.com) and select your source currency, destination chain, and wallet address
+2. **Receive Deposit Instructions**: The system generates permanent bank details unique to your virtual account (account number, routing number, IBAN, etc., depending on currency)
+3. **Send Funds**: Transfer fiat from your bank to the provided account details using the appropriate payment rail
+4. **Automatic Conversion**: Deposited funds are automatically converted to frxUSD and delivered to your wallet on the destination chain
+5. **Track Status**: Monitor deposit and conversion progress on the Virtual Accounts page
+
+#### Deposit Instructions by Currency
+
+**USD (ACH/Wire)**:
+- Account number
+- Routing number
+- Beneficiary name and address
+
+**EUR (SEPA)**:
+- IBAN
+- BIC/SWIFT code
+
+#### Virtual Account Management
+
+- **Deactivate**: Stop accepting deposits on a virtual account at any time
+- **Reactivate**: Resume accepting deposits on a previously deactivated account
+- **Multiple Accounts**: Create separate virtual accounts for different currency-chain-wallet combinations
+
+### Coinbase Pay (Card & Other Methods)
+
+For users who prefer card-based or alternative payment methods, FraxNet integrates Coinbase Pay for direct fiat-to-crypto purchases.
+
+#### Supported Payment Methods
+
+- Credit and debit cards
+- ACH bank transfer
+- Bank wire
+
+Additional payment methods such as Apple Pay and PayPal may be available depending on your Coinbase account and region.
+
+#### How It Works
+
+1. **Initiate On-Ramp**: Select the Coinbase Pay on-ramp option on [FraxNet](https://net.frax.com)
+2. **Select Amount & Payment**: Choose your fiat currency, amount, and preferred payment method in the Coinbase Pay widget
+3. **Complete Payment**: Follow the Coinbase Pay checkout flow
+4. **Receive frxUSD**: Crypto is delivered to your wallet on your selected network
+
+#### Supported Networks
+
+Ethereum, Arbitrum, Avalanche, Base, Optimism, Polygon, Solana, Stellar, and TRON.
+
+## Off-Ramp: frxUSD to Fiat
+
+### Bank Transfer (Wire/ACH)
+
+Convert frxUSD back to USD and receive funds directly in your U.S. bank account via ACH or wire transfer.
+
+#### Connect a Bank Account
+
+1. Navigate to **Settings > Account > Bank Accounts** on [FraxNet](https://net.frax.com)
+2. Click **Connect U.S. Bank Account** to open the Plaid Link widget
+3. Select your bank and authenticate with your banking credentials
+4. Choose the checking or savings account to connect
+
+Once connected, the system automatically creates two liquidation addresses for your account: one for ACH transfers and one for wire transfers.
+
+#### Supported Account Types
+
+- U.S. checking accounts
+- U.S. savings accounts
+
+#### How It Works
+
+1. **Connect Bank Account**: Link your U.S. bank account via Plaid (one-time setup)
+2. **Send frxUSD**: Transfer frxUSD to your assigned liquidation address on Ethereum
+3. **Automatic Conversion**: frxUSD is converted to USD
+4. **Bank Deposit**: USD is sent to your connected bank account via ACH or wire
+5. **Confirmation**: Receive an email confirmation with transfer details
+
+#### Settlement
+
+- **ACH**: Typically 1-3 business days
+- **Wire**: Typically same-day or next business day
+
+## Fees
+
+- **Exchange Fee**: May be applied by Bridge.xyz during currency conversion
+- **RWA Liquidation Fee**: A 0.01 BPS conversion fee may apply if real-world assets (RWAs) are being liquidated to meet cash redemptions
+
+## Security & Compliance
+
+- **Identity Verification**: All users must complete Persona KYC/KYB and Bridge.xyz verification
+- **Bank Verification**: Bank accounts are verified through Plaid's secure authentication
+- **Webhook Validation**: All transaction events are validated using SHA-256 HMAC signature verification
+- **Rate Limiting**: API rate limits are applied to all fiat operations to prevent abuse
+- **Email Notifications**: Users receive email notifications for successful and failed transactions
+
+## Next Steps
+
+- [Mint & Redeem frxUSD Overview](/frxusd/mint-and-redeem-overview)
+- [Supported Routes & Networks](/frxusd/mint-and-redeem-routes)
+- [Cross-Chain Transfers](/frxusd/cross-chain-transfers-quickstarts)
+- [Stake & Unstake frxUSD](/frxusd/stake-and-unstake-overview)

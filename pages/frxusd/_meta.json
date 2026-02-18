@@ -17,6 +17,7 @@
     "type": "separator"
   },
   "mint-and-redeem-overview": "Overview",
+  "fiat-onramp-offramp": "Fiat On-Ramp & Off-Ramp",
   "mint-and-redeem-routes": "Supported Routes & Networks",
   "mint-and-redeem-quickstarts": "Quickstarts: Mint & Redeem frxUSD on Ethereum",
   "cross-chain-mint-and-redeem-quickstart": "Quickstart: Mint & Redeem frxUSD Cross-Chain",
