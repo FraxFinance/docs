@@ -1,0 +1,106 @@
+---
+title: CCTP Relay
+lang: en-US
+---
+
+# CCTP Relay
+
+The Orchestration API includes a built-in CCTP relay service that handles Circle attestation polling and message relay on destination chains. Relay jobs are automatically created by `/processRedemption` and `/branded/processRedemption`, or can be manually scheduled.
+
+---
+
+## `GET /scheduleCCTPRelay`
+
+Manually schedule a CCTP relay for an existing `depositForBurn` transaction.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `txHash` | `bytes32` | Yes | Transaction hash of `depositForBurn` on the source chain |
+| `sourceDomain` | `u32` | Yes | CCTP domain ID of the source chain |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "jobId": "0x...",
+  "sourceDomain": 13,
+  "destDomain": 0,
+  "status": "pending_attestation"
+}
+```
+
+---
+
+## `GET /jobStatus`
+
+Check the status of a CCTP relay job.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `jobId` | `string` | Yes | Job ID returned by other endpoints |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "job": {
+    "job_id": "0x...",
+    "dest_domain": 13,
+    "status": "complete",
+    "relay_tx": "0x...",
+    "error": null,
+    "created_at": 1709500000
+  }
+}
+```
+
+---
+
+## `GET /activeJobs`
+
+Summary of all CCTP relay jobs and their statuses. No parameters required.
+
+### Response
+
+```json
+{
+  "ok": true,
+  "total_jobs": 42,
+  "total_active": 5,
+  "counts": {
+    "pending_attestation": 3,
+    "relaying": 2,
+    "complete": 30,
+    "already_relayed": 5,
+    "failed": 2
+  },
+  "active_jobs": [
+    {
+      "job_id": "0x...",
+      "status": "pending_attestation",
+      "dest_domain": 0,
+      "created_at": 1709729600
+    }
+  ]
+}
+```
+
+---
+
+## Job Status Lifecycle
+
+| Status | Description |
+| --- | --- |
+| `pending_attestation` | Polling Circle's attestation API for signature |
+| `relaying` | Submitting `receiveMessage()` on the destination chain |
+| `complete` | USDC delivered on destination |
+| `already_relayed` | Message was relayed by another party |
+| `failed` | Unrecoverable error |
+
+The relay worker polls Circle's attestation API every 15 seconds for up to ~25 minutes. Circle's attestation API handles finality internally, returning `pending_confirmations` until sufficient block finality is reached, then `complete` with the attestation signature.

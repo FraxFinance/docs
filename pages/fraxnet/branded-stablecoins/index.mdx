@@ -1,0 +1,158 @@
+---
+title: Stablecoins as a Service (SaaS)
+lang: en-US
+---
+
+# Stablecoins as a Service (SaaS)
+
+Stablecoins as a Service (SaaS) are white-label stablecoin instances deployed through FraxNet's `BrandedFactory`. Each SaaS stablecoin is a fully collateralized ERC-20 token backed 1:1 by frxUSD, with native cross-chain support via LayerZero.
+
+## Core Components
+
+| Component | Description |
+| --- | --- |
+| **Branded Token** | ERC-20 stablecoin with a uniform address across all deployed chains |
+| **BrandedCustodian** | ERC-4626 vault holding frxUSD collateral for minting and redeeming the branded token |
+| **CrossChainRouter** | LayerZero-based bridge enabling cross-chain branded token transfers |
+| **BrandedFactory** | Factory contract that deploys and maps tokens to their custodian and router |
+
+## How It Works
+
+1. A branded stablecoin is deployed through the `BrandedFactory`, which creates the token, custodian, and router contracts using deterministic CREATE2 addresses.
+2. Users mint branded tokens by depositing frxUSD into the `BrandedCustodian`. The custodian maintains a 1:1 backing ratio.
+3. Users bridge branded tokens cross-chain via the `CrossChainRouter`, which redeems the token for frxUSD, sends it via LayerZero, and re-mints on the destination chain.
+4. Users redeem branded tokens back to frxUSD at any time through the custodian.
+
+## Deployed Chains
+
+Branded stablecoins are deployed across 20 EVM chains with uniform contract addresses:
+
+| Chain | Chain ID | LayerZero EID |
+| --- | --- | --- |
+| Ethereum | 1 | 30101 |
+| Fraxtal | 252 | 30255 |
+| Arbitrum | 42161 | 30110 |
+| Avalanche | 43114 | 30106 |
+| Base | 8453 | 30184 |
+| BSC | 56 | 30102 |
+| Ink | 57073 | 30339 |
+| Linea | 59144 | 30183 |
+| Mode | 34443 | 30260 |
+| Optimism | 10 | 30111 |
+| Polygon | 137 | 30109 |
+| Scroll | 534352 | 30214 |
+| Sei | 1329 | 30280 |
+| Sonic | 146 | 30332 |
+| Unichain | 130 | 30320 |
+
+## Example: USSD (US Sonic Dollar)
+
+USSD is the first branded stablecoin deployed through this system.
+
+| Contract | Address |
+| --- | --- |
+| USSD Token | `0x000000000eCcFf26B795F73fb0A70d48da657fEf` |
+| Custodian | `0x54E14489646fD9693ea5071cb5DFeb1F5Afa8f03` |
+| CrossChainRouter | `0x2F30BeF74c1F7572a3ea5e101d1f587287d06C94` |
+| BrandedFactory | `0x63E89638743a409e2389F06A3f778a4570314d7D` |
+
+## Minting Example (Solidity)
+
+```solidity
+IERC20 frxUSD = IERC20(custodian.asset());
+uint256 amount = 1000e18;
+
+frxUSD.approve(address(custodian), amount);
+uint256 brandedTokensReceived = custodian.deposit(amount, msg.sender);
+```
+
+## Minting Example (TypeScript)
+
+```typescript
+import { parseUnits } from "viem";
+
+const custodianAddress = "0x54E14489646fD9693ea5071cb5DFeb1F5Afa8f03";
+const frxUsdAddress = "0x..."; // frxUSD on the target chain
+const amount = parseUnits("1000", 18);
+
+// Approve custodian to spend frxUSD
+await walletClient.writeContract({
+  address: frxUsdAddress,
+  abi: erc20Abi,
+  functionName: "approve",
+  args: [custodianAddress, amount],
+});
+
+// Deposit frxUSD to mint branded tokens
+const brandedTokensReceived = await walletClient.writeContract({
+  address: custodianAddress,
+  abi: custodianAbi,
+  functionName: "deposit",
+  args: [amount, userAddress],
+});
+```
+
+## Redeeming Example (Solidity)
+
+```solidity
+uint256 brandedAmount = 500e18;
+uint256 frxUsdReceived = custodian.redeem(brandedAmount, msg.sender, msg.sender);
+```
+
+## Bridging Example (Solidity)
+
+```solidity
+uint32 dstEid = 30101; // Ethereum
+address recipient = msg.sender;
+uint256 amount = 100e18;
+
+IERC20(brandedToken).approve(address(router), amount);
+uint256 nativeFee = router.quote(dstEid, recipient, amount);
+router.send{value: nativeFee}(dstEid, recipient, amount);
+```
+
+## Bridging Example (TypeScript)
+
+```typescript
+import { parseUnits } from "viem";
+
+const routerAddress = "0x2F30BeF74c1F7572a3ea5e101d1f587287d06C94";
+const brandedTokenAddress = "0x000000000eCcFf26B795F73fb0A70d48da657fEf";
+const dstEid = 30101; // Ethereum
+const amount = parseUnits("100", 18);
+
+// Approve router to spend branded tokens
+await walletClient.writeContract({
+  address: brandedTokenAddress,
+  abi: erc20Abi,
+  functionName: "approve",
+  args: [routerAddress, amount],
+});
+
+// Quote LayerZero fee
+const nativeFee = await publicClient.readContract({
+  address: routerAddress,
+  abi: routerAbi,
+  functionName: "quote",
+  args: [dstEid, userAddress, amount],
+});
+
+// Send cross-chain
+await walletClient.writeContract({
+  address: routerAddress,
+  abi: routerAbi,
+  functionName: "send",
+  args: [dstEid, userAddress, amount],
+  value: nativeFee,
+});
+```
+
+## Factory Lookup
+
+To look up the custodian and router for any branded token:
+
+```solidity
+(address custodian, address router, ) = BrandedFactory(
+  0x63E89638743a409e2389F06A3f778a4570314d7D
+).brandedTokenToUtils(brandedTokenAddress);
+```
