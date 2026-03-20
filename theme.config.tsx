@@ -86,7 +86,7 @@ const config: DocsThemeConfig = {
       section === 'fraxtal'
         ? '/images/fraxtal-256x256.png'
         : section === 'fraxnet' || section === 'frxusd'
-          ? '/images/protocol/frxusd.png'
+          ? '/images/protocol/frxUSD.png'
           : '/images/frax-256x256.png';
 
     return (
