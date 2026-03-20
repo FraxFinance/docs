@@ -1,0 +1,80 @@
+---
+title: Orchestration API
+lang: en-US
+---
+
+# Orchestration API
+
+The FraxNet Orchestration API enables cross-chain redemptions and branded stablecoin operations using [LayerZero OFT ↗](https://docs.layerzero.network) and [Circle CCTP v2 ↗](https://developers.circle.com/cctp). Two product lines are supported:
+
+1. **Standard frxUSD** — Bridge frxUSD from remote chains to Ethereum, redeem to USDC, and relay to any CCTP-supported chain.
+2. **Stablecoins as a Service (SaaS)** — Deposit USDC to mint SaaS stablecoins or redeem them back to USDC.
+
+## Base URL
+
+```
+https://api-net.frax.com
+```
+
+## Request Format
+
+All endpoints use **GET** requests with query parameters. No authentication is required.
+
+## Response Format
+
+Success responses include `"ok": true`:
+
+```json
+{
+  "ok": true,
+  ...
+}
+```
+
+Failure responses include `"ok": false` with an error message:
+
+```json
+{
+  "ok": false,
+  "error": "Description of what went wrong"
+}
+```
+
+## Endpoint Summary
+
+| Endpoint | Description |
+| --- | --- |
+| `GET /health` | Health check |
+| `GET /fetchAddress` | Get deposit address for frxUSD operations |
+| `GET /processDeposit` | Process USDC deposit to mint frxUSD |
+| `GET /processRedemption` | Redeem frxUSD to USDC and relay via CCTP |
+| `GET /branded/fetchAddress` | Get deposit address for branded stablecoin operations |
+| `GET /branded/processDeposit` | Process USDC deposit to mint branded stablecoin |
+| `GET /branded/processRedemption` | Redeem branded stablecoin to USDC and relay via CCTP |
+| `GET /scheduleCCTPRelay` | Manually schedule a CCTP relay |
+| `GET /jobStatus` | Check CCTP relay job status |
+| `GET /activeJobs` | Summary of all relay jobs |
+
+## Contract Addresses
+
+**Ethereum Mainnet:**
+
+| Contract | Address |
+| --- | --- |
+| FraxNet Factory | `0xA3D62f83C433e2A56Af392E08a705A52DEd63696` |
+| frxUSD Token | `0xcacd6fd266af91b8aed52accc382b4e165586e29` |
+| USDC | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` |
+
+**Sonic:**
+
+| Contract | Address |
+| --- | --- |
+| frxUSD Token | `0x80eede496655fb9047dd39d9f418d5483ed600df` |
+| USDC | `0x29219dd400f2Bf60E5a23d13Be72B486D4038894` |
+| USSD (US Sonic Dollar) | `0x000000000eCcFf26B795F73fb0A70d48da657fEf` |
+| USSD Custodian | `0x54E14489646fD9693ea5071cb5DFeb1F5Afa8f03` |
+| USSD CrossChainRouter | `0x2F30BeF74c1F7572a3ea5e101d1f587287d06C94` |
+| CCTP v2 TokenMessenger | `0x28b5a0e9C621a5BadaA536219b3a228C8168cf5d` |
+
+**CCTP v2 MessageTransmitterV2 (all EVM chains):**
+`0x81D40F21F12A8F0E3252Bccb954D722d4c464B64`
