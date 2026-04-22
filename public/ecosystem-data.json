@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "envio",
+      "name": "Envio",
+      "url": "https://envio.dev",
+      "description": "Envio is a modern, multi-chain EVM blockchain indexer for querying real-time and historical data.",
+      "tags": ["Infra"],
+      "imageUrl": "https://raw.githubusercontent.com/enviodev/brandkit/0a83f64e2fdbf1f58581ac1bbccd79d615568667/logos/envio-logo-1x1-clear.svg",
+      "twitterXUrl": "https://x.com/envio_indexer",
+      "discordUrl": "https://discord.com/invite/envio"
+    },
+    {
       "key": "the-graph",
       "name": "The Graph",
       "url": "https://thegraph.com/docs/en/subgraphs/quick-start/",
