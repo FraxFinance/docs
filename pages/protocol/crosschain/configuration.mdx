@@ -1,0 +1,42 @@
+---
+title: Configuration
+lang: en-US
+---
+
+## Crosschain Configuration
+
+Frax OFTs and lockboxes require multiple settings to be configured for proper crosschain functionality. These settings include:
+
+### SendLibrary
+
+Frax utilizes the LZ-provided SendLibrary for sending messages crosschain. If LayerZero changes their default SendLibrary, Frax will maintain the previous version until manually set by the Frax team.
+
+### ReceiveLibrary
+
+Frax utilizes the LZ-provided ReceiveLibrary for receiving messages crosschain. If LayerZero changes their default ReceiveLibrary, Frax will maintain the previous version until manually set by the Frax team.
+
+### Executor
+
+Frax utilizes the LZ-provided Executor for executing messages crosschain. If LayerZero changes their default Executor, Frax will automatically update to the latest version.
+
+### Max Message Size
+
+Frax utilizes the LZ-provided Max Message Size setting to limit the maximum size of data in a message sent crosschain. In general, this value is the same across EVM chains and varies per non-EVM chain. If LayerZero changes their Max Message Size, Frax will automatically update to the latest setting.
+
+### Confirmations
+
+Frax utilizes the LZ-provided Confirmations setting to determine how many block confirmations are required before a message can be executed on the destination chain. This value varies per chain based on the average block time and finality of each chain. If LayerZero changes their Confirmations setting, Frax will automatically update to the latest setting.
+
+### Enforced Options
+
+Frax configures a default Enforced Option to require a minimum amount of gas to be forwarded to each destination chain executor. This ensures that messages have sufficient gas to be executed on the destination chain. Enforced Options are solely managed by the Frax team.
+
+### Delegate
+
+The delegate is a permissioned address that can configure the aforementioned settings on the OFT and lockbox contracts. The Frax team operates as the delegate through a 3/6 multisig on each respective chain, found within the #Addresses section of the crosschain docs.
+
+### DVN
+
+Frax utilizes a 3 of 3 DVN stack required to approve every crosschain transaction. The DVNs are operated by LayerZero, Horizen, and Frax. In particular, the Frax DVN details are as follows:
+
+TODO
