@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "id": "p5h2urttptw9ayhb",
+  "title": "How to connect your wallet",
+  "slug": "how-to-connect-your-wallet",
+  "theme": {
+    "mode": "frax-dark",
+    "accentColor": "#3b82f6",
+    "borderRadius": 8,
+    "tooltipStyle": "solid",
+    "hotspotPulse": true
+  },
+  "playback": {
+    "cursor": true,
+    "zoom": true,
+    "zoomLevel": 1.35
+  },
+  "steps": [
+    {
+      "id": "pshgq4832mowkks6",
+      "order": 0,
+      "screenshotPath": "assets/step-001.webp",
+      "sourceUrl": "https://frax.com/",
+      "pageTitle": "Frax",
+      "title": "Click Connect",
+      "body": "Click the Connect button to start linking your wallet.",
+      "hotspot": {
+        "x": 0.9393310546875,
+        "y": 0.015772870662460567,
+        "width": 0.0450439453125,
+        "height": 0.04416403785488959,
+        "clickX": 0.9552083333333333,
+        "clickY": 0.03785488958990536,
+        "shape": "rectangle",
+        "tooltipPlacement": "auto",
+        "borderRadius": 0.0067708333333333336
+      },
+      "advanceMode": "either"
+    },
+    {
+      "id": "grv4j29d7xyaclsa",
+      "order": 1,
+      "screenshotPath": "assets/step-002.webp",
+      "sourceUrl": "https://frax.com/",
+      "pageTitle": "Frax",
+      "title": "Select Rabby Wallet",
+      "body": "Choose your prefered wallet from the list of wallet options, then confirm the connection in the wallet extension.",
+      "zoom": {
+        "mode": "custom",
+        "level": 1.2,
+        "focusX": 1,
+        "focusY": 0.4175067555404568
+      },
+      "hotspot": {
+        "x": 0.7940476190476192,
+        "y": 0.08131918498217706,
+        "width": 0.19523809523809507,
+        "height": 0.8074461342158933,
+        "clickX": 0.8869791666666667,
+        "clickY": 0.5425867507886435,
+        "shape": "rectangle",
+        "tooltipPlacement": "auto"
+      },
+      "advanceMode": "either"
+    },
+    {
+      "id": "l1chwkwhfqi5e2j7",
+      "order": 2,
+      "screenshotPath": "assets/step-003.webp",
+      "sourceUrl": "https://frax.com/",
+      "pageTitle": "Frax",
+      "title": "Finish Setup",
+      "body": "Check that your wallet address now appears on the page to confirm the connection.",
+      "advanceMode": "either"
+    }
+  ],
+  "generatedAt": "2026-07-21T06:33:07.671Z"
+}
