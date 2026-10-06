@@ -1,0 +1,147 @@
+---
+title: Branded Custodian
+lang: en-US
+---
+
+# BrandedCustodian
+
+## Overview
+
+`BrandedCustodian` is an ERC-4626-style vault that custodies the frxUSD backing a branded stablecoin instance. It acts as the primary PSM (Peg Stability Module) for the branded stablecoin, ensuring it is always redeemable 1:1 for frxUSD on a given chain.
+
+## Key Features
+
+- ERC-4626 compatible deposit/mint/withdraw/redeem interface
+- 1:1 backing of branded tokens with frxUSD
+- Configurable mint and redeem fees
+- Mint cap enforcement
+- Optional isolated backing mode for siloed collateral configurations
+- Reentrancy protected
+
+## Initialization
+
+```solidity
+function initialize(
+  address _brandedCoin,
+  address _localFrxUSD,
+  address _owner,
+  uint256 _mintCap,
+  uint256 _mintFee,
+  uint256 _redeemFee
+) public
+```
+
+- Called once by the `BrandedFactory` upon deployment.
+- Sets the branded stablecoin (shares), frxUSD (asset), owner, mint cap, and fees.
+
+## State Variables
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `brandedStablecoin` | `IGDollar` | The branded stablecoin token (shares) |
+| `custodianTkn` | `IERC20` | The underlying asset (frxUSD) |
+| `brandedTknDecimals` | `uint8` | Decimals of the branded stablecoin |
+| `custodianTknDecimals` | `uint8` | Decimals of frxUSD |
+| `mintFee` | `uint256` | Fee applied on minting (18 decimals) |
+| `redeemFee` | `uint256` | Fee applied on redemption (18 decimals) |
+| `mintCap` | `uint256` | Maximum branded tokens that can be minted |
+| `brandedCoinMinted` | `uint256` | Running total of branded tokens minted |
+| `isolatedBackingEnabled` | `bool` | Whether isolated backing mode is active |
+| `router` | `address` | CrossChainRouter address (if isolated backing) |
+| `individualCustodian` | `address` | Siloed custodian address (if isolated backing) |
+
+## Functions
+
+### Deposit Flow
+
+```solidity
+function deposit(uint256 _assetsIn, address _receiver) public returns (uint256 _sharesOut)
+```
+
+- Deposits frxUSD and mints branded stablecoin tokens to `_receiver`.
+- Caller must approve the custodian to spend frxUSD first.
+- Reverts if `_assetsIn` exceeds `maxDeposit(_receiver)`.
+
+```solidity
+function mint(uint256 _sharesOut, address _receiver) public returns (uint256 _assetsIn)
+```
+
+- Mints an exact amount of branded tokens by pulling the required frxUSD from the caller.
+- Reverts if `_sharesOut` exceeds `maxMint(_receiver)`.
+
+### Redemption Flow
+
+```solidity
+function redeem(uint256 _sharesIn, address _receiver, address _owner) public returns (uint256 _assetsOut)
+```
+
+- Burns branded tokens and returns frxUSD to `_receiver`.
+- `_owner` must be `msg.sender`.
+- Reverts if `_sharesIn` exceeds `maxRedeem(_owner)`.
+
+```solidity
+function withdraw(uint256 _assetsOut, address _receiver, address _owner) public returns (uint256 _sharesIn)
+```
+
+- Withdraws an exact amount of frxUSD by burning the required branded tokens.
+- `_owner` must be `msg.sender`.
+- Reverts if `_assetsOut` exceeds `maxWithdraw(_owner)`.
+
+### Preview Functions
+
+```solidity
+function previewDeposit(uint256 _assetsIn) public view returns (uint256 _sharesOut)
+function previewMint(uint256 _sharesOut) public view returns (uint256 _assetsIn)
+function previewRedeem(uint256 _sharesIn) public view returns (uint256 _assetsOut)
+function previewWithdraw(uint256 _assetsOut) public view returns (uint256 _sharesIn)
+```
+
+- Simulate the effects of deposit, mint, redeem, and withdraw operations at the current block.
+- All preview functions account for mint/redeem fees.
+
+### View Functions
+
+```solidity
+function totalAssets() public view returns (uint256)
+function totalSupply() public view returns (uint256)
+function pricePerShare() external view returns (uint256)
+function maxDeposit(address) public view returns (uint256)
+function maxMint(address) public view returns (uint256)
+function maxRedeem(address owner) public view returns (uint256)
+function maxWithdraw(address owner) public view returns (uint256)
+```
+
+### Admin Functions
+
+```solidity
+function setMintRedeemFee(uint256 _mintFee, uint256 _redeemFee) public onlyOwner
+function setMintCap(uint256 _mintCap) public onlyOwner
+function recoverERC20(address _tokenAddress, uint256 _tokenAmount) external onlyOwner
+```
+
+## Events
+
+| Name | Description |
+| --- | --- |
+| `Deposit` | Emitted after a successful deposit or mint |
+| `Withdraw` | Emitted after a successful withdrawal or redemption |
+| `MintCapSet` | Emitted when the mint cap is updated |
+| `RecoveredERC20` | Emitted when ERC20 tokens are recovered by the owner |
+
+## Custom Errors
+
+| Error | Description |
+| --- | --- |
+| `ERC4626ExceededMaxDeposit` | Attempted to deposit more than the max |
+| `ERC4626ExceededMaxMint` | Attempted to mint more than the cap allows |
+| `MintCapExceeded` | Mint cap exceeded during deposit |
+| `ERC4626ExceededMaxWithdraw` | Attempted to withdraw more than max |
+| `ERC4626ExceededMaxRedeem` | Attempted to redeem more than max |
+| `InitializeFailed` | Contract already initialized |
+| `TokenOwnerShouldBeSender` | `_owner` param must be `msg.sender` |
+| `NotIsolatedBacking` | Caller not authorized under isolated backing mode |
+
+---
+
+**Author**: Frax Finance
+**License**: MIT

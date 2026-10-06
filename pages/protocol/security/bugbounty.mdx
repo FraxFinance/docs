@@ -3,14 +3,65 @@ title: Bug Bounty
 lang: en-US
 ---
 
+import { Callout } from 'nextra/components';
+
 # Bug Bounty
+
 Frax Finance provides one of the largest bounties in the industry for exploits where user funds are at risk or protocol controlled funds/collateral are at risk.
 
 The bounty is simply calculated as the lower value of **10%** of the total possible exploit or $10m worth paid in frxUSD+FRAX (split at the teams' discretion). Both tokens are immediately liquid. The bounty will be delivered immediately or a maximum turnaround time of 5 days due to timelock+mitigation. This bounty is a "no questions asked" policy for disclosures and/or immediate return of funds after any incident.
 
-Slow arbitrage opportunities or value exchange over a prolonged period is not applicable to this bounty and will receive a base compensation bounty of 50,000 frxUSD.
-Note: This bounty does not cover any front-end bugs/visual bugs or any type of server-side code of any web application that interacts with the Frax Protocol. The above bug bounty is only for smart contract code. Smart contract code on any chain that manages Frax Protocol value and/or user deposited value is included in this bounty.
+<Callout type="warning">
+  This program rewards **verifiable, directly profitable exploits only.** Please read the
+  eligibility criteria below before submitting. Reports that do not include a working
+  proof of concept demonstrating real, realized loss of funds will not be reviewed or
+  answered.
+</Callout>
 
-This bounty applies to all smart contracts including Fraxswap AMM, Fraxlend, frxETH, FraxNet, Flox, FXB, and Hop.
+## What qualifies
 
-Contacts: you can reach out anonymously through any communication channel including Twitter, Telegram, Discord, or Signal.
+To be eligible, a report must demonstrate **one of the following against a current, live on-chain deployment:**
+
+- **Theft of funds** — direct, attacker-profitable extraction of user funds or protocol-controlled funds/collateral.
+- **Permanent freezing of funds (bricking)** — rendering contracts such that user or protocol funds become permanently inaccessible.
+
+Every submission **must include a working proof of concept** — for example, a runnable test against a current mainnet fork — that reproduces the exploit and quantifies the funds at risk. The bar is a demonstrated, attacker-profitable path to theft or permanent loss, not a theoretical concern.
+
+## What does not qualify
+
+To keep the program focused on genuine threats, the following are **not eligible** and will generally not receive a response:
+
+- Theoretical issues, or any finding without a demonstrated, profitable exploit path.
+- Output from automated scanners or AI tools submitted without a verified, reproducible proof of concept.
+- Best-practice, code-style, gas-optimization, or informational / low / medium-severity findings.
+- Issues that require privileged or admin keys, governance-controlled actions, or otherwise unrealistic preconditions.
+- Front-end bugs, visual bugs, or any server-side code of any web application that interacts with the Frax Protocol. **This bounty covers smart contract code only.**
+
+## A note on prior review
+
+<Callout type="info">
+  Frax continuously hardens its contracts through both published audits and **unpublished
+  internal and AI-assisted security reviews, performed on the codebase from time to
+  time.** A large portion of the code has already been reviewed in depth through this
+  process.
+</Callout>
+
+As a practical consequence: if you discover something that is **immediately vulnerable and stealable on a live deployment**, that is itself strong evidence of a genuine gap that prior review did not catch — which is exactly what this bounty exists to reward. Lower-severity, best-practice, and theoretical observations, by contrast, have very likely already been surfaced internally and are unlikely to qualify.
+
+## Scope
+
+This bounty applies to smart contract code on any chain that manages Frax Protocol value and/or user deposited value, including Fraxswap AMM, Fraxlend, frxETH, FraxNet, Flox, FXB, and Hop.
+
+## How to submit
+
+Every submission must be provided as a **single secret GitHub Gist** — use a _secret_ gist, not a public one, so that a working exploit against live funds is not publicly disclosed before it can be mitigated. The gist must contain:
+
+1. **A working proof of concept** — a runnable exploit (for example, a Foundry or Hardhat test against a current mainnet fork) that reproduces the issue and quantifies the funds at risk.
+2. **The affected contract address(es)** and a clear description of the impact.
+3. **An adversarial self-check against a current frontier AI model.** As a final step before submitting, run your finding and proof of concept through a state-of-the-art frontier model and ask it to _disprove_ the exploit. Include the full prompt and the model's complete response in the gist. If a frontier model cannot confirm a genuine, attacker-profitable vulnerability, it almost certainly does not qualify — please do not submit it.
+
+Reports that are not provided in this format, or that omit a working proof of concept, will not be reviewed or answered.
+
+## Contact
+
+You can reach out anonymously through any communication channel including Twitter, Telegram, Discord, or Signal — share the link to your secret gist (see the submission requirements above).

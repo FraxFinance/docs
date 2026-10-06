@@ -1,0 +1,119 @@
+---
+title: frxUSD Endpoints
+lang: en-US
+---
+
+# frxUSD Endpoints
+
+These endpoints handle standard frxUSD cross-chain operations: minting frxUSD from USDC deposits, and redeeming frxUSD back to USDC with cross-chain relay via CCTP.
+
+## `GET /health`
+
+Health check returning plain text `ok`.
+
+**Response:** `ok`
+
+---
+
+## `GET /fetchAddress`
+
+Retrieve a deterministic deposit address for a beneficiary and target chain.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID of the target chain |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "deploymentAddress": "0x...",
+  "params": {
+    "beneficiary": "0x...",
+    "targetEid": 30332
+  }
+}
+```
+
+---
+
+## `GET /processDeposit`
+
+Process a USDC deposit at the deposit address on Ethereum. Mints frxUSD and sends it cross-chain via LayerZero. Does **not** create a CCTP relay job.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `depositAddress` | `address` | Yes | Address returned by `/fetchAddress` |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "createFraxNetDepositTx": "0x...",
+  "contractAlreadyDeployed": false,
+  "processDepositTx": "0x...",
+  "depositAddress": "0x...",
+  "usdcAmount": "1000000"
+}
+```
+
+---
+
+## `GET /processRedemption`
+
+Redeem frxUSD at the deposit address on Ethereum to USDC, then relay the USDC to the destination chain via CCTP.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `depositAddress` | `address` | Yes | Address returned by `/fetchAddress` |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "createFraxNetDepositTx": "0x...",
+  "contractAlreadyDeployed": false,
+  "processRedemptionTx": "0x...",
+  "depositAddress": "0x...",
+  "frxUSDAmount": "1000000000000000000",
+  "cctpRelay": {
+    "status": "pending_attestation",
+    "jobId": "0x...",
+    "destDomain": 13
+  }
+}
+```
+
+---
+
+## Deposit Address Verification
+
+You can verify a deposit address on-chain:
+
+```typescript
+const factory = new ethers.Contract(
+  "0xA3D62f83C433e2A56Af392E08a705A52DEd63696",
+  ["function getDeploymentAddress(uint32, bytes32, bytes32) view returns (address)"],
+  mainnetProvider
+);
+
+const address = await factory.getDeploymentAddress(
+  targetEid,
+  ethers.utils.hexZeroPad(beneficiary, 32),
+  ethers.constants.HashZero // ATA (zero for EVM)
+);
+```
