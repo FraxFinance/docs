@@ -32,6 +32,7 @@ Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quick
 | **Plume**         | 30370   | [{<code>0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876</code>}](https://explorer.plume.org/address/0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876)       |
 | **Polygon**       | 30109   | [{<code>0xf74D38A26948E9DDa53eD85cF03C6b1188FbB30C</code>}](https://polygonscan.com/address/0xf74D38A26948E9DDa53eD85cF03C6b1188FbB30C)          |
 | **Polygon zkEVM** | 30158   | [{<code>0x111ddab65Af5fF96b674400246699ED40F550De1</code>}](https://zkevm.polygonscan.com/address/0x111ddab65Af5fF96b674400246699ED40F550De1)    |
+| **Robinhood**     | 30416   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://robinhoodchain.blockscout.com/address/0x0000006D38568b00B457580b734e0076C62de659) |
 | **Scroll**        | 30214   | [{<code>0xf6f45ccb5e85d1400067ee66f9e168f83e86124e</code>}](https://scrollscan.com/address/0xf6f45ccb5e85d1400067ee66f9e168f83e86124e)           |
 | **Sei**           | 30280   | [{<code>0x3a6F28e8DDD232B02C72C491Bd1626F69D2fb329</code>}](https://seitrace.com/token/0x3a6F28e8DDD232B02C72C491Bd1626F69D2fb329)               |
 | **Sonic**         | 30332   | [{<code>0x3A5cDA3Ac66Aa80573402610c94B74eD6cdb2F23</code>}](https://sonicscan.org/address/0x3A5cDA3Ac66Aa80573402610c94B74eD6cdb2F23)            |
@@ -39,6 +40,8 @@ Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quick
 | **Unichain**      | 30320   | [{<code>0xc71BF5Ee4740405030eF521F18A96eA14fec802D</code>}](https://unichain.blockscout.com/address/0xc71BF5Ee4740405030eF521F18A96eA14fec802D)  |
 | **XLayer**        | 30274   | [{<code>0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396</code>}](https://www.oklink.com/x-layer/address/0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396)   |
 | **zkSync**        | 30165   | [{<code>0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb</code>}](https://explorer.zksync.io/address/0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb)       |
+
+**Note:** Robinhood has no legacy `RemoteHop`; its transfers go through the HopV2 `RemoteHopV2` contract (`0x0000006D38568b00B457580b734e0076C62de659`, the address shared by every HopV2 spoke). It exposes the same `sendOFT(address,uint32,bytes32,uint256)` interface used in the guide above. Robinhood carries five Frax OFTs — FPI is not deployed there.
 
 ### FraxZero Solana
 
