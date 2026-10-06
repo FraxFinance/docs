@@ -29,6 +29,42 @@ The following table shows the supported assets you can use to mint and redeem fr
 - [Mint and redeem with WisdomTree's WTGXX](/frxusd/mint-and-redeem-quickstarts/wtgxx)
 - [Mint and redeem with Bridge.xyz's USDB](/frxusd/mint-and-redeem-quickstarts/usdb)
 
+## Direct frxUSD → USDC Redemption via USTB
+
+The **ERC4626RedeemUSTB** contract allows frxUSD holders to redeem frxUSD directly for **USDC** in a single transaction, routing the redemption through Superstate's USTB. Because USTB only passes through the contract itself, the caller does **not** need to hold USTB — you only touch frxUSD and USDC.
+
+| Contract               | Address                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **ERC4626RedeemUSTB**  | [`0x00000000564ee6a571C5819057f27bb671E78Bd5`](https://etherscan.io/address/0x00000000564ee6a571c5819057f27bb671e78bd5) |
+
+### How It Works
+
+When you call `redeem`, the contract atomically:
+
+1. Pulls frxUSD from your wallet (requires a prior frxUSD approval to the contract)
+2. Redeems the frxUSD for **USTB** via the [USTB Mint & Redeem custodian](https://etherscan.io/address/0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33)
+3. Redeems the USTB for **USDC** via [Superstate's USTB redemption contract](https://etherscan.io/address/0x4c21B7577C8FE8b0B0669165ee7C8f67fa1454Cf)
+4. Transfers the resulting USDC to your chosen receiver address
+
+### Key Functions
+
+The contract exposes an ERC-4626-style interface where **frxUSD is the share token** and **USDC is the underlying asset**:
+
+| Function                                                        | Description                                                                                          |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `redeem(uint256 _sharesIn, address _receiver, address _owner)`   | Redeems an exact amount of frxUSD for USDC. `_owner` must be the caller.                             |
+| `withdraw(uint256 _assetsOut, address _receiver, address _owner)`| Withdraws an exact amount of USDC by burning the required frxUSD. `_owner` must be the caller.       |
+| `previewRedeem(uint256 _sharesIn)`                               | Simulates how much USDC a given amount of frxUSD would return.                                       |
+| `previewWithdraw(uint256 _assetsOut)`                            | Simulates how much frxUSD is needed to receive a given amount of USDC.                               |
+| `maxRedeem(address _owner)` / `maxWithdraw(address _owner)`      | Returns the maximum frxUSD redeemable / USDC withdrawable for an address given current capacity.     |
+| `totalAssets()`                                                  | Total USDC currently available via this route.                                                       |
+
+**Notes:**
+
+- This is a **redeem-only** contract — deposit and mint functions are not supported and will revert. To mint frxUSD, use the [Mint & Redeem contracts](#mint--redeem-routes-on-ethereum) above.
+- Redemption capacity is bounded by the USTB held in the custodian and the instant USDC liquidity available in Superstate's redemption contract. Use `maxRedeem` / `maxWithdraw` to check current capacity before redeeming.
+- The contract is an upgradeable ERC-1967 proxy (`Frax1967Proxy`); its current implementation is [`ERC4626RedeemUSTB`](https://etherscan.io/address/0x4Ffd2fB49dc1386288e58040B65d6b76B56699cE).
+
 ## Cross-Chain Mint & Redeem Routes
 
 The FraxNet contract system allows for cross-chain frxUSD mint & redeem operations. This system enables minting and redeeming frxUSD across multiple networks using **USDC**. The same factory contract powers [FraxNet](https://net.frax.com):
