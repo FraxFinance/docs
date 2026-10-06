@@ -64,17 +64,17 @@ Each address of these OFTs is unique:
 
 #### Deterministic Addresses (Somnia and Tempo)
 
-Somnia and Tempo share the same set of `0x000000...` OFT addresses deployed via deterministic deployment.
+Somnia and Tempo share the same set of `0x000000...` OFT addresses deployed via deterministic deployment. On Tempo, the frxUSD address is a `FraxOFTMintableAdapterUpgradeableTIP20` that mints and burns the native TIP-20 frxUSD (`0x20C0000000000000000000003554d28269E0f3c2`); see [Tempo](./tempo). An FPI OFT is deployed on Tempo but has no peers and is not part of the mesh.
 
-|                   | Address                                      | Somnia                                                                                                            |
-| :---------------- | :------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
-| ProxyAdmin        | `0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428` | [`link`](https://explorer.somnia.network/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428)                      |
-| frxUSD            | `0x00000000D61733e7A393A10A5B48c311AbE8f1E5` | [`link`](https://explorer.somnia.network/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5)                      | 
-| sfrxUSD           | `0x00000000fD8C4B8A413A06821456801295921a71` | [`link`](https://explorer.somnia.network/address/0x00000000fD8C4B8A413A06821456801295921a71)                      |
-| frxETH            | `0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c` | [`link`](https://explorer.somnia.network/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c)                      |
-| sfrxETH           | `0x00000000883279097A49dB1f2af954EAd0C77E3c` | [`link`](https://explorer.somnia.network/address/0x00000000883279097A49dB1f2af954EAd0C77E3c)                      |
-| WFRAX (prev. FXS) | `0x00000000E9CE0f293D1Ce552768b187eBA8a56D4` | [`link`](https://explorer.somnia.network/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4)                      |
-| FPI               | `0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb` | [`link`](https://explorer.somnia.network/address/0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb)                      |
+|                   | Address                                      | Somnia                                                                                                            | Tempo                                                                                    |
+| :---------------- | :------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| ProxyAdmin        | `0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428` | [`link`](https://explorer.somnia.network/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428)                      | [`link`](https://explore.tempo.xyz/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428) |
+| frxUSD            | `0x00000000D61733e7A393A10A5B48c311AbE8f1E5` | [`link`](https://explorer.somnia.network/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5)                      | [`link`](https://explore.tempo.xyz/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5) |
+| sfrxUSD           | `0x00000000fD8C4B8A413A06821456801295921a71` | [`link`](https://explorer.somnia.network/address/0x00000000fD8C4B8A413A06821456801295921a71)                      | [`link`](https://explore.tempo.xyz/address/0x00000000fD8C4B8A413A06821456801295921a71) |
+| frxETH            | `0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c` | [`link`](https://explorer.somnia.network/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c)                      | [`link`](https://explore.tempo.xyz/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c) |
+| sfrxETH           | `0x00000000883279097A49dB1f2af954EAd0C77E3c` | [`link`](https://explorer.somnia.network/address/0x00000000883279097A49dB1f2af954EAd0C77E3c)                      | [`link`](https://explore.tempo.xyz/address/0x00000000883279097A49dB1f2af954EAd0C77E3c) |
+| WFRAX (prev. FXS) | `0x00000000E9CE0f293D1Ce552768b187eBA8a56D4` | [`link`](https://explorer.somnia.network/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4)                      | [`link`](https://explore.tempo.xyz/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4) |
+| FPI               | `0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb` | [`link`](https://explorer.somnia.network/address/0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb)                      | Not connected |
 
 |                   | Semi-Deterministic                           | Linea                                                                                | Scroll                                                                              | Monad                                                                              | Base                                                                              | zkSync                                       |
 | :---------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------   | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------------------------- |
@@ -85,6 +85,8 @@ Somnia and Tempo share the same set of `0x000000...` OFT addresses deployed via 
 | sfrxETH           | `0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45` | [`link`](https://lineascan.build/address/0x383Eac7CcaA89684b8277cBabC25BCa8b13B7Aa2) | [`link`](https://scrollscan.com/address/0x73382eb28f35d80df8c3fe04a3eed71b1afce5de) | [`link`](https://monadscan.com/address/0x3b4cf37a3335f21c945a40088404c715525fcb29) | [`link`](https://basescan.org/address/0x192e0C7Cc9B263D93fa6d472De47bBefe1Fb12bA) | `0xFD78FD3667DeF2F1097Ed221ec503AE477155394` |
 | WFRAX (prev. FXS) | `0x64445f0aecC51E94aD52d8AC56b7190e764E561a` | [`link`](https://lineascan.build/address/0x5217Ab28ECE654Aab2C68efedb6A22739df6C3D5) | [`link`](https://scrollscan.com/address/0x879ba0efe1ab0119fefa745a21585fa205b07907) | [`link`](https://monadscan.com/address/0x29acc7c504665a5ea95344796f784095f0cfcc58) | [`link`](https://basescan.org/address/0x0CEAC003B0d2479BebeC9f4b2EBAd0a803759bbf) | `0xAf01aE13Fb67AD2bb2D76f29A83961069a5F245F` |
 | FPI               | `0x90581eCa9469D8D7F5D3B60f4715027aDFCf7927` | [`link`](https://lineascan.build/address/0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4) | [`link`](https://scrollscan.com/address/0x93cDc5d29293Cb6983f059Fec6e4FFEb656b6a62) | [`link`](https://monadscan.com/address/0xba554f7a47f0792b9fa41a1256d4cf628bb1d028) | [`link`](https://basescan.org/address/0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B) | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E` |
+
+
 
 - Ethereum WFRAX
   - `0x04ACaF8D2865c0714F79da09645C13FD2888977f`
@@ -152,7 +154,8 @@ Somnia and Tempo share the same set of `0x000000...` OFT addresses deployed via 
 | Solana        | [`link`](https://app.squads.so/squads/FSRTW4KPGifKL8yKcZ8mfoR9mKtAjwZiTHbHwgix8AQo/home)                             |
 | Somnia        | [`link`](https://safe.somnia.network/home?safe=somnia:0x9527e19F55d1afCE9F1e9Edcea79552bF41983F9)                    |
 | Sonic         | [`link`](https://app.safe.global/home?safe=sonic:0x457aEa9180b60a7076a9cf4E2485F266c9E47657)                         |
-| Stable        | [`link`](https://app.safe.global/home?safe=stable:0x0C46f54BF9EF8fd58e2D294b8cEA488204EcB3D8)
+| Stable        | [`link`](https://app.safe.global/home?safe=stable:0x0C46f54BF9EF8fd58e2D294b8cEA488204EcB3D8)                        |
+| Tempo         | [`link`](https://app.safe.global/home?safe=tempo:0x1Ba19a54a01AE967f5E3895764Caaa6919FD2bEe)                     | 
 | X-Layer       | [`link`](https://app.safe.global/home?safe=xlayer:0xe7Cc52f0C86f4FAB6630f1E26167B487fbF66a61)                        |
 | zkSync        | [`link`](https://app.safe.global/home?safe=zksync:0xd492dF0ce7905D7d91aE48F5e893AcAa38221486)                        |
 
@@ -181,7 +184,7 @@ All cross-chain routes relay through the Fraxtal hub. Each remote chain deploys 
 | Sei           | [`0x0000006D38568b00B457580b734e0076C62de659`](https://seitrace.com/address/0x0000006d38568b00b457580b734e0076c62de659)                     | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://seitrace.com/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                     |
 | Somnia        | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explorer.somnia.network/address/0x0000006D38568b00B457580b734e0076C62de659)          | [`0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F`](https://explorer.somnia.network/address/0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F)          |
 | Sonic         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://sonicscan.org/address/0x0000006d38568b00b457580b734e0076c62de659)                    | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://sonicscan.org/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                    |
-| Tempo         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explorer.tempo.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)               | [`0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f`](https://explorer.tempo.xyz/address/0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f)               |
+| Tempo         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explore.tempo.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)                | [`0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f`](https://explore.tempo.xyz/address/0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f)                |
 | Unichain      | [`0x0000006D38568b00B457580b734e0076C62de659`](https://uniscan.xyz/address/0x0000006d38568b00b457580b734e0076c62de659)                      | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://uniscan.xyz/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                      |
 | Worldchain    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://worldscan.org/address/0x0000006d38568b00b457580b734e0076c62de659)                    | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://worldscan.org/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                    |
 | X-Layer       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://oklink.com/x-layer/address/0x0000006d38568b00b457580b734e0076c62de659)               | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://oklink.com/x-layer/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)               |
