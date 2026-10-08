@@ -13,9 +13,9 @@ _Full version of legacy Frax Protocol docs are currently available on [docs.frax
 
 The [Omnichain Fungible Token (OFT)](https://docs.layerzero.network/v2/home/token-standards/oft-standard) Standard allows fungible tokens to be transferred across multiple blockchains without asset wrapping, middlechains, or liquidity pools.
 
-Frax assets are represented as OFTs on chains other than Fraxtal, and Ethereum. An OFT operates the exact same as an ERC20 with the additional function of bridge-ability through the LayerZero protocol.
+Frax assets are represented as OFTs on chains other than Fraxtal and Ethereum. An OFT operates the exact same as an ERC20 with the additional function of bridge-ability through the LayerZero protocol.
 
-All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2-upgradeable) and managed by a 3/6 multisig on each respective chain.
+All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2-upgradeable) and managed by a Frax multisig on each respective chain (see [Multisigs](./addresses#multisigs)). The LayerZero settings that secure every transfer, including DVNs, block confirmations, and enforced options, are documented under [Configuration](./configuration).
 
 ### Available Frax OFTs
 
@@ -24,7 +24,8 @@ All OFTs and lockboxes are [audited](https://github.com/FraxFinance/LayerZero-v2
 - frxETH
 - sfrxETH
 - WFRAX (prev. FXS)
-- FPI
+
+FPI has been retired from the mesh. FPI OFTs can no longer be bridged.
 
 ### Contract design
 
@@ -48,13 +49,13 @@ Overall, there are three types of LayerZero contracts that provide liquidity for
 - When tokens are received on the chain, the Mintable Adapter mints the Frax token to the recipient
 - When tokens are sent from the chain, the Mintable Adapter burns the Frax token
 
-With the exception of Ethereum and Fraxtal, Frax tokens are represented as an OFT. For Ethereum and Fraxtal, Frax tokens are utilized in the following:
+With the exception of Ethereum, Fraxtal, and frxUSD on Tempo, Frax tokens are represented as an OFT. On those chains, Frax tokens are utilized in the following:
 
 #### frxUSD
 
 - Fraxtal: `Mintable Adapter`
 - Ethereum: `Mintable Adapter`
-- Tempo: `Mintable Adapter`
+- Tempo: `Mintable Adapter` (mints and burns the native TIP-20 frxUSD, see [Tempo](./tempo))
 
 #### sfrxUSD
 
@@ -63,12 +64,12 @@ With the exception of Ethereum and Fraxtal, Frax tokens are represented as an OF
 
 #### frxETH
 
-- Fraxtal: `Mintable Adapter`
+- Fraxtal: `Adapter`
 - Ethereum: `Adapter`
 
 #### sfrxETH
 
-- Fraxtal: `Mintable Adapter`
+- Fraxtal: `Adapter`
 - Ethereum: `Adapter`
 
 #### WFRAX
@@ -76,16 +77,19 @@ With the exception of Ethereum and Fraxtal, Frax tokens are represented as an OF
 - Fraxtal: `Adapter`
 - Ethereum: `OFT`
 
-#### FPI
-
-- Fraxtal: `Mintable Adapter`
-- Ethereum: `Mintable Adapter`
-
 ## Hub Design
 
-Frax OFTs are wired together as a **Hub**: with a single, central connection to Fraxtal, bridging from chain A to chain B can be seen as `A => Fraxtal => B`. The Frax team has designed a novel solution called a "Hop" which reduces the complexity in connections from N^2 to N through only connecting chains to Fraxtal. Chains connected to Fraxtal send their bridge transactions through the "Hop" [contracts](https://github.com/fraxfinance/fraxtal-lz-hop) which automatically forward the transaction to the destination chain. Therefore, behind the scenes, bridging from `A => B` is actually two transactions: `A => Fraxtal` and `Fraxtal => B`, where the second transaction is automatically handled by the LayerZero Executor via [`lzCompose()`](https://docs.layerzero.network/v2/developers/evm/oapp/message-design-patterns#composed).
+Frax OFTs are wired together as a **Hub**: every chain has a single connection to Fraxtal, so bridging from chain A to chain B can be seen as `A => Fraxtal => B`. This reduces the number of connections from N^2 to N.
 
-The exception to Hops are Non-EVM chains, currently Solana, Aptos, and Movement. These chains do not support the Hop contracts and instead support direction bridging to both Fraxtal and Ethereum. Therefore, bridging from `Solana => B` requires two seperate submitted transactions by the user: `Solana => Fraxtal` and `Fraxtal => B`. In this case, the user must wait for their bridge to Fraxtal to settle before submitting the second transaction to bridge to B.
+The Frax team built "Hop" contracts that make the hub invisible to users. With [HopV2](https://github.com/FraxFinance/hop-v2), the user submits a single transaction on chain A and pays for both legs there. Behind the scenes, bridging from `A => B` is two LayerZero messages: `A => Fraxtal` and `Fraxtal => B`, where the second message is sent automatically by the Fraxtal Hop when the LayerZero Executor calls [`lzCompose()`](https://docs.layerzero.network/v2/developers/evm/oapp/message-design-patterns#composed). HopV2 addresses are listed under [HopV2 Contracts](./addresses#hopv2-contracts).
+
+HopV2 replaced the first-generation `RemoteHop` contracts from [fraxtal-lz-hop](https://github.com/fraxfinance/fraxtal-lz-hop), which are now paused. The `MintRedeemHop` contracts from that repository remain live for cross-chain frxUSD and sfrxUSD conversions, see [Stake & Unstake Supported Networks](/frxusd/stake-and-unstake-supported-networks).
+
+### Solana
+
+Solana is the only non-EVM chain in the mesh. Bridging between Solana and Fraxtal is a direct OFT send in either direction, and HopV2 relays transfers to Solana from the other EVM chains in the mesh.
+
+For frxUSD, a single Solana transaction can also reach any other chain in the mesh by sending to the Fraxtal Hop with a compose message (see the `lz:oft:send:fraxtalhopv2` task in [frax-oft-upgradeable](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/tasks/solana/send-fraxtalhopV2.ts)). Other assets bridge from Solana to Fraxtal first, and the user then submits a second transaction from Fraxtal to the destination once the first transfer has settled.
 
 ### WFRAX vs. FRAX
 
@@ -110,32 +114,26 @@ Ethereum WFRAX OFT is also connected via the hub model. This means that bridging
 
 ### Current Chains
 
+- Fraxtal (hub)
 - Abstract
-- Aptos
-- Aurora
 - Arbitrum
 - Avalanche
 - Base
-- Berachain
 - BSC
 - Ethereum
 - Hyperliquid
 - Ink
-- Linea
 - Katana
-- Mode
-- Movement
+- Linea
 - Monad
 - Optimism
 - Plume
 - Polygon
-- Polygon zkEVM
 - Robinhood
-- Scroll
 - Sei
+- Solana
 - Somnia
 - Sonic
-- Solana
 - Stable
 - Tempo
 - Unichain
@@ -143,16 +141,13 @@ Ethereum WFRAX OFT is also connected via the hub model. This means that bridging
 - X-Layer
 - zkSync
 
-Chain-specific integration notes:
-
-- [Somnia](./somnia) for the deterministic OFT and HopV2 deployment on chain ID `5031` / LayerZero EID `30380`
-- [Tempo](./tempo) for TIP-20-specific behavior and stablecoin-denominated gas
+See [Tempo](./tempo) for TIP-20-specific behavior and stablecoin-denominated gas.
 
 ### Process
 
 - Bridge through the FUI ([link](https://www.frax.com))
 - Bridge through the Stargate UI ([link](https://stargate.finance/bridge))
-- Bridge programatically (see #Code section)
+- Bridge programatically (see [Code](./code))
 
 ## Security Considerations
 
