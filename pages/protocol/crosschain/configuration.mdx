@@ -200,14 +200,6 @@ The OFT owner and the LayerZero delegate is the Frax admin multisig on each chai
 
 `numDVNs` and `executorOptions` only affect fee quotes. The Fraxtal → destination leg is executed with the destination's enforced options, plus the `lzCompose` gas when `data` is set.
 
-## Deprecated Pathways
-
-The following chains are no longer connected to the mesh. On Fraxtal, their peers are removed and their send library is set to LayerZero's `BlockedMessageLib`, so nothing can be sent to them:
-
-Aptos, Aurora, Berachain, Blast, Metis, Mode, Movement, Plasma, Polygon zkEVM, Scroll.
-
-FPI has also been retired from the mesh. FPI OFTs remain deployed on some chains, but the Fraxtal FPI lockbox has no peers and FPI cannot be bridged.
-
 ## Verifying On-Chain
 
 The examples use [Foundry's `cast`](https://book.getfoundry.sh/cast/) and the frxUSD OFT on Arbitrum. Substitute the endpoint, library, OFT, and EID for any other pathway.

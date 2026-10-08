@@ -5,42 +5,51 @@ lang: en-US
 
 # FraxZero Supported Networks and EIDs
 
-### FraxZero RemoteHop Supported Networks
+### FraxZero Hop Supported Networks
 
-frxUSD cross-chain transfers are available between the following networks using the RemoteHop method.
+frxUSD cross-chain transfers are available between the following networks using the Hop method (HopV2). A transfer between two networks other than Fraxtal is relayed through Fraxtal automatically and is submitted as a single transaction on the source network.
 
-**Note:** If Ethereum mainnet is the source chain using the RemoteHop method, you must use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) for `quote` and `send` methods.
+The Hop address is `0x0000006D38568b00B457580b734e0076C62de659` on every network except Fraxtal, where it is `0x00000000e18aFc20Afe54d4B2C8688bB60c06B36`.
+
+**Note:** If Ethereum mainnet is the source chain using the Hop method, you must use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) for `quote` and `sendOFT` methods.
+
+**Note:** The Hop on Tempo does not accept `msg.value` and collects its fee in a Tempo stablecoin instead. See [Tempo](/protocol/crosschain/tempo) before sending from Tempo.
 
 Follow our [Transfer frxUSD from EVM chains](/frxusd/cross-chain-transfers-quickstarts/transfer-from-evm) guide to see it in action.
 
-| **Mainnet**       | **EID** | **RemoteHop Address**                                                                                                                            |
-| :---------------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Ethereum**      | 30101   | [{<code>0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E</code>}](https://etherscan.io/address/0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E)             |
-| **Abstract**      | 30324   | [{<code>0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb</code>}](https://explorer.mainnet.abs.xyz/address/0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb) |
-| **Arbitrum**      | 30110   | [{<code>0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A</code>}](https://arbiscan.io/address/0x29F5DBD0FE72d8f11271FCBE79Cb87E18a83C70A)              |
-| **Aurora**        | 30211   | [{<code>0x53e36c8380ff62d7964bfa4868a0045e58a52344</code>}](https://aurorascan.dev/address/0x53e36c8380ff62d7964bfa4868a0045e58a52344)           |
-| **Avalanche**     | 30106   | [{<code>0x7a07D606c87b7251c2953A30Fa445d8c5F856C7A</code>}](https://snowtrace.io/address/0x7a07D606c87b7251c2953A30Fa445d8c5F856C7A)             |
-| **Base**          | 30184   | [{<code>0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45</code>}](https://basescan.org/address/0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45)             |
-| **Berachain**     | 30362   | [{<code>0xc71BF5Ee4740405030eF521F18A96eA14fec802D</code>}](https://berascan.com/address/0xc71BF5Ee4740405030eF521F18A96eA14fec802D)             |
-| **BSC**           | 30102   | [{<code>0x452420df4AC1e3db5429b5FD629f3047482C543C</code>}](https://bscscan.com/address/0x452420df4AC1e3db5429b5FD629f3047482C543C)              |
-| **Ink**           | 30339   | [{<code>0x7a07D606c87b7251c2953A30Fa445d8c5F856C7A</code>}](https://explorer.inkonchain.com/address/0x7a07D606c87b7251c2953A30Fa445d8c5F856C7A)  |
-| **Katana**        | 30375   | [{<code>0x5d8eb59a12bc98708702305a7b032f4b69dd5b5c</code>}](https://katanascan.com/address/0x5d8eb59a12bc98708702305a7b032f4b69dd5b5c)           |
-| **Linea**         | 30183   | [{<code>0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876</code>}](https://lineascan.build/address/0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876)          |
-| **Mode**          | 30260   | [{<code>0x486CB4788F1bE7cdEf9301a7a637B451df3Cf262</code>}](https://explorer.mode.network/address/0x486CB4788F1bE7cdEf9301a7a637B451df3Cf262)    |
-| **Optimism**      | 30111   | [{<code>0x31D982ebd82Ad900358984bd049207A4c2468640</code>}](https://optimistic.etherscan.io/address/0x31D982ebd82Ad900358984bd049207A4c2468640)  |
-| **Plume**         | 30370   | [{<code>0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876</code>}](https://explorer.plume.org/address/0x6cA98f43719231d38F6426DB64C7F3D5C7CE7876)       |
-| **Polygon**       | 30109   | [{<code>0xf74D38A26948E9DDa53eD85cF03C6b1188FbB30C</code>}](https://polygonscan.com/address/0xf74D38A26948E9DDa53eD85cF03C6b1188FbB30C)          |
-| **Polygon zkEVM** | 30158   | [{<code>0x111ddab65Af5fF96b674400246699ED40F550De1</code>}](https://zkevm.polygonscan.com/address/0x111ddab65Af5fF96b674400246699ED40F550De1)    |
-| **Scroll**        | 30214   | [{<code>0xf6f45ccb5e85d1400067ee66f9e168f83e86124e</code>}](https://scrollscan.com/address/0xf6f45ccb5e85d1400067ee66f9e168f83e86124e)           |
-| **Sei**           | 30280   | [{<code>0x3a6F28e8DDD232B02C72C491Bd1626F69D2fb329</code>}](https://seitrace.com/token/0x3a6F28e8DDD232B02C72C491Bd1626F69D2fb329)               |
-| **Sonic**         | 30332   | [{<code>0x3A5cDA3Ac66Aa80573402610c94B74eD6cdb2F23</code>}](https://sonicscan.org/address/0x3A5cDA3Ac66Aa80573402610c94B74eD6cdb2F23)            |
-| **Unichain**      | 30320   | [{<code>0xc71BF5Ee4740405030eF521F18A96eA14fec802D</code>}](https://unichain.blockscout.com/address/0xc71BF5Ee4740405030eF521F18A96eA14fec802D)  |
-| **XLayer**        | 30274   | [{<code>0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396</code>}](https://www.oklink.com/x-layer/address/0x79152c303AD5aE429eDefa4553CB1Ad2c6EE1396)   |
-| **zkSync**        | 30165   | [{<code>0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb</code>}](https://explorer.zksync.io/address/0xc5e4a0cfef8d801278927c25fb51c1db7b69ddfb)       |
+| **Mainnet**     | **EID** | **Hop Address**                                                                                                                                        |
+| :-------------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ethereum**    | 30101   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://etherscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                   |
+| **Fraxtal**     | 30255   | [{<code>0x00000000e18aFc20Afe54d4B2C8688bB60c06B36</code>}](https://fraxscan.com/address/0x00000000e18aFc20Afe54d4B2C8688bB60c06B36)                   |
+| **Abstract**    | 30324   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://abscan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                     |
+| **Arbitrum**    | 30110   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://arbiscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                    |
+| **Avalanche**   | 30106   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://snowtrace.io/address/0x0000006D38568b00B457580b734e0076C62de659)                   |
+| **Base**        | 30184   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://basescan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                   |
+| **BSC**         | 30102   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://bscscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                    |
+| **Hyperliquid** | 30367   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://hyperevmscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                |
+| **Ink**         | 30339   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://explorer.inkonchain.com/address/0x0000006D38568b00B457580b734e0076C62de659)        |
+| **Katana**      | 30375   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://katanascan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                 |
+| **Linea**       | 30183   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://lineascan.build/address/0x0000006D38568b00B457580b734e0076C62de659)                |
+| **Monad**       | 30390   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://monadscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                  |
+| **Optimism**    | 30111   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://optimistic.etherscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)        |
+| **Plume**       | 30370   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://explorer.plume.org/address/0x0000006D38568b00B457580b734e0076C62de659)             |
+| **Polygon**     | 30109   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://polygonscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                |
+| **Robinhood**   | 30416   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://robinhoodchain.blockscout.com/address/0x0000006D38568b00B457580b734e0076C62de659)  |
+| **Sei**         | 30280   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://seitrace.com/address/0x0000006D38568b00B457580b734e0076C62de659)                   |
+| **Somnia**      | 30380   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://explorer.somnia.network/address/0x0000006D38568b00B457580b734e0076C62de659)        |
+| **Sonic**       | 30332   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://sonicscan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                  |
+| **Stable**      | 30396   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://stablescan.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)                 |
+| **Tempo**       | 30410   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://explore.tempo.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)              |
+| **Unichain**    | 30320   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://uniscan.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)                    |
+| **Worldchain**  | 30319   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://worldscan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                  |
+| **XLayer**      | 30274   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://www.oklink.com/x-layer/address/0x0000006D38568b00B457580b734e0076C62de659)         |
+| **zkSync**      | 30165   | [{<code>0x0000006D38568b00B457580b734e0076C62de659</code>}](https://explorer.zksync.io/address/0x0000006D38568b00B457580b734e0076C62de659)             |
+
+**Note:** The first-generation `RemoteHop` contracts that were previously listed on this page are paused and no longer accept transfers. HopV2 keeps the same `sendOFT(address,uint32,bytes32,uint256)` function, but its `quote` function takes two additional arguments (`dstGas` and `data`) and returns the fee as a `uint256`.
 
 ### FraxZero Solana
 
-frxUSD cross-chain transfers from Solana to Ethereum or Fraxtal are supported.
+frxUSD cross-chain transfers between Solana and Fraxtal are supported.
 
 Follow our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstarts/transfer-from-solana) guide to get started.
 
@@ -54,11 +63,9 @@ Follow our [Transfer frxUSD from Solana](/frxusd/cross-chain-transfers-quickstar
 
 frxUSD cross-chain transfers between Fraxtal and EVM chains are available using the Lockbox method.
 
-**Note:** If Ethereum mainnet is the source chain using the RemoteHop method, you must use the [Ethereum Lockbox address](/frxusd/fraxzero-supported-networks#fraxzero-lockbox-supported-networks) for `quote` and `send` methods.
-
 Follow our [Transfer frxUSD with Fraxtal](/frxusd/cross-chain-transfers-quickstarts/transfer-with-fraxtal) guide to get started.
 
 | **Mainnet**  | **EID** | **Lockbox Address**                                                                                                                  |
 | :----------- | :------ | :----------------------------------------------------------------------------------------------------------------------------------- |
-| **Ethereum** | 30101   | [{<code>0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0</code>}](https://etherscan.io/address/0x3ad4dC2319394bB4BE99A0e4aE2AbF7bCEbD648E) |
+| **Ethereum** | 30101   | [{<code>0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0</code>}](https://etherscan.io/address/0x566a6442a5a6e9895b9dca97cc7879d632c6e4b0) |
 | **Fraxtal**  | 30255   | [{<code>0x96A394058E2b84A89bac9667B19661Ed003cF5D4</code>}](https://fraxscan.com/address/0x96A394058E2b84A89bac9667B19661Ed003cF5D4) |

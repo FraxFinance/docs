@@ -151,23 +151,6 @@ Each multisig below is the LayerZero delegate of the chain's OFTs and lockboxes,
 | X-Layer     | [`link`](https://app.safe.global/home?safe=xlayer:0xe7Cc52f0C86f4FAB6630f1E26167B487fbF66a61)                          | 3 of 6    |
 | zkSync      | [`link`](https://app.safe.global/home?safe=zksync:0x66716ae60898dD4479B52aC4d92ef16C1821f420)                          | 3 of 6    |
 
-<details>
-<summary>Multisigs on deprecated chains</summary>
-
-| Chain         | Multisig                                                                                                             |
-| :------------ | :------------------------------------------------------------------------------------------------------------------- |
-| Aptos         | [`link`](https://aptos.m-safe.io/assets?msafe=0x6f9e27569fb34873f13a6868b3732b384f81c89fb525a623a969fdba155de21c)    |
-| Aurora        | [`link`](https://app.safe.global/home?safe=aurora:0x73F365d34b81E731825a094c2E722A08574335cd)                        |
-| Berachain     | [`link`](https://safe.berachain.com/home?safe=berachain:0x436b303dAf4b95e94ad86cA3821d5E50eB0De3aA)                  |
-| Blast         | [`link`](https://blast-safe.io/home?safe=blast:0x33A133020b2C2CD41a24F74033B11EC2fC0bF97a)                           |
-| Metis         | [`link`](https://metissafe.tech/home?safe=metis-andromeda:0xF4A4F32732F9B2fB84Ee28c58616946F3bF80F7d)                |
-| Mode          | [`link`](https://safe.optimism.io/home?safe=mode:0x6336CFA6eDBeC2A459d869031DB77fC2770Eaa66)                         |
-| Movement      | [`link`](https://movement.m-safe.io/assets?msafe=0xda80fe6404a059e99569ba06f8d87814b3a9521c8d6c78ac5ed4ca75ad867ab3) |
-| Polygon zkEVM | [`link`](https://app.safe.global/home?safe=zkevm:0x57445fD8d544e5D313e4f715220103b091814df4)                         |
-| Scroll        | [`link`](https://app.safe.global/home?safe=scr:0x73F365d34b81E731825a094c2E722A08574335cd)                           |
-
-</details>
-
 ## HopV2 Contracts
 
 All cross-chain routes relay through the Fraxtal hub. Fraxtal runs `FraxtalHopV2`, and each other chain runs a `RemoteHopV2` and a `RemoteAdmin` contract (for Fraxtal-initiated admin operations). Every Hop runs version `2.0.1`, and Tempo runs the `RemoteHopV201Tempo` variant (see [Tempo](./tempo)). Before routing to a chain, check that it is registered on the Fraxtal Hop with `remoteHop(dstEid)`.

@@ -87,7 +87,7 @@ HopV2 replaced the first-generation `RemoteHop` contracts from [fraxtal-lz-hop](
 
 ### Solana
 
-Solana is the only non-EVM chain in the mesh, and it connects only to Fraxtal. Bridging between Solana and Fraxtal is a direct OFT send in either direction, and HopV2 relays transfers to Solana from the other EVM chains in the mesh.
+Solana is the only non-EVM chain in the mesh. Bridging between Solana and Fraxtal is a direct OFT send in either direction, and HopV2 relays transfers to Solana from the other EVM chains in the mesh.
 
 For frxUSD, a single Solana transaction can also reach any other chain in the mesh by sending to the Fraxtal Hop with a compose message (see the `lz:oft:send:fraxtalhopv2` task in [frax-oft-upgradeable](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/tasks/solana/send-fraxtalhopV2.ts)). Other assets bridge from Solana to Fraxtal first, and the user then submits a second transaction from Fraxtal to the destination once the first transfer has settled.
 
@@ -141,24 +141,7 @@ Ethereum WFRAX OFT is also connected via the hub model. This means that bridging
 - X-Layer
 - zkSync
 
-Chain-specific integration notes:
-
-- [Somnia](./somnia) for the deterministic OFT and HopV2 deployment on chain ID `5031` / LayerZero EID `30380`
-- [Tempo](./tempo) for TIP-20-specific behavior and stablecoin-denominated gas
-
-### Deprecated Chains
-
-The following chains have been disconnected from the mesh. Do not bridge Frax OFTs to or from them, as transfers will not be delivered:
-
-- Aptos
-- Aurora
-- Berachain
-- Blast
-- Mode
-- Movement
-- Plasma
-- Polygon zkEVM
-- Scroll
+See [Tempo](./tempo) for TIP-20-specific behavior and stablecoin-denominated gas.
 
 ### Process
 
