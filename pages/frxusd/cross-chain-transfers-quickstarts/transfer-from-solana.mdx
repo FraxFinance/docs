@@ -5,9 +5,9 @@ lang: en-US
 
 # Transfer frxUSD from Solana
 
-This guide demonstrates how to use the LayerZero V2 Solana OFT SDK, solana/web3.js, and Metaplex framework to enable users to transfer frxUSD from **Solana** to **Ethereum** and **Fraxtal** directly from their browser.
+This guide demonstrates how to use the LayerZero V2 Solana OFT SDK, solana/web3.js, and Metaplex framework to enable users to transfer frxUSD from **Solana** to **Fraxtal** directly from their browser.
 
-**Note:** This guide does not support frxUSD transfers where Solana is not the source chain. Ethereum mainnet and Fraxtal mainnet are the only destination chains supported if the source chain is Solana.
+**Note:** This guide does not support frxUSD transfers where Solana is not the source chain. Fraxtal mainnet is the destination chain for transfers from Solana.
 
 **Important:** The frxUSD token on Solana only has **9 decimals** vs the typical 18 decimals on EVM chains.
 
@@ -26,7 +26,7 @@ Before you start building the sample app to perform a frxUSD transfer from Solan
 
 4. **Fund your wallet with frxUSD on Solana mainnet**
 
-   - For this guide, we will be transferring frxUSD from **Solana mainnet** to **Ethereum mainnet** and **Fraxtal mainnet**. Therefore, you will need to [fund your wallet](https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) with **frxUSD** on **Solana mainnet**.
+   - For this guide, we will be transferring frxUSD from **Solana mainnet** to **Fraxtal mainnet**. Therefore, you will need to [fund your wallet](https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) with **frxUSD** on **Solana mainnet**.
 
 ## Project setup
 
@@ -54,7 +54,7 @@ npm install @solana/wallet-adapter-react@^0.15.35 @solana/wallet-adapter-wallets
 
 ## SendOft.ts setup
 
-This section covers the necessary setup for the `SendOft.ts` file which includes the helper function for sending frxUSD from Solana to Ethereum mainnet and Fraxtal mainnet.
+This section covers the necessary setup for the `SendOft.ts` file which includes the helper function for sending frxUSD from Solana to Fraxtal mainnet.
 
 ### 1. Set up the file
 
@@ -203,7 +203,7 @@ To get your Solana RPC URL, you can use a service like [Helius](https://www.heli
 
 ## TransferFrxusd.tsx setup
 
-This section covers the necessary setup for the `TransferFrxusd.tsx` file for transferring frxUSD from Solana to Ethereum and Fraxtal using the helper functions in the `SendOft.ts` file.
+This section covers the necessary setup for the `TransferFrxusd.tsx` file for transferring frxUSD from Solana to Fraxtal using the helper functions in the `SendOft.ts` file.
 
 ### 1. Set up the file
 
@@ -234,7 +234,7 @@ function TransferFrxusd() {
     }
     // Example constants for demonstration
     const RECIPIENT_ADDRESS = 'enter-your-recipient-wallet-address-here'; // Enter your recipient wallet address here
-    const DESTINATION_CHAIN_EID = eid; // EID of the destination chain (either Ethereum mainnet or Fraxtal mainnet)
+    const DESTINATION_CHAIN_EID = eid; // EID of the destination chain (Fraxtal mainnet)
     const SOLANA_FRXUSD_MINT = 'GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw'; // frxUSD mint on Solana
     const SOLANA_FRXUSD_PROGRAM_ID = 'E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ'; // frxUSD Program ID on Solana
     const SOLANA_FRXUSD_ESCROW_ADDRESS = '84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX'; // frxUSD escrow address on Solana
@@ -244,12 +244,12 @@ function TransferFrxusd() {
       // Convert the string amount to bigint using parseUnits with 9 decimals (frxUSD standard on Solana). NOTE: This is different from the standard on EVM chains (18 decimals).
       amount: parseUnits(FRXUSD_AMOUNT, 9),
 
-      // to: The recipient address on the destination chain (Ethereum/Fraxtal)
+      // to: The recipient address on the destination chain (Fraxtal)
       // Must be a valid EVM address (0x format)
       to: RECIPIENT_ADDRESS,
 
       // toEid: The LayerZero endpoint ID of the destination chain
-      // 1 = Ethereum mainnet, 2 = Fraxtal, etc.
+      // 30255 = Fraxtal mainnet
       toEid: DESTINATION_CHAIN_EID,
 
       // programId: The Solana program ID that handles the OFT operations
@@ -281,7 +281,6 @@ function TransferFrxusd() {
     console.log('Solana transaction ID:', txid);
   };
 
-  const ETHEREUM_MAINNET_EID = 30101;
   const FRAXTAL_MAINNET_EID = 30255;
 
   return (
@@ -309,9 +308,6 @@ function TransferFrxusd() {
       ) : (
         <button onClick={() => disconnect()}>Disconnect {publicKey.toString()}</button>
       )}
-      <button onClick={() => handleTransfer(ETHEREUM_MAINNET_EID)}>
-        Bridge {FRXUSD_AMOUNT} frxUSD from Solana to Ethereum
-      </button>
       <button onClick={() => handleTransfer(FRAXTAL_MAINNET_EID)}>
         Bridge {FRXUSD_AMOUNT} frxUSD from Solana to Fraxtal
       </button>
@@ -324,7 +320,7 @@ export default TransferFrxusd;
 
 ### 3. Replace with your recipient wallet address
 
-Replace the `RECIPIENT_ADDRESS` variable in the `TransferFrxusd.tsx` file with your recipient wallet address on Ethereum mainnet and Fraxtal mainnet.
+Replace the `RECIPIENT_ADDRESS` variable in the `TransferFrxusd.tsx` file with your recipient wallet address on Fraxtal mainnet.
 
 ## App.tsx setup
 
@@ -372,8 +368,8 @@ The `sendOftFromSolana` function accepts the following parameters:
 | Parameter    | Type     | Description                                                                                                    | Example                                                    |
 | ------------ | -------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | `amount`     | `bigint` | The amount of frxUSD to transfer . Use `parseUnits()` to convert from human-readable amounts.                  | `parseUnits('100', 9)` for 100 frxUSD                      |
-| `to`         | `string` | The recipient address on the destination chain (Ethereum/Fraxtal). Must be a valid EVM address in 0x format.   | `0xd8da6bf26964af9d7eed9e03e53415d37aa96045`               |
-| `toEid`      | `number` | The LayerZero endpoint ID of the destination chain.                                                            | `30101` for Ethereum mainnet. `30255` for Fraxtal mainnet. |
+| `to`         | `string` | The recipient address on the destination chain (Fraxtal). Must be a valid EVM address in 0x format.            | `0xd8da6bf26964af9d7eed9e03e53415d37aa96045`               |
+| `toEid`      | `number` | The LayerZero endpoint ID of the destination chain.                                                            | `30255` for Fraxtal mainnet.                               |
 | `programId`  | `string` | The Solana program ID that handles the OFT operations. For frxUSD, this is typically the Solana Token Program. | `E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ`             |
 | `mint`       | `string` | The Solana mint address of the frxUSD token. This identifies which token is being transferred.                 | `GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw`             |
 | `escrow`     | `string` | The escrow account address that temporarily holds tokens during the cross-chain transfer process.              | `84AFSH3TSzyjbEFJX9z8sjpV7npTWq7f8ZR5zkLG22hX`             |

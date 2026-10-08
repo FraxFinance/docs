@@ -1,0 +1,145 @@
+---
+title: Branded Factory
+lang: en-US
+---
+
+# BrandedFactory
+
+## Overview
+
+`BrandedFactory` handles the deployment of branded stablecoin tokens, their custodian contracts, and cross-chain routers. On Fraxtal, deployments are initiated directly via `deployBrandedToken`. On all other chains, deployments are triggered by LayerZero compose messages via `lzCompose`.
+
+## Key Features
+
+- Deterministic CREATE2 deployment of branded stablecoins, custodians, and routers
+- Cross-chain deployment coordination via LayerZero compose messages
+- Unified `brandedTokenToUtils` mapping for looking up custodian and router addresses
+- Beacon proxy pattern for upgradeable custodian and router implementations
+- Support for isolated backing configurations with siloed custodians
+
+## Initialization
+
+```solidity
+function initialize(
+  address _owner,
+  address _l0Endpoint,
+  address _frxUSDLocal,
+  address _localRemoteHop,
+  address _dollarImplementationLocal,
+  address _brandedCustodianBeaconLocal,
+  address _routerBeaconLocal
+) external
+```
+
+## Constants & Roles
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `MINTER_ROLE` | `bytes32` | Role required for minting operations |
+| `LOCAL_DEPLOYER` | `bytes32` | Role required for local deployment on Fraxtal |
+
+## State Variables
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `endpoint` | `address` | LayerZero EndpointV2 address |
+| `frxUSDLocal` | `address` | Local frxUSD OFT address |
+| `dollarImplementationLocal` | `address` | Branded stablecoin implementation address |
+| `brandedCustodianBeacon` | `address` | Beacon for custodian proxy deployments |
+| `routerBeacon` | `address` | Beacon for router proxy deployments |
+| `fraxtalFactory` | `address` | Master factory address on Fraxtal |
+| `localRemoteHop` | `address` | Local RemoteHopV2 address |
+| `owner` | `address` | Owner address |
+| `brandedTokenToUtils` | `mapping(address => AssetUtils)` | Maps branded token to its custodian, router, and siloed custodian |
+| `custodianRegistry` | `BrandedCustodianRegistry` | Registry for isolated backing validation |
+
+## Functions
+
+### Deployment
+
+```solidity
+function deployBrandedToken(
+  string memory name,
+  string memory symbol,
+  bytes32 salt
+) external onlyRole(LOCAL_DEPLOYER) returns (address coin, address custodian, address router)
+```
+
+- Deploys a branded stablecoin and its periphery contracts on Fraxtal.
+- Only callable on Fraxtal (chainid 252) by addresses with `LOCAL_DEPLOYER` role.
+- Returns the addresses of the deployed token, custodian, and router.
+
+### Cross-Chain Deployment
+
+```solidity
+function lzCompose(
+  address _oft,
+  bytes32,
+  bytes calldata _message,
+  address,
+  bytes calldata
+) external payable
+```
+
+- Called by the LayerZero endpoint when a compose message arrives from the Fraxtal factory.
+- Decodes the token name, symbol, and salt from the message and deploys the branded token locally.
+- Includes duplicate message protection.
+
+### Lookup
+
+```solidity
+function brandedTokenToUtils(address token) external view returns (address custodian, address router, address siloed)
+```
+
+- Returns the custodian, router, and siloed custodian addresses for a branded token.
+
+### Address Computation
+
+```solidity
+function computeProxyAddress(
+  string memory _name,
+  string memory _symbol,
+  bytes32 _salt
+) public view returns (address predicted)
+```
+
+- Computes the deterministic address for a branded stablecoin before deployment.
+
+### Admin Functions
+
+```solidity
+function setEndpoint(address _endpoint) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setFrxUSDLocal(address _frxUSDLocal) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setLocalRemoteHop(address _newHop) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setFraxtalFactory(address _fraxtalFactory) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setOwner(address _owner) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setDollarImplementation(address newDollarImplementation) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setBrandedCustodianRegistry(address _custodianRegistry) external onlyRole(DEFAULT_ADMIN_ROLE)
+function setMessageProcessed(address oft, uint32 srcEid, uint64 nonce, bytes32 composeFrom) external onlyRole(DEFAULT_ADMIN_ROLE)
+```
+
+## Custom Errors
+
+| Error | Description |
+| --- | --- |
+| `AlreadyInitialized` | Contract already initialized |
+| `NotEndpoint` | Caller is not the LayerZero endpoint |
+| `InvalidOFT` | OFT address does not match local frxUSD |
+| `InvalidSrcEid` | Source EID is not Fraxtal (30255) |
+| `NotFromFactory` | Compose message did not originate from the Fraxtal factory |
+| `OnlyFraxtal` | Function is only callable on Fraxtal |
+| `Create2Failed` | CREATE2 deployment failed |
+| `InvalidIsolatedBacking` | Invalid backing asset for isolated custodian |
+
+## Events
+
+| Name | Description |
+| --- | --- |
+| `LocalStablecoinDeployment` | Emitted when a branded token, custodian, router, and siloed custodian are deployed |
+| `DollarImplementationSet` | Emitted when the dollar implementation address is updated |
+| `MessageHash` | Emitted when a compose message is processed |
+
+---
+
+**Author**: Frax Finance
+**License**: AGPL-3.0-only

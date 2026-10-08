@@ -1,0 +1,76 @@
+---
+title: Reference
+lang: en-US
+---
+
+# Reference
+
+## Chain Identifiers
+
+### LayerZero Endpoint IDs (EIDs)
+
+| Chain | EID |
+| --- | --- |
+| Ethereum Mainnet | 30101 |
+| Avalanche | 30106 |
+| Polygon PoS | 30109 |
+| Arbitrum | 30110 |
+| OP Mainnet | 30111 |
+| Linea | 30183 |
+| Base | 30184 |
+| Sei | 30280 |
+| World Chain | 30319 |
+| Unichain | 30320 |
+| Sonic | 30332 |
+| Ink | 30339 |
+
+### CCTP Domain IDs
+
+| Chain | Domain |
+| --- | --- |
+| Ethereum | 0 |
+| Avalanche | 1 |
+| OP Mainnet | 2 |
+| Arbitrum | 3 |
+| Base | 6 |
+| Polygon PoS | 7 |
+| Unichain | 10 |
+| Linea | 11 |
+| Sonic | 13 |
+| World Chain | 14 |
+| Sei | 16 |
+| Ink | 21 |
+
+## Common Errors
+
+| Error | Cause | Solution |
+| --- | --- | --- |
+| `"Missing 'beneficiary' parameter"` | Invalid or missing address | Provide a valid 40-character hex address |
+| `"Deposit address mismatch"` | Address doesn't match on-chain calculation | Use the address returned by `/fetchAddress` or `/branded/fetchAddress` |
+| `"frxUSD balance at depositAddress is 0"` | Funds haven't arrived yet | Wait longer for LayerZero settlement |
+| `"USDC balance at depositAddress is 0"` | CCTP relay not complete | Wait for the relay job to reach `complete` status |
+| `"InsufficientFee"` | Not enough native ETH for LayerZero messaging | Ensure the relayer wallet is funded |
+
+## Troubleshooting
+
+### Bridge transaction confirmed but funds not on mainnet?
+
+Check the LayerZero message status:
+```
+https://layerzeroscan.com/tx/{your-bridge-tx-hash}
+```
+
+### CCTP relay stuck on `pending_attestation`?
+
+Circle's attestation API handles finality internally and can take 20+ minutes. This is normal behavior.
+
+### How long does a full round-trip take?
+
+- **Deposit flow** (USDC → branded token): ~25-35 minutes (CCTP relay + processing)
+- **Redemption flow** (branded token → USDC): ~25-35 minutes (LayerZero settlement + CCTP relay)
+
+## Resources
+
+- [LayerZero Documentation ↗](https://docs.layerzero.network)
+- [Circle CCTP Documentation ↗](https://developers.circle.com/cctp)
+- [Frax Finance Documentation ↗](https://docs.frax.com)

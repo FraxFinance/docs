@@ -1,0 +1,148 @@
+---
+title: Cross-Chain Router
+lang: en-US
+---
+
+# CrossChainRouter
+
+## Overview
+
+`CrossChainRouter` enables branded stablecoins to be transferred across supported EVM chains using the Frax LayerZero mesh. It coordinates the redemption of branded tokens to frxUSD on the source chain, bridges frxUSD via LayerZero, and re-mints branded tokens on the destination chain.
+
+## Key Features
+
+- Cross-chain branded stablecoin transfers via LayerZero OFT
+- Simple `quote` / `send` interface for easy integration
+- LZ OFT-compatible `quoteSend` / `send` interface for advanced use
+- Compose-based minting on destination chains via `hopCompose`
+- Support for non-deterministic router addresses across chains
+
+## Initialization
+
+```solidity
+function initialize(
+  address _owner,
+  address _custodianAddress,
+  address _coin,
+  address _localFrxUSD,
+  address _localRemoteHop,
+  bool _isolatedBackingEnabled
+) external
+```
+
+- Called once by the `BrandedFactory` upon deployment.
+- Sets up the custodian, branded token, frxUSD OFT, and RemoteHopV2 references.
+
+## Constants
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `RELAYER_ROLE` | `bytes32` | Role for setting non-deterministic addresses |
+| `GLOBAL_COMPOSE_GAS` | `uint128` | Gas limit for compose calls (`500,000`) |
+
+## State Variables
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `custodian` | `IBrandedCustodian` | The branded stablecoin's custodian contract |
+| `coin` | `IGDollar` | The branded stablecoin token |
+| `frxusd` | `IFrxUSD` | The local frxUSD token |
+| `oftLocal` | `address` | Local LayerZero OFT address |
+| `remoteHopV2` | `IRemoteHopV2` | RemoteHopV2 contract for cross-chain messaging |
+| `isolatedBackingEnabled` | `bool` | Whether isolated backing restrictions are active |
+
+## Functions
+
+### Simple Interface
+
+```solidity
+function quote(uint32 dstEid, address recipient, uint256 amount) public view returns (uint256)
+```
+
+- Returns the native gas fee required for a cross-chain transfer.
+
+```solidity
+function send(uint32 dstEid, address recipient, uint256 amount) public payable
+```
+
+- Transfers branded tokens cross-chain.
+- Caller must approve the router to spend branded tokens first.
+- The router redeems tokens for frxUSD via the custodian, then sends frxUSD cross-chain via LayerZero.
+- On the destination chain, `hopCompose` is triggered to mint branded tokens to the recipient.
+- Excess `msg.value` is refunded to the caller.
+
+### LZ OFT-Compatible Interface
+
+```solidity
+function quoteSend(SendParam calldata _sendParam, bool _payInLzToken) external view returns (MessagingFee memory)
+```
+
+- Returns the messaging fee for a cross-chain send using the LZ `SendParam` struct.
+- `_payInLzToken` must be `false`.
+- `composeMsg` and `oftCmd` must be empty.
+- `to` must have leading 12 bytes as zero (EVM address).
+
+```solidity
+function send(
+  SendParam calldata _sendParam,
+  MessagingFee calldata _fee,
+  address _refundAddress
+) external payable returns (MessagingReceipt memory, OFTReceipt memory)
+```
+
+- Cross-chain send using the LZ-compatible interface.
+- `_refundAddress` must be `msg.sender`.
+- `lzTokenFee` must be `0`.
+
+### Compose Hook
+
+```solidity
+function hopCompose(uint32 srcEid, bytes32 sender, address oft, uint256 _amount, bytes memory data) external
+```
+
+- Called by RemoteHopV2 when frxUSD arrives on the destination chain.
+- Deposits frxUSD into the custodian, minting branded tokens to the encoded recipient.
+- Only callable by the RemoteHopV2 contract.
+
+### Mint and Send
+
+```solidity
+function mintAndSend(uint32 dstEid, address recipient, uint256 amount) external payable returns (uint256 out)
+```
+
+- Accepts frxUSD directly, bridges it cross-chain via LayerZero.
+- Not available when `isolatedBackingEnabled` is `true`.
+
+### Admin Functions
+
+```solidity
+function setNonDeterministicRouterAddress(uint32 eid, bytes32 value) external onlyRole(RELAYER_ROLE)
+function setHopV2Address(address _updatedAddress) external onlyRole(DEFAULT_ADMIN_ROLE)
+```
+
+## Custom Errors
+
+| Error | Description |
+| --- | --- |
+| `NotFromRouter` | Sender is not a recognized router |
+| `InvalidSender` | Caller is not RemoteHopV2 |
+| `InvalidOFT` | OFT address does not match local frxUSD |
+| `AlreadyInitialized` | Contract already initialized |
+| `RefundFailed` | Native token refund failed |
+| `IsolatedBackingEnabled` | Operation not allowed with isolated backing |
+| `MustPayNative` | Must pay in native gas, not LZ token |
+| `MustBeEvmAddress` | Target address must be a valid EVM address |
+| `RefundMustBeSelf` | Refund address must be `msg.sender` |
+| `SlippageExceeded` | Amount after dust removal is below minimum |
+
+## Events
+
+| Name | Description |
+| --- | --- |
+| `HopAddressUpdated` | Emitted when the RemoteHopV2 address is changed |
+| `NonDeterministicAddressSet` | Emitted when a non-deterministic router address is set for an EID |
+
+---
+
+**Author**: Frax Finance
+**License**: AGPL-3.0-only

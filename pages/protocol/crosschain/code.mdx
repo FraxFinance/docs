@@ -5,13 +5,19 @@ lang: en-US
 
 ### Source Code
 
-- https://github.com/fraxfinance/frax-oft-upgradeable
-- https://github.com/fraxfinance/layerzero-v2-upgradeable
-- https://github.com/fraxfinance/frax-oft-legacy
+- [frax-oft-upgradeable](https://github.com/fraxfinance/frax-oft-upgradeable): OFTs, lockboxes, and their LayerZero configuration
+- [hop-v2](https://github.com/fraxfinance/hop-v2): HopV2 contracts that route transfers through Fraxtal
+- [fraxtal-lz-hop](https://github.com/fraxfinance/fraxtal-lz-hop): first-generation hops (paused) and the `MintRedeemHop` contracts
+- [layerzero-v2-upgradeable](https://github.com/fraxfinance/layerzero-v2-upgradeable): upgradeable fork of the LayerZero V2 OApp and OFT contracts
+- [frax-oft-legacy](https://github.com/fraxfinance/frax-oft-legacy): legacy (non-upgradeable) OFTs
 
 You can bridge programatically through Solidity and Typescript.
 
+A Frax OFT sends directly only between Fraxtal and another chain. To move tokens between two chains other than Fraxtal, use [HopV2](#bridging-through-hopv2), which relays through Fraxtal from a single transaction.
+
 NOTE: When sending from Ethereum or Fraxtal, as you are sending the Frax asset to the lockbox, it is required to first approve the lockbox contract to transfer the asset on your behalf.
+
+`extraOptions` can be left empty. Every Frax OFT applies [enforced options](./configuration#enforced-options) that forward enough gas to the destination chain.
 
 ### Solidity
 
@@ -25,9 +31,9 @@ import { SendParam, MessagingFee, IOFT } from "@fraxfinance/layerzero-v2-upgrade
 
 uint256 amount = 1e18;
 // frxUSD OFT - Bridging FROM semi-deterministic chain
-address oft = 0x80eede496655fb9047dd39d9f418d5483ed600df;
-// Ethereum - choose destination EID from https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/scripts/L0Config.json
-uint32 dstEid = 30101;
+address oft = 0x80Eede496655FB9047dd39d9f418d5483ED600df;
+// Fraxtal - choose destination EID from https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/scripts/L0Config.json
+uint32 dstEid = 30255;
 
 bytes memory options = OptionsBuilder.newOptions();
 SendParam memory sendParam = SendParam({
@@ -39,8 +45,8 @@ SendParam memory sendParam = SendParam({
         composeMsg: '',
         oftCmd: ''
 });
-MessagingFee memory fee = IOFT(_oft).quoteSend(sendParam, false);
-IOFT(_oft).send{value: fee.nativeFee}(
+MessagingFee memory fee = IOFT(oft).quoteSend(sendParam, false);
+IOFT(oft).send{value: fee.nativeFee}(
     sendParam,
     fee,
     payable(msg.sender)
@@ -50,7 +56,12 @@ IOFT(_oft).send{value: fee.nativeFee}(
 ### Typescript
 
 ```typescript
-const abi = []; // load ABI from https://etherscan.io/address/0x909DBdE1eBE906Af95660033e478D59EFe831fED#code
+import * as dotenv from "dotenv";
+import { ethers } from "ethers";
+import { Options } from "@layerzerolabs/lz-v2-utilities";
+
+const abi = [
+  // load the full ABI from https://arbiscan.io/address/0x80Eede496655FB9047dd39d9f418d5483ED600df#code
   {
     inputs: [
       {
@@ -147,16 +158,13 @@ const abi = []; // load ABI from https://etherscan.io/address/0x909DBdE1eBE906Af
     ],
     stateMutability: "payable",
     type: "function",
+  },
 ];
-
-import * as dotenv from "dotenv";
-import { ethers } from "ethers";
-import { Options } from "@layerzerolabs/lz-v2-utilities";
 
 dotenv.config();
 const PK: string = process.env.PK!;
 
-const oft = "0x80eede496655fb9047dd39d9f418d5483ed600df"; // frxUSD on semi-deterministic chain
+const oft = "0x80Eede496655FB9047dd39d9f418d5483ED600df"; // frxUSD on semi-deterministic chain
 
 async function main() {
   const url = /* ENTER RPC URL HERE */;
@@ -164,14 +172,13 @@ async function main() {
   const signer = new ethers.Wallet(PK, provider);
   const contract = new ethers.Contract(oft, abi, signer);
 
-  // basic send
-  const dstEid = 30101;
+  // basic send to Fraxtal
+  const dstEid = 30255;
   const to = ethers.utils.zeroPad(signer.address, 32);
   const options = Options.newOptions().toHex().toString();
   const composeMsg = "0x";
 
-  const amount = 10 ** 18;
-  const abiCoder = new ethers.utils.AbiCoder();
+  const amount = ethers.utils.parseEther("1");
   const minAmountLD = 0;
 
   const sendParam = [
@@ -195,3 +202,43 @@ async function main() {
 
 main();
 ```
+
+### Bridging through HopV2
+
+[HopV2](https://github.com/fraxfinance/hop-v2) sends an OFT between any two EVM chains in the mesh in a single transaction. Call `sendOFT` on the source chain's Hop: `0x0000006D38568b00B457580b734e0076C62de659` on every chain except Fraxtal, where the Hop is `0x00000000e18aFc20Afe54d4B2C8688bB60c06B36`. See [HopV2 Contracts](./addresses#hopv2-contracts) for the full list.
+
+```solidity
+interface IHopV2 {
+    function quote(
+        address oft,
+        uint32 dstEid,
+        bytes32 recipient,
+        uint256 amountLD,
+        uint128 dstGas,
+        bytes memory data
+    ) external view returns (uint256);
+
+    function sendOFT(address oft, uint32 dstEid, bytes32 recipient, uint256 amountLD) external payable;
+}
+
+// Arbitrum -> Base, relayed through Fraxtal
+address hop = 0x0000006D38568b00B457580b734e0076C62de659;
+address oft = 0x80Eede496655FB9047dd39d9f418d5483ED600df; // frxUSD OFT on Arbitrum
+uint32 dstEid = 30184; // Base
+bytes32 recipient = bytes32(uint256(uint160(msg.sender)));
+uint256 amount = 1e18;
+
+// 1. Quote both legs (Arbitrum -> Fraxtal and Fraxtal -> Base)
+uint256 fee = IHopV2(hop).quote(oft, dstEid, recipient, amount, 0, "");
+
+// 2. Approve the underlying token, not the OFT
+IERC20(IOFT(oft).token()).approve(hop, amount);
+
+// 3. Send; any msg.value above the fee is refunded
+IHopV2(hop).sendOFT{value: fee}(oft, dstEid, recipient, amount);
+```
+
+- On Ethereum, pass the lockbox address (for example the frxUSD lockbox `0x566a6442A5A6e9895B9dCA97cC7879D632c6e4B0`) as `oft`, and approve the Ethereum token.
+- Amounts are floored to the OFT's shared decimals (`decimalConversionRate`, typically `1e12`) before sending.
+- Use the six-argument `sendOFT(oft, dstEid, recipient, amount, dstGas, data)` to call a contract on the destination. The recipient must implement `IHopComposer.hopCompose`, and `dstGas` is raised to at least 400,000.
+- On Tempo, the Hop takes no `msg.value` and collects fees in a stablecoin instead, see [Tempo](./tempo).

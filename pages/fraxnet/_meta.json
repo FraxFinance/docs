@@ -2,6 +2,7 @@
   "index": "About FraxNet",
   "addresses": "Addresses",
   "contracts": "Contracts",
-  "api": "API",
+  "branded-stablecoins": "Stablecoins as a Service (SaaS)",
+  "api": "Orchestration API",
   "partners": "Partners"
 }

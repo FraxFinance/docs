@@ -1,0 +1,119 @@
+---
+title: SaaS Stablecoin Endpoints
+lang: en-US
+---
+
+# SaaS Stablecoin Endpoints
+
+These endpoints handle Stablecoins as a Service (SaaS) operations: minting SaaS tokens from USDC deposits, and redeeming SaaS tokens back to USDC with cross-chain relay via CCTP.
+
+> Branded stablecoin endpoints (`/branded/*`) only support EVM chains. Solana EIDs are not accepted.
+
+---
+
+## `GET /branded/fetchAddress`
+
+Get a deterministic deposit address for branded stablecoin operations.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `asset` | `address` | Yes | Branded token contract address |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID (EVM only) |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "deploymentAddress": "0x...",
+  "params": {
+    "asset": "0x...",
+    "beneficiary": "0x...",
+    "targetEid": 30332
+  }
+}
+```
+
+---
+
+## `GET /branded/processDeposit`
+
+Process a USDC deposit for a branded token. Mints frxUSD, mints the branded token, and sends it cross-chain via the token's `CrossChainRouter`. No CCTP relay job is created.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `asset` | `address` | Yes | Branded token contract address |
+| `depositAddress` | `address` | Yes | Address returned by `/branded/fetchAddress` |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID (EVM only) |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "createFraxNetDepositTx": "0x...",
+  "contractAlreadyDeployed": false,
+  "processDepositTx": "0x...",
+  "depositAddress": "0x...",
+  "asset": "0x...",
+  "usdcAmount": "1000000"
+}
+```
+
+---
+
+## `GET /branded/processRedemption`
+
+Redeem a branded stablecoin back to frxUSD, then to USDC, and relay the USDC to the destination chain via CCTP.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `asset` | `address` | Yes | Branded token contract address |
+| `depositAddress` | `address` | Yes | Address returned by `/branded/fetchAddress` |
+| `beneficiary` | `address` | Yes | Destination wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID (EVM only) |
+
+### Response
+
+```json
+{
+  "ok": true,
+  "createFraxNetDepositTx": "0x...",
+  "contractAlreadyDeployed": false,
+  "processRedemptionTx": "0x...",
+  "depositAddress": "0x...",
+  "asset": "0x...",
+  "brandedTokenAmount": "1000000",
+  "cctpRelay": {
+    "status": "pending_attestation",
+    "jobId": "0x...",
+    "destDomain": 13
+  }
+}
+```
+
+---
+
+## Branded Deposit Flow (USDC → Branded Token)
+
+1. Call `/branded/fetchAddress` to get the deposit address
+2. Send USDC to the deposit address on Ethereum via CCTP `depositForBurn` from the source chain
+3. Call `/scheduleCCTPRelay` to relay the CCTP message to Ethereum
+4. Poll `/jobStatus` until `complete`
+5. Call `/branded/processDeposit` to mint frxUSD, mint the branded token, and send it cross-chain
+
+## Branded Redemption Flow (Branded Token → USDC)
+
+1. Call `/branded/fetchAddress` to get the deposit address
+2. Approve and bridge branded tokens from the source chain to the deposit address on Ethereum via the `CrossChainRouter`
+3. Wait for LayerZero settlement (~1-5 minutes)
+4. Call `/branded/processRedemption` to redeem the branded token to frxUSD to USDC, and relay USDC via CCTP
+5. Poll `/jobStatus` until USDC arrives (~20+ minutes)

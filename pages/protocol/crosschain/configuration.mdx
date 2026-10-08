@@ -3,40 +3,237 @@ title: Configuration
 lang: en-US
 ---
 
-## Crosschain Configuration
+# Crosschain Configuration
 
-Frax OFTs and lockboxes require multiple settings to be configured for proper crosschain functionality. These settings include:
+Every Frax OFT and lockbox is a [LayerZero V2 OApp](https://docs.layerzero.network/v2/concepts/applications/oapp-standard). Frax sets the message libraries, DVNs, block confirmations, and enforced options of every pathway explicitly. Only the executor is left at LayerZero's default. All five Frax OFTs (frxUSD, sfrxUSD, frxETH, sfrxETH, WFRAX) use the same settings on a given pathway.
 
-### SendLibrary
+The values on this page were read on-chain on October 6, 2026. They match the configuration files in [frax-oft-upgradeable](https://github.com/FraxFinance/frax-oft-upgradeable): [`config/dvn`](https://github.com/FraxFinance/frax-oft-upgradeable/tree/master/config/dvn), [`config/confirmations`](https://github.com/FraxFinance/frax-oft-upgradeable/tree/master/config/confirmations), and [`scripts/L0Config.json`](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/scripts/L0Config.json).
 
-Frax utilizes the LZ-provided SendLibrary for sending messages crosschain. If LayerZero changes their default SendLibrary, Frax will maintain the previous version until manually set by the Frax team.
+## Pathways
 
-### ReceiveLibrary
+Every chain is wired to Fraxtal (EID `30255`) and to no other chain. A transfer between two other chains is two LayerZero messages, `A → Fraxtal → B`, which [HopV2](#hopv2) chains together from a single user transaction. Only the pathways listed on this page are supported.
 
-Frax utilizes the LZ-provided ReceiveLibrary for receiving messages crosschain. If LayerZero changes their default ReceiveLibrary, Frax will maintain the previous version until manually set by the Frax team.
+## Summary
 
-### Executor
+| Setting              | Frax configuration                                           | Follows LayerZero defaults? |
+| :------------------- | :----------------------------------------------------------- | :-------------------------- |
+| Message libraries    | `SendUln302` and `ReceiveUln302`, set explicitly per pathway | No                          |
+| DVNs                 | 5 required DVNs (4 on Somnia), no optional DVNs              | No                          |
+| Block confirmations  | Fixed per source chain                                       | No                          |
+| Enforced options     | Minimum destination gas for every message type               | No                          |
+| Executor             | LayerZero's default executor and maximum message size        | Yes                         |
+| Delegate             | The Frax admin multisig on each chain                        | —                           |
 
-Frax utilizes the LZ-provided Executor for executing messages crosschain. If LayerZero changes their default Executor, Frax will automatically update to the latest version.
+## Message Libraries
 
-### Max Message Size
+Each OFT sets its send and receive library for every peer with `EndpointV2.setSendLibrary` and `EndpointV2.setReceiveLibrary` (no grace period). When LayerZero publishes a new default library, Frax pathways keep their current library until the delegate migrates them.
 
-Frax utilizes the LZ-provided Max Message Size setting to limit the maximum size of data in a message sent crosschain. In general, this value is the same across EVM chains and varies per non-EVM chain. If LayerZero changes their Max Message Size, Frax will automatically update to the latest setting.
+<details>
+<summary>Endpoint and library addresses</summary>
 
-### Confirmations
+| Chain | EndpointV2 | SendUln302 | ReceiveUln302 |
+| :--- | :--- | :--- | :--- |
+| **Fraxtal** | `0x1a44076050125825900e736c501f859c50fE728c` | `0x377530cdA84DFb2673bF4d145DCF0C4D7fdcB5b6` | `0x8bC1e36F015b9902B54b1387A4d733cebc2f5A4e` |
+| Abstract | `0x5c6cfF4b7C49805F8295Ff73C204ac83f3bC4AE7` | `0x166CAb679EBDB0853055522D3B523621b94029a1` | `0x9d799c1935c51CA399e6465Ed9841DEbCcEc413E` |
+| Arbitrum | `0x1a44076050125825900e736c501f859c50fE728c` | `0x975bcD720be66659e3EB3C0e4F1866a3020E493A` | `0x7B9E184e07a6EE1aC23eAe0fe8D6Be2f663f05e6` |
+| Avalanche | `0x1a44076050125825900e736c501f859c50fE728c` | `0x197D1333DEA5Fe0D6600E9b396c7f1B1cFCc558a` | `0xbf3521d309642FA9B1c91A08609505BA09752c61` |
+| Base | `0x1a44076050125825900e736c501f859c50fE728c` | `0xB5320B0B3a13cC860893E2Bd79FCd7e13484Dda2` | `0xc70AB6f32772f59fBfc23889Caf4Ba3376C84bAf` |
+| BSC | `0x1a44076050125825900e736c501f859c50fE728c` | `0x9F8C645f2D0b2159767Bd6E0839DE4BE49e823DE` | `0xB217266c3A98C8B2709Ee26836C98cf12f6cCEC1` |
+| Ethereum | `0x1a44076050125825900e736c501f859c50fE728c` | `0xbB2Ea70C9E858123480642Cf96acbcCE1372dCe1` | `0xc02Ab410f0734EFa3F14628780e6e695156024C2` |
+| Hyperliquid | `0x3A73033C0b1407574C76BdBAc67f126f6b4a9AA9` | `0xfd76d9CB0Bac839725aB79127E7411fe71b1e3CA` | `0x7cacBe439EaD55fa1c22790330b12835c6884a91` |
+| Ink | `0xca29f3A6f966Cb2fc0dE625F8f325c0C46dbE958` | `0x76111DE813F83AAAdBD62773Bf41247634e2319a` | `0x473132bb594caEF281c68718F4541f73FE14Dc89` |
+| Katana | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Linea | `0x1a44076050125825900e736c501f859c50fE728c` | `0x32042142DD551b4EbE17B6FEd53131dd4b4eEa06` | `0xE22ED54177CE1148C557de74E4873619e6c6b205` |
+| Monad | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Optimism | `0x1a44076050125825900e736c501f859c50fE728c` | `0x1322871e4ab09Bc7f5717189434f97bBD9546e95` | `0x3c4962Ff6258dcfCafD23a814237B7d6Eb712063` |
+| Plume | `0xC1b15d3B262bEeC0e3565C11C9e0F6134BdaCB36` | `0xFe7C30860D01e28371D40434806F4A8fcDD3A098` | `0x5B19bd330A84c049b62D5B0FC2bA120217a18C1C` |
+| Polygon | `0x1a44076050125825900e736c501f859c50fE728c` | `0x6c26c61a97006888ea9E4FA36584c7df57Cd9dA3` | `0x1322871e4ab09Bc7f5717189434f97bBD9546e95` |
+| Robinhood | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Sei | `0x1a44076050125825900e736c501f859c50fE728c` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Somnia | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Sonic | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Stable | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0x37aaaf95887624a363effB7762D489E3C05c2a02` | `0x15e51701F245F6D5bd0FEE87bCAf55B0841451B3` |
+| Tempo | `0x20Bb7C2E2f4e5ca2B4c57060d1aE2615245dCc9C` | `0x572863d9247E52026E0892d9Cd2E519B41EdB73C` | `0x0B6F08C2D39421Acb49c99abCe82050e356171e5` |
+| Unichain | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| Worldchain | `0x6F475642a6e85809B1c36Fa62763669b1b48DD5B` | `0xC39161c743D0307EB9BCc9FEF03eeb9Dc4802de7` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` |
+| X-Layer | `0x1a44076050125825900e736c501f859c50fE728c` | `0xe1844c5D63a9543023008D332Bd3d2e6f1FE1043` | `0x2367325334447C5E1E0f1b3a6fB947b262F58312` |
+| zkSync | `0xd07C30aF3Ff30D96BDc9c6044958230Eb797DDBF` | `0x07fD0e370B49919cA8dA0CE842B8177263c0E12c` | `0x04830f6deCF08Dec9eD6C3fCAD215245B78A59e1` |
+</details>
 
-Frax utilizes the LZ-provided Confirmations setting to determine how many block confirmations are required before a message can be executed on the destination chain. This value varies per chain based on the average block time and finality of each chain. If LayerZero changes their Confirmations setting, Frax will automatically update to the latest setting.
+## DVNs
 
-### Enforced Options
+Frax uses a required-only DVN stack. A message is committed on the destination chain only after every DVN on its pathway has verified it.
 
-Frax configures a default Enforced Option to require a minimum amount of gas to be forwarded to each destination chain executor. This ensures that messages have sufficient gas to be executed on the destination chain. Enforced Options are solely managed by the Frax team.
+| DVN            | Pathways          |
+| :------------- | :---------------- |
+| LayerZero Labs | All               |
+| Horizen        | All               |
+| Nethermind     | All               |
+| Canary         | All except Somnia |
+| Frax           | All               |
 
-### Delegate
+- **Every DVN is required.** `requiredDVNCount` equals the size of the stack, and there are no optional DVNs: `optionalDVNCount` is set to the NIL value and `optionalDVNThreshold` to `0`. A single DVN withholding its verification stops delivery, and no subset of the stack can deliver a message.
+- **Same operators in both directions.** An operator is part of a pathway only if it runs a DVN on both chains. Both directions of a pathway use the same operators, while each operator's DVN contract address differs per chain.
+- **Somnia** pathways use four DVNs because Canary does not operate a DVN on Somnia.
 
-The delegate is a permissioned address that can configure the aforementioned settings on the OFT and lockbox contracts. The Frax team operates as the delegate through a 3/6 multisig on each respective chain, found within the #Addresses section of the crosschain docs.
+### Frax DVN
 
-### DVN
+Frax operates one of the required DVNs on every chain in the mesh. Each deployment is LayerZero's standard DVN contract ([`FraxDVN.sol`](https://github.com/FraxFinance/frax-oft-upgradeable/blob/master/contracts/FraxDVN.sol)), and every verification needs signatures from 2 of its 3 signers. Because the Frax DVN is required on every pathway, every Frax OFT message is verified by Frax in addition to the other DVNs.
 
-Frax utilizes a 3 of 3 DVN stack required to approve every crosschain transaction. The DVNs are operated by LayerZero, Horizen, and Frax. In particular, the Frax DVN details are as follows:
+### DVN addresses
 
-TODO
+The table lists the DVN contracts used on each chain's pathway with Fraxtal. On Fraxtal, the same five contracts serve every pathway.
+
+<details>
+<summary>DVN addresses by chain</summary>
+
+| Chain | EID | LayerZero Labs | Horizen | Nethermind | Canary | Frax |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Fraxtal** (hub) | 30255 | `0xcCE466a522984415bC91338c232d98869193D46e` | `0xDd7B5E1dB4AaFd5C8EC3b764eFB8ed265Aa5445B` | `0xa7b5189bcA84Cd304D8553977c7C614329750d99` | `0x6398E91001Cc1682bBA103E6B2489Fa5675a5a64` | `0x26cD5aBaDf7eC3f0F02b48314bfcA6b2342cddD4` |
+| Abstract | 30324 | `0xF4DA94b4EE9D8e209e3bf9f469221CE2731A7112` | `0x264fE346Fcd0A89E3B41A6499BAC80dEa7e908D2` | `0xc4A1F52fDA034A9A5E1B3b27D14451d15776Fef6` | `0xCB773CAf620D2A6703d2cd30C567A6c2906ccfbb` | `0xA8c83FEbAb692d6F08cfA303e5D53B3B34F9046d` |
+| Arbitrum | 30110 | `0x2f55C492897526677C5B68fb199ea31E2c126416` | `0x19670Df5E16bEa2ba9b9e68b48C054C5bAEa06B8` | `0xa7b5189bcA84Cd304D8553977c7C614329750d99` | `0xf2E380c90e6c09721297526dbC74f870e114dfCb` | `0xB42726e41dBE96fc4ea6d73Cd792167608353698` |
+| Avalanche | 30106 | `0x962F502A63F5FBeB44DC9ab932122648E8352959` | `0x07C05EaB7716AcB6f83ebF6268F8EECDA8892Ba1` | `0xa59BA433ac34D2927232918Ef5B2eaAfcF130BA5` | `0xcC49E6fca014c77E1Eb604351cc1E08C84511760` | `0xfe4c37cd401F58eE0bF4D214447bF306C2BBd41B` |
+| Base | 30184 | `0x9e059a54699a285714207b43B055483E78FAac25` | `0xa7b5189bcA84Cd304D8553977c7C614329750d99` | `0xcd37CA043f8479064e10635020c65FfC005d36f6` | `0x554833698Ae0FB22ECC90B01222903fD62CA4B47` | `0x187cF227F81c287303ee765eE001e151347FAaA2` |
+| BSC | 30102 | `0xfD6865c841c2d64565562fCc7e05e619A30615f0` | `0x247624e2143504730aeC22912ed41F092498bEf2` | `0x31F748a368a893Bdb5aBB67ec95F232507601A73` | `0xfA9bA83C102283958B997Adc8B44ED3A3CdB5dDa` | `0xd4Bf35cE3BfC7F7D7dfC0694a7d4aA8b8c60a38c` |
+| Ethereum | 30101 | `0x589dEDbD617e0CBcB916A9223F4d1300c294236b` | `0x380275805876Ff19055EA900CDb2B46a94ecF20D` | `0xa59BA433ac34D2927232918Ef5B2eaAfcF130BA5` | `0xa4fE5A5B9A846458a70Cd0748228aED3bF65c2cd` | `0x38654142F5E672Ae86a1b21523AAfC765E6A1e08` |
+| Hyperliquid | 30367 | `0xc097ab8CD7b053326DFe9fB3E3a31a0CCe3B526f` | `0xBB83Ecf372CbB6daa629ea9A9A53BEC6d601F229` | `0x8E49eF1DfAe17e547CA0E7526FfDA81FbaCA810A` | `0x83342EC538dF0460e730a8F543Fe63063e2D44C4` | `0x082A08F524C043ec7F6b9a42BAE79A1990D8499a` |
+| Ink | 30339 | `0x174F2bA26f8ADeAfA82663bcf908288d5DbCa649` | `0x395B14700812cccC38b8e64F0a06ce2045FE9bA3` | `0xDd7B5E1dB4AaFd5C8EC3b764eFB8ed265Aa5445B` | `0x1E4CE74ccf5498B19900649D9196e64BAb592451` | `0xF007f1Fef50C0aCAF4418741454BCAEaeCB96B87` |
+| Katana | 30375 | `0x282b3386571f7f794450d5789911a9804FA346b4` | `0x84a410A8a912e333B957680998a76e526f98e207` | `0xaCDe1f22EEAb249d3ca6Ba8805C8fEe9f52a16e7` | `0x53fF818a1c492e667E2cD0b5AFe0FC82c66d33c7` | `0x5FA12ebC08e183C1F5d44678cF897edEfe68738B` |
+| Linea | 30183 | `0x129Ee430Cb2Ff2708CCADDBDb408a88Fe4FFd480` | `0x7fe673201724925B5c477d4E1A4Bd3E954688cF5` | `0xDd7B5E1dB4AaFd5C8EC3b764eFB8ed265Aa5445B` | `0xDA63525a0Fc42Bcc2cAD1dD28708d5ed11849347` | `0xF4064220871e3B94Ca6aB3b0CEE8e29178bF47dE` |
+| Monad | 30390 | `0x282b3386571f7f794450d5789911a9804FA346b4` | `0xdCdd4628F858b45260C31D6ad076bD2C3D3c2f73` | `0xaCDe1f22EEAb249d3ca6Ba8805C8fEe9f52a16e7` | `0x493626C5D852B9B187a9eb709D0b0978a3877238` | `0x5EC52fB644072247C3264F0AC3db981CDEbE3eCA` |
+| Optimism | 30111 | `0x6A02D83e8d433304bba74EF1c427913958187142` | `0x9E930731cb4A6bf7eCc11F695A295c60bDd212eB` | `0xa7b5189bcA84Cd304D8553977c7C614329750d99` | `0x5b6735c66d97479cCD18294fc96B3084EcB2fa3f` | `0x7240264781Aa2f97Cb994C6231297A8606483242` |
+| Plume | 30370 | `0x4208D6E27538189bB48E603D6123A94b8Abe0A0b` | `0x5E0744f8FBF26446c683BcF4cD405ad56bA76F8A` | `0x882a1EE8891c7d22310dedf032eF9653785532B8` | `0x395B14700812cccC38b8e64F0a06ce2045FE9bA3` | `0x1E4CE74ccf5498B19900649D9196e64BAb592451` |
+| Polygon | 30109 | `0x23DE2FE932d9043291f870324B74F820e11dc81A` | `0x25e0e650a78e6304A3983Fc4b7Ffc6544b1bEea6` | `0x31F748a368a893Bdb5aBB67ec95F232507601A73` | `0x13feb7234Ff60A97af04477d6421415766753Ba3` | `0xdab6E6ecB3513A8D2614AD75199b4b264A731050` |
+| Robinhood | 30416 | `0xd01ae6905d48315f7bE10C7330aeCF8360Ef5b12` | `0x1258A278519c7f4bd997a9c3BFd4Aa802a028D89` | `0x0Ffe02DF012299A370D5dd69298A5826EAcaFdF8` | `0x8D77D35604A9f37f488E41D1d916b2A0088F82Dd` | `0xC685167Bc4546caF2D3f5263D199d17d3f732c4c` |
+| Sei | 30280 | `0x6788f52439ACA6BFF597d3eeC2DC9a44B8FEE842` | `0x87048402c32632B7c4d0A892d82bC1160E8B2393` | `0xD24972c11F91c1bB9eaEe97ec96bB9c33cF7af24` | `0x33051Ad47157A50Bb49a646256b854C60f707C86` | `0xE016F0f39fb7DCf14E9412D92f2049668d4D2612` |
+| Somnia | 30380 | `0x282b3386571f7f794450d5789911a9804FA346b4` | `0x5fddD320a1e29bB466Fa635661b125D51D976f92` | `0x5FA12ebC08e183C1F5d44678cF897edEfe68738B` | — | `0xd6412412c5817AAAC5fd37BB96B1d64Caf56dB16` |
+| Sonic | 30332 | `0x282b3386571f7f794450d5789911a9804FA346b4` | `0x54dD79f5cE72b51FCBbcb170Dd01E32034323565` | `0x05AaEfDf9dB6E0f7d27FA3b6EE099EDB33dA029E` | `0xb2c7832aA8DDA878De6f949485f927e9e532E92C` | `0x805ed883FA3453E7Ac588667785a4495C573Cd13` |
+| Stable | 30396 | `0x9C061c9A4782294eeF65ef28Cb88233A987F4bdD` | `0x965A80Dc87cec5848310E612DeAD84B543AeF874` | `0x9bCd17A654bffAa6f8fEa38D19661a7210e22196` | `0x8D6cC20D84FbEb5733c60436CeB8957Da2ac02C8` | `0x45A7305c65AAd28384F20a80F87a5183772E4F70` |
+| Tempo | 30410 | `0x76FaFF60799021B301B45dC1BbEDE53F261F9961` | `0x97faa2a9c9bf8B4082B175A5B894Ce6bac6697a8` | `0x0D875bD6c833cEDef7Fca4FE154d023cDB8eb1cb` | `0xB30B5B27Cb23356DE1D3100E0e120D481Da97b1f` | `0xf5771acC42f3321D7193748fA0F656470bF737f2` |
+| Unichain | 30320 | `0x282b3386571f7f794450d5789911a9804FA346b4` | `0xC6a6324932B399D6A673B7Ed0af671F28033E046` | `0x25e0e650a78e6304A3983Fc4b7Ffc6544b1bEea6` | `0x00A979a5D306E9c5F8Cf473659e75f8002E06fc8` | `0x97faa2a9c9bf8B4082B175A5B894Ce6bac6697a8` |
+| Worldchain | 30319 | `0x6788f52439ACA6BFF597d3eeC2DC9a44B8FEE842` | `0x95729Ea44326f8adD8A9b1d987279DBdC1DD3dFf` | `0xDd7B5E1dB4AaFd5C8EC3b764eFB8ed265Aa5445B` | `0xe9C24dD582e37FAACa7d44c799530688DE92Da73` | `0xE16561B56BDf003B785347d237905BaE24f5F973` |
+| X-Layer | 30274 | `0x9C061c9A4782294eeF65ef28Cb88233A987F4bdD` | `0xDd7B5E1dB4AaFd5C8EC3b764eFB8ed265Aa5445B` | `0x28af4dADbc5066e994986E8bb105240023dC44B6` | `0x047d9DBe4fC6B5c916F37237F547f9F42809935a` | `0x2Ae36A544b904F2f2960F6Fd1a6084b4b11ba334` |
+| zkSync | 30165 | `0x620A9DF73D2F1015eA75aea1067227F9013f5C51` | `0x1253E268Bc04bB43CB96D2F7Ee858b8A1433Cf6D` | `0xb183c2b91cf76cAd13602b32ADa2Fd273f19009C` | `0x05Db3a229293C09F639a16526bB2481704716Df0` | `0x2Eb85384CAd49A67eBd8e2AfB0f72B3F586bAF03` |
+| Solana | 30168 | `4VDjp6XQaxoZf5RGwiPU9NR1EXSZn2TP4ATMmiSzLfhb` | `HR9NQKK1ynW9NzgdM37dU5CBtqRHTukmbMKS7qkwSkHX` | `GPjyWr8vCotGuFubDpTxDxy9Vj1ZeEN4F2dwRmFiaGab` | `7jMeX5mzXnSSKYd8DxBDP4xMnkNFZZZm5W28FWUTbwU3` | `6YB63FDuyYLt5gnJeiVmYRE4c6tFid5SrBZzMLQFfexm` |
+</details>
+
+## Block Confirmations
+
+DVNs wait for a number of block confirmations on the source chain before they verify a message. Messages sent from Fraxtal wait for **5** Fraxtal blocks. Messages sent to Fraxtal wait for the count listed for their source chain in [Settings by Chain](#settings-by-chain).
+
+Confirmation counts are fixed in each OFT's configuration, so a change to LayerZero's recommended values does not apply until Frax updates the pathway. Most counts equal LayerZero's recommended value for the chain, including X-Layer's 225,000 blocks. Frax waits longer than the recommended 20 blocks on Ink (60), Katana (60), Optimism (24), Unichain (72), and Worldchain (60).
+
+## Enforced Options
+
+Enforced options set the minimum executor options that every send must carry, so a sender can pass empty `extraOptions` and the message still has enough gas to execute on the destination. Options passed in `extraOptions` are added on top of the enforced options: they can add gas or native value, but they cannot go below the minimum.
+
+Frax sets enforced options for both OFT message types:
+
+- `SEND` (`msgType` `1`): a plain transfer
+- `SEND_AND_CALL` (`msgType` `2`): a transfer with a `composeMsg`
+
+| Destination                        | `SEND`                               | `SEND_AND_CALL`                      |
+| :--------------------------------- | :----------------------------------- | :----------------------------------- |
+| Fraxtal, from any EVM chain        | 200,000 gas                          | 250,000 gas                          |
+| Fraxtal, from Solana               | 150,000 gas                          | 150,000 gas                          |
+| EVM chains, from Fraxtal (default) | 200,000 gas                          | 250,000 gas                          |
+| Sei, from Fraxtal                  | 300,000 gas                          | 350,000 gas                          |
+| Somnia, from Fraxtal               | 1,000,000 gas                        | 1,500,000 gas                        |
+| Tempo, from Fraxtal                | 2,000,000 gas                        | 2,500,000 gas                        |
+| Solana, from Fraxtal               | 200,000 compute units + 0.0025 SOL   | 200,000 compute units + 0.0025 SOL   |
+
+All values are `lzReceive` executor options. Enforced options cover only `lzReceive`. A send that carries a `composeMsg` must add its own `lzCompose` option in `extraOptions`; [HopV2](#hopv2) adds it automatically. The SOL amount sent to Solana (2,500,000 lamports) pays the rent for the recipient's token account when it does not exist yet.
+
+## Settings by Chain
+
+| Chain | EID | Required DVNs | Confirmations (chain → Fraxtal) | Enforced gas, Fraxtal → chain (`SEND` / `SEND_AND_CALL`) |
+| :--- | :--- | :--- | :--- | :--- |
+| Abstract | 30324 | 5 | 20 | 200,000 / 250,000 |
+| Arbitrum | 30110 | 5 | 20 | 200,000 / 250,000 |
+| Avalanche | 30106 | 5 | 12 | 200,000 / 250,000 |
+| Base | 30184 | 5 | 10 | 200,000 / 250,000 |
+| BSC | 30102 | 5 | 20 | 200,000 / 250,000 |
+| Ethereum | 30101 | 5 | 15 | 200,000 / 250,000 |
+| Hyperliquid | 30367 | 5 | 1 | 200,000 / 250,000 |
+| Ink | 30339 | 5 | 60 | 200,000 / 250,000 |
+| Katana | 30375 | 5 | 60 | 200,000 / 250,000 |
+| Linea | 30183 | 5 | 10 | 200,000 / 250,000 |
+| Monad | 30390 | 5 | 4 | 200,000 / 250,000 |
+| Optimism | 30111 | 5 | 24 | 200,000 / 250,000 |
+| Plume | 30370 | 5 | 5 | 200,000 / 250,000 |
+| Polygon | 30109 | 5 | 120 | 200,000 / 250,000 |
+| Robinhood | 30416 | 5 | 20 | 200,000 / 250,000 |
+| Sei | 30280 | 5 | 5 | 300,000 / 350,000 |
+| Somnia | 30380 | 4 | 200 | 1,000,000 / 1,500,000 |
+| Sonic | 30332 | 5 | 20 | 200,000 / 250,000 |
+| Stable | 30396 | 5 | 3 | 200,000 / 250,000 |
+| Tempo | 30410 | 5 | 20 | 2,000,000 / 2,500,000 |
+| Unichain | 30320 | 5 | 72 | 200,000 / 250,000 |
+| Worldchain | 30319 | 5 | 60 | 200,000 / 250,000 |
+| X-Layer | 30274 | 5 | 225,000 | 200,000 / 250,000 |
+| zkSync | 30165 | 5 | 20 | 200,000 / 250,000 |
+| Solana | 30168 | 5 | 32 | 200,000 + 2,500,000 lamports / 200,000 + 2,500,000 lamports |
+
+## Executor
+
+Frax does not set an executor configuration, so every pathway uses LayerZero's default executor and default maximum message size (10,000 bytes on EVM pathways). If LayerZero changes its default executor, Frax pathways follow automatically.
+
+## Delegate and Admin
+
+The OFT owner and the LayerZero delegate is the Frax admin multisig on each chain, listed under [Multisigs](./addresses#multisigs). The delegate is the only address that can change a pathway's libraries, DVNs, confirmations, or enforced options.
+
+- On every EVM chain other than Ethereum, the admin multisig is a 3-of-6 Safe. On Solana, it is a Squads multisig.
+- On Ethereum, the admin multisig is a 3-of-5 Safe. The frxUSD lockbox is owned by a separate 4-of-7 Safe, which also administers the Timelock that owns the Ethereum `ProxyAdmin`. Ethereum upgrades therefore wait 24 hours.
+- On Fraxtal, the `ProxyAdmin` is owned by a separate 3-of-5 Safe.
+
+## HopV2
+
+[HopV2](https://github.com/FraxFinance/hop-v2) routes transfers between two non-Fraxtal chains through Fraxtal. It does not change the OFT pathway configuration above: each leg is an ordinary OFT send that uses the pathway's DVNs, confirmations, and enforced options. HopV2 adds the following settings of its own:
+
+| Setting                        | Value                                                                                                     | Purpose                                                                    |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- |
+| `lzCompose` gas on Fraxtal     | At least 1,000,000                                                                                        | Gas for the Fraxtal hop to route the transfer to its destination           |
+| Destination `dstGas`           | At least 400,000 when `data` is set                                                                       | `lzCompose` gas for the recipient's `hopCompose` call on the destination   |
+| `numDVNs`                      | 5 (4 on Somnia)                                                                                           | Number of DVN fees included when quoting the Fraxtal → destination leg     |
+| `executorOptions(dstEid)`      | 300,000 gas by default; Somnia 1,000,000; Tempo 2,500,000; Solana 200,000 compute units + 0.003 SOL         | Executor options used to quote the Fraxtal → destination leg               |
+| `hopFee`                       | 0                                                                                                         | Optional service fee on the Fraxtal leg, in basis points                  |
+
+`numDVNs` and `executorOptions` only affect fee quotes. The Fraxtal → destination leg is executed with the destination's enforced options, plus the `lzCompose` gas when `data` is set.
+
+## Verifying On-Chain
+
+The examples use [Foundry's `cast`](https://book.getfoundry.sh/cast/) and the frxUSD OFT on Arbitrum. Substitute the endpoint, library, OFT, and EID for any other pathway.
+
+Read the DVN configuration (config type `2`) that Arbitrum uses to send to Fraxtal:
+
+```bash
+cast call 0x1a44076050125825900e736c501f859c50fE728c \
+  "getConfig(address,address,uint32,uint32)(bytes)" \
+  0x80Eede496655FB9047dd39d9f418d5483ED600df \
+  0x975bcD720be66659e3EB3C0e4F1866a3020E493A 30255 2 \
+  --rpc-url https://arb1.arbitrum.io/rpc
+
+# Decode the result as (confirmations, requiredDVNCount, optionalDVNCount,
+# optionalDVNThreshold, requiredDVNs, optionalDVNs)
+cast abi-decode "f()((uint64,uint8,uint8,uint8,address[],address[]))" <result>
+# (20, 5, 0, 0, [0x19670Df5..., 0x2f55C492..., 0xa7b5189b..., 0xB42726e4..., 0xf2E380c9...], [])
+```
+
+Use the `ReceiveUln302` address to read the receive side. Read the enforced options for `SEND` (`1`) and `SEND_AND_CALL` (`2`):
+
+```bash
+cast call 0x80Eede496655FB9047dd39d9f418d5483ED600df \
+  "enforcedOptions(uint32,uint16)(bytes)" 30255 1 \
+  --rpc-url https://arb1.arbitrum.io/rpc
+# 0x00030100110100000000000000000000000000030d40  -> lzReceive gas 200,000 (0x030d40)
+```
+
+Confirm that the library is set explicitly rather than inherited from the default:
+
+```bash
+cast call 0x1a44076050125825900e736c501f859c50fE728c \
+  "isDefaultSendLibrary(address,uint32)(bool)" \
+  0x80Eede496655FB9047dd39d9f418d5483ED600df 30255 \
+  --rpc-url https://arb1.arbitrum.io/rpc
+# false
+```

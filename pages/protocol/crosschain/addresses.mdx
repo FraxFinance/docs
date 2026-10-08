@@ -11,24 +11,20 @@ lang: en-US
 
 #### Semi-Deterministic Addresses
 
-Each of the 6 OFTs maintain the same address across these chains:
+Each of the 5 OFTs maintain the same address across these chains:
 
 - Arbitrum
-- Aurora
 - Avalanche
-- Berachain
 - BSC
 - Hyperliquid
 - Ink
 - Katana
-- Mode
 - Optimism
-- Plasma
 - Plume
 - Polygon
-- Polygon zkEVM
 - Sei
 - Sonic
+- Stable
 - Unichain
 - Worldchain
 - X-Layer
@@ -37,38 +33,61 @@ Each of the 6 OFTs maintain the same address across these chains:
 
 Each address of these OFTs is unique:
 
-- Linea, Base, Scroll
-  - All 6 OFTs
+- Linea, Base, Monad
+  - All 5 OFTs
 - Ethereum
   - WFRAX OFT
 
 #### zkSync
 
-- zkSync Era, Abstract maintain the same addresses across all 6 OFTs. This is due to the ZK compiler.
+- zkSync Era, Abstract maintain the same addresses across all 5 OFTs. This is due to the ZK compiler.
 
-|                   | Semi-Deterministic                           | Linea                                                                                | Scroll                                                                              | Base                                                                              | zkSync                                       |
-| :---------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------   | :-------------------------------------------------------------------------------- | :------------------------------------------- |
-| ProxyAdmin        | `0x223a681fc5c5522c85C96157c0efA18cd6c5405c` | [`link`](https://lineascan.build/address/0x3cf371c128b092b085B7732069cEAF3Fd863F270) | [`link`](https://scrollscan.com/address/0x8f1b9c1fd67136d525e14d96efb3887a33f16250) | [`link`](https://basescan.org/address/0xe5020A6d073a794B6E7f05678707dE47986Fb0b6) | `0xe59dcae52a4ffa39be99588486c84bc2dc1ba52f` |
-| frxUSD            | `0x80Eede496655FB9047dd39d9f418d5483ED600df` | [`link`](https://lineascan.build/address/0xC7346783f5e645aa998B106Ef9E7f499528673D8) | [`link`](https://scrollscan.com/address/0x397f939c3b91a74c321ea7129396492ba9cdce82) | [`link`](https://basescan.org/address/0xe5020A6d073a794B6E7f05678707dE47986Fb0b6) | `0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d` |
-| sfrxUSD           | `0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0` | [`link`](https://lineascan.build/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | [`link`](https://scrollscan.com/address/0xc6b2be25d65760b826d0c852fd35f364250619c2) | [`link`](https://basescan.org/address/0x91A3f8a8d7a881fBDfcfEcd7A2Dc92a46DCfa14e) | `0x9F87fbb47C33Cd0614E43500b9511018116F79eE` |
-| frxETH            | `0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050` | [`link`](https://lineascan.build/address/0xB1aFD04774c02AE84692619448B08BA79F19b1ff) | [`link`](https://scrollscan.com/address/0x0097cf8ee15800d4f80da8a6ce4df360d9449ed5) | [`link`](https://basescan.org/address/0x7eb8d1E4E2D0C8b9bEDA7a97b305cF49F3eeE8dA) | `0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440` |
-| sfrxETH           | `0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45` | [`link`](https://lineascan.build/address/0x383Eac7CcaA89684b8277cBabC25BCa8b13B7Aa2) | [`link`](https://scrollscan.com/address/0x73382eb28f35d80df8c3fe04a3eed71b1afce5de) | [`link`](https://basescan.org/address/0x192e0C7Cc9B263D93fa6d472De47bBefe1Fb12bA) | `0xFD78FD3667DeF2F1097Ed221ec503AE477155394` |
-| WFRAX (prev. FXS) | `0x64445f0aecC51E94aD52d8AC56b7190e764E561a` | [`link`](https://lineascan.build/address/0x5217Ab28ECE654Aab2C68efedb6A22739df6C3D5) | [`link`](https://scrollscan.com/address/0x879ba0efe1ab0119fefa745a21585fa205b07907) | [`link`](https://basescan.org/address/0x0CEAC003B0d2479BebeC9f4b2EBAd0a803759bbf) | `0xAf01aE13Fb67AD2bb2D76f29A83961069a5F245F` |
-| FPI               | `0x90581eCa9469D8D7F5D3B60f4715027aDFCf7927` | [`link`](https://lineascan.build/address/0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4) | [`link`](https://scrollscan.com/address/0x93cDc5d29293Cb6983f059Fec6e4FFEb656b6a62) | [`link`](https://basescan.org/address/0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B) | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E` |
+|                   | Semi-Deterministic                           | Linea                                                                                | Monad                                                                              | Base                                                                              | zkSync                                       |
+| :---------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------------------------- |
+| ProxyAdmin        | `0x223a681fc5c5522c85C96157c0efA18cd6c5405c` | [`link`](https://lineascan.build/address/0x3cf371c128b092b085B7732069cEAF3Fd863F270) | [`link`](https://monadscan.com/address/0xc2871eae630640ce1a16b39a17c498f22d76c21a) | [`link`](https://basescan.org/address/0xF59C41A57AB4565AF7424F64981523DfD7A453c5) | `0xe59dcae52a4ffa39be99588486c84bc2dc1ba52f` |
+| frxUSD            | `0x80Eede496655FB9047dd39d9f418d5483ED600df` | [`link`](https://lineascan.build/address/0xC7346783f5e645aa998B106Ef9E7f499528673D8) | [`link`](https://monadscan.com/address/0x58e3ee6accd124642ddb5d3f91928816be8d8ed3) | [`link`](https://basescan.org/address/0xe5020A6d073a794B6E7f05678707dE47986Fb0b6) | `0xEa77c590Bb36c43ef7139cE649cFBCFD6163170d` |
+| sfrxUSD           | `0x5Bff88cA1442c2496f7E475E9e7786383Bc070c0` | [`link`](https://lineascan.build/address/0x592a48c0FB9c7f8BF1701cB0136b90DEa2A5B7B6) | [`link`](https://monadscan.com/address/0x137643f7b2c189173867b3391f6629cab46f0f1a) | [`link`](https://basescan.org/address/0x91A3f8a8d7a881fBDfcfEcd7A2Dc92a46DCfa14e) | `0x9F87fbb47C33Cd0614E43500b9511018116F79eE` |
+| frxETH            | `0x43eDD7f3831b08FE70B7555ddD373C8bF65a9050` | [`link`](https://lineascan.build/address/0xB1aFD04774c02AE84692619448B08BA79F19b1ff) | [`link`](https://monadscan.com/address/0x288f9d76019469bfeb56bb77d86afa2bf563b75b) | [`link`](https://basescan.org/address/0x7eb8d1E4E2D0C8b9bEDA7a97b305cF49F3eeE8dA) | `0xc7Ab797019156b543B7a3fBF5A99ECDab9eb4440` |
+| sfrxETH           | `0x3Ec3849C33291a9eF4c5dB86De593EB4A37fDe45` | [`link`](https://lineascan.build/address/0x383Eac7CcaA89684b8277cBabC25BCa8b13B7Aa2) | [`link`](https://monadscan.com/address/0x3b4cf37a3335f21c945a40088404c715525fcb29) | [`link`](https://basescan.org/address/0x192e0C7Cc9B263D93fa6d472De47bBefe1Fb12bA) | `0xFD78FD3667DeF2F1097Ed221ec503AE477155394` |
+| WFRAX (prev. FXS) | `0x64445f0aecC51E94aD52d8AC56b7190e764E561a` | [`link`](https://lineascan.build/address/0x5217Ab28ECE654Aab2C68efedb6A22739df6C3D5) | [`link`](https://monadscan.com/address/0x29acc7c504665a5ea95344796f784095f0cfcc58) | [`link`](https://basescan.org/address/0x0CEAC003B0d2479BebeC9f4b2EBAd0a803759bbf) | `0xAf01aE13Fb67AD2bb2D76f29A83961069a5F245F` |
 
 - Ethereum WFRAX
   - `0x04ACaF8D2865c0714F79da09645C13FD2888977f`
 
+#### Fully Deterministic Addresses (Robinhood, Somnia, Tempo)
+
+Chains onboarded from 2026 onward share one set of `0x000000...` OFT addresses, deployed with deterministic (CREATE2) deployment. On Tempo, the frxUSD address is a `FraxOFTMintableAdapterUpgradeableTIP20` that mints and burns the native TIP-20 frxUSD (`0x20C0000000000000000000003554d28269E0f3c2`), see [Tempo](./tempo).
+
+|                   | Address                                      | Robinhood                                                                                         | Somnia                                                                                       | Tempo                                                                                  |
+| :---------------- | :------------------------------------------- | :------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| ProxyAdmin        | `0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428` | [`link`](https://robinhoodchain.blockscout.com/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428) | [`link`](https://explorer.somnia.network/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428) | [`link`](https://explore.tempo.xyz/address/0x000000dbfaA1Fb91ca46867cE6D41aB6da4f7428) |
+| frxUSD            | `0x00000000D61733e7A393A10A5B48c311AbE8f1E5` | [`link`](https://robinhoodchain.blockscout.com/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5) | [`link`](https://explorer.somnia.network/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5) | [`link`](https://explore.tempo.xyz/address/0x00000000D61733e7A393A10A5B48c311AbE8f1E5) |
+| sfrxUSD           | `0x00000000fD8C4B8A413A06821456801295921a71` | [`link`](https://robinhoodchain.blockscout.com/address/0x00000000fD8C4B8A413A06821456801295921a71) | [`link`](https://explorer.somnia.network/address/0x00000000fD8C4B8A413A06821456801295921a71) | [`link`](https://explore.tempo.xyz/address/0x00000000fD8C4B8A413A06821456801295921a71) |
+| frxETH            | `0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c` | [`link`](https://robinhoodchain.blockscout.com/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c) | [`link`](https://explorer.somnia.network/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c) | [`link`](https://explore.tempo.xyz/address/0x000000008c3930dCA540bB9B3A5D0ee78FcA9A4c) |
+| sfrxETH           | `0x00000000883279097A49dB1f2af954EAd0C77E3c` | [`link`](https://robinhoodchain.blockscout.com/address/0x00000000883279097A49dB1f2af954EAd0C77E3c) | [`link`](https://explorer.somnia.network/address/0x00000000883279097A49dB1f2af954EAd0C77E3c) | [`link`](https://explore.tempo.xyz/address/0x00000000883279097A49dB1f2af954EAd0C77E3c) |
+| WFRAX (prev. FXS) | `0x00000000E9CE0f293D1Ce552768b187eBA8a56D4` | [`link`](https://robinhoodchain.blockscout.com/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4) | [`link`](https://explorer.somnia.network/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4) | [`link`](https://explore.tempo.xyz/address/0x00000000E9CE0f293D1Ce552768b187eBA8a56D4) |
+
+#### Ethereum Admin
+
+| Contract                    | Address                                                                                                                 |
+| :-------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| ProxyAdmin                  | [`0x223a681fc5c5522c85C96157c0efA18cd6c5405c`](https://etherscan.io/address/0x223a681fc5c5522c85C96157c0efA18cd6c5405c) |
+| ProxyAdmin owner (Timelock) | [`0xb898Ad2976b4d8f2E21521C9db16b7497825E503`](https://etherscan.io/address/0xb898Ad2976b4d8f2E21521C9db16b7497825E503) |
+| Timelock admin              | [`0xfFFffF4F3baC444b2C0ecf2A1840d018bE783937`](https://etherscan.io/address/0xfFFffF4F3baC444b2C0ecf2A1840d018bE783937) |
+
+The Timelock enforces a 24-hour delay on upgrades. The Timelock admin is a 4-of-7 Safe, which also owns the Ethereum frxUSD lockbox.
+
 ### Non-EVM
 
-|                   | Solana                                                                                                                  |
-| :---------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| frxUSD            | [`GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw`](https://solscan.io/token/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) |
-| sfrxUSD           | [`DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45`](https://solscan.io/token/DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45) |
-| frxETH            | [`5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf`](https://solscan.io/token/5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf) |
-| sfrxETH           | [`58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv`](https://solscan.io/token/58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv) |
-| WFRAX (prev. FXS) | [`zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga`](https://solscan.io/token/zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga)   |
-| FPI               | [`8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH`](https://solscan.io/token/8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH) |
+All Solana OFTs use the OFT program [`E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ`](https://solscan.io/account/E1ht9dUh1ZkgWWRRPCuN3kExEoF2FXiyADXeN3XyMHaQ). The OFT store is the account that EVM chains register as the Solana peer.
+
+|                   | Solana Token                                                                                                            | Solana OFT Store                                                                                                         |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| frxUSD            | [`GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw`](https://solscan.io/token/GzX1ireZDU865FiMaKrdVB1H6AE8LAqWYCg6chrMrfBw) | [`7LS6y37WXXCyBHkBU6zVpiqaqbkXLr4P85ZhQi3eonSp`](https://solscan.io/account/7LS6y37WXXCyBHkBU6zVpiqaqbkXLr4P85ZhQi3eonSp) |
+| sfrxUSD           | [`DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45`](https://solscan.io/token/DUvWQMyASSkLNJFwsMDA4kwxEvmfaqpPGrvUVKtitX45) | [`A28EK6j1euK4e6taP1KLFpGEoR1mDpXR4vtfiyCE1Nxv`](https://solscan.io/account/A28EK6j1euK4e6taP1KLFpGEoR1mDpXR4vtfiyCE1Nxv) |
+| frxETH            | [`5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf`](https://solscan.io/token/5sDrwVNiHMM2jC78hRBH1CtysDQYiNKihubgW2zNu8tf) | [`4pyqBQFhzsuL7ED76x3AyzT4bCVpMpQWXhS1LqEsfQtz`](https://solscan.io/account/4pyqBQFhzsuL7ED76x3AyzT4bCVpMpQWXhS1LqEsfQtz) |
+| sfrxETH           | [`58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv`](https://solscan.io/token/58zpC9acE6F4FBtd88L64NoWHJcmzLsQSy5bjz35Ydgv) | [`DsJYjDF5yVSopMC15q9W42v833MhWGhCxcU2J39oS3wN`](https://solscan.io/account/DsJYjDF5yVSopMC15q9W42v833MhWGhCxcU2J39oS3wN) |
+| WFRAX (prev. FXS) | [`zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga`](https://solscan.io/token/zZbQjiRg8uSxZaPu996XuviuZeSY6nsaMuutKZQBJga)   | [`5vqBiG7nxNnoCst8mEVVS6ax7C1ypEEenPfcZ4kLgj9B`](https://solscan.io/account/5vqBiG7nxNnoCst8mEVVS6ax7C1ypEEenPfcZ4kLgj9B) |
 
 ### Lockboxes
 
@@ -79,39 +98,96 @@ Each address of these OFTs is unique:
 | frxETH            | [`0x9aBFE1F8a999B0011ecD6116649AEe8D575F5604`](https://fraxscan.com/address/0x9aBFE1F8a999B0011ecD6116649AEe8D575F5604) | [`0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6`](https://etherscan.io/address/0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6) | [`0xF010a7c8877043681D59AD125EbF575633505942`](https://etherscan.io/address/0xF010a7c8877043681D59AD125EbF575633505942) |
 | sfrxETH           | [`0x999dfAbe3b1cc2EF66eB032Eea42FeA329bBa168`](https://fraxscan.com/address/0x999dfAbe3b1cc2EF66eB032Eea42FeA329bBa168) | [`0xbBc424e58ED38dd911309611ae2d7A23014Bd960`](https://etherscan.io/address/0xbBc424e58ED38dd911309611ae2d7A23014Bd960) | [`0x1f55a02A049033E3419a8E2975cF3F572F4e6E9A`](https://etherscan.io/address/0x1f55a02A049033E3419a8E2975cF3F572F4e6E9A) |
 | WFRAX (prev. FXS) | [`0xd86fBBd0c8715d2C1f40e451e5C3514e65E7576A`](https://fraxscan.com/address/0xd86fBBd0c8715d2C1f40e451e5C3514e65E7576A) | \*                                                                                                                      | [`0x23432452B720C80553458496D4D9d7C5003280d0`](https://etherscan.io/address/0x23432452B720C80553458496D4D9d7C5003280d0) |
-| FPI               | [`0x75c38D46001b0F8108c4136216bd2694982C20FC`](https://fraxscan.com/address/0x75c38D46001b0F8108c4136216bd2694982C20FC) | [`0x9033BAD7aA130a2466060A2dA71fAe2219781B4b`](https://etherscan.io/address/0x9033BAD7aA130a2466060A2dA71fAe2219781B4b) | [`0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d`](https://etherscan.io/address/0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d) |
 
 \* Ethereum WFRAX is not a lockbox but an OFT. See the "EVM" section above for details.
 
+### Retired: FPI
+
+FPI has been retired from the mesh. The Fraxtal FPI lockbox has no peers, so FPI can no longer be bridged. For reference, the FPI contracts are:
+
+| Contract                         | Address                                                                                                                 |
+| :------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| Fraxtal lockbox                  | [`0x75c38D46001b0F8108c4136216bd2694982C20FC`](https://fraxscan.com/address/0x75c38D46001b0F8108c4136216bd2694982C20FC) |
+| Ethereum lockbox                 | [`0x9033BAD7aA130a2466060A2dA71fAe2219781B4b`](https://etherscan.io/address/0x9033BAD7aA130a2466060A2dA71fAe2219781B4b) |
+| Ethereum lockbox (legacy)        | [`0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d`](https://etherscan.io/address/0x6Eca253b102D41B6B69AC815B9CC6bD47eF1979d) |
+| OFT, semi-deterministic chains   | `0x90581eCa9469D8D7F5D3B60f4715027aDFCf7927`                                                                            |
+| OFT, Somnia and Tempo            | `0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb`                                                                            |
+| OFT, Linea                       | `0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4`                                                                            |
+| OFT, Monad                       | `0xba554f7a47f0792b9fa41a1256d4cf628bb1d028`                                                                            |
+| OFT, Base                        | `0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B`                                                                            |
+| OFT, zkSync and Abstract         | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E`                                                                            |
+| OFT, Solana                      | `8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH`                                                                          |
+
 ### Multisigs
 
-| Chain         | Multisig                                                                                                             |
-| :------------ | :------------------------------------------------------------------------------------------------------------------- |
-| Fraxtal       | [`link`](https://safe.mainnet.frax.com/home?safe=fraxtal:0x5f25218ed9474b721d6a38c115107428E832fA2E)                 |
-| Ethereum      | [`link`](https://app.safe.global/home?safe=eth:0xB1748C79709f4Ba2Dd82834B8c82D4a505003f27)                           |
-| Abstract      | [`link`](https://abstract-safe.protofire.io/home?safe=abstract:0xcC20eAE3CdC554E96291708B362dF349CC443808)           |
-| Aptos         | [`link`](https://aptos.m-safe.io/assets?msafe=0x6f9e27569fb34873f13a6868b3732b384f81c89fb525a623a969fdba155de21c)    |
-| Arbitrum      | [`link`](https://app.safe.global/home?safe=arb1:0xe61D9ed1e5Dc261D1e90a99304fADCef2c76FD10)                          |
-| Aurora        | [`link`](https://app.safe.global/home?safe=aurora:0x73F365d34b81E731825a094c2E722A08574335cd)                        |
-| Avalanche     | [`link`](https://app.safe.global/home?safe=avax:0xc036Caff65c1A31eAa53e60F6E17f1E6689937AA)                          |
-| Base          | [`link`](https://app.safe.global/home?safe=base:0xCBfd4Ef00a8cf91Fd1e1Fe97dC05910772c15E53)                          |
-| Berachain     | [`link`](https://safe.berachain.com/home?safe=berachain:0x436b303dAf4b95e94ad86cA3821d5E50eB0De3aA)                  |
-| Blast         | [`link`](https://blast-safe.io/home?safe=blast:0x33A133020b2C2CD41a24F74033B11EC2fC0bF97a)                           |
-| BSC           | [`link`](https://app.safe.global/home?safe=bnb:0x8811Da0385cCf1848B21475A42eA4D07Fc5d964a)                           |
-| Hyperliquid   | [`link`](https://safe.onchainden.com/home?safe=hyperevm:0x738ee62157f127C879Ff5c4B7102Eb0d166C7a6d)                  |
-| Ink           | [`link`](https://app.safe.global/home?safe=ink:0x91eBC17cD330DD694225133455583FBCA54b8eC8)                           |
-| Linea         | [`link`](https://safe.linea.build/home?safe=linea:0x0E5a5284820E350ffce7fe7ba3364FaC1C53eaFD)                        |
-| Metis         | [`link`](https://metissafe.tech/home?safe=metis-andromeda:0xF4A4F32732F9B2fB84Ee28c58616946F3bF80F7d)                |
-| Mode          | [`link`](https://safe.optimism.io/home?safe=mode:0x6336CFA6eDBeC2A459d869031DB77fC2770Eaa66)                         |
-| Movement      | [`link`](https://movement.m-safe.io/assets?msafe=0xda80fe6404a059e99569ba06f8d87814b3a9521c8d6c78ac5ed4ca75ad867ab3) |
-| Optimism      | [`link`](https://app.safe.global/home?safe=oeth:0x0dF840dCbf1229262A4125C1fc559bd338eC9491)                          |
-| Plasma        | [`link`](https://app.safe.global/home?safe=plasma:0x7d99C7737751b044DF4fA10aeEFA31532dd11DBE)                        |   
-| Plume         | [`link`](https://safe.onchainden.com/home?safe=plume:0x77dDd3EC570EEAf2c513de3c833c5E82A721978B)                     |        
-| Polygon       | [`link`](https://app.safe.global/home?safe=matic:0xDCB5A4b6Ee39447D700F4FA3303B1d1c25Ea9cA7)                         |
-| Polygon zkEVM | [`link`](https://app.safe.global/home?safe=zkevm:0x57445fD8d544e5D313e4f715220103b091814df4)                         |
-| Scroll        | [`link`](https://app.safe.global/home?safe=scr:0x73F365d34b81E731825a094c2E722A08574335cd)                           |
-| Sei           | [`link`](https://sei-safe.protofire.io/home?safe=sei:0x0357D02fc95320b990322d3ff69204c3D251171b)                     |
-| Solana        | [`link`](https://app.squads.so/squads/FSRTW4KPGifKL8yKcZ8mfoR9mKtAjwZiTHbHwgix8AQo/home)                             |
-| Sonic         | [`link`](https://app.safe.global/home?safe=sonic:0x457aEa9180b60a7076a9cf4E2485F266c9E47657)                         |
-| X-Layer       | [`link`](https://app.safe.global/home?safe=xlayer:0xe7Cc52f0C86f4FAB6630f1E26167B487fbF66a61)                        |
-| zkSync        | [`link`](https://app.safe.global/home?safe=zksync:0xd492dF0ce7905D7d91aE48F5e893AcAa38221486)                        |
+Each multisig below is the LayerZero delegate of the chain's OFTs and lockboxes, and their owner, except for the Ethereum frxUSD lockbox (owned by the Timelock admin, see [Ethereum Admin](#ethereum-admin)). It also owns the chain's `ProxyAdmin`, except on Ethereum (Timelock) and Fraxtal (separate 3-of-5 Safe [`0xC4EB45d80DC1F079045E75D5d55de8eD1c1090E6`](https://fraxscan.com/address/0xC4EB45d80DC1F079045E75D5d55de8eD1c1090E6)).
+
+| Chain       | Multisig                                                                                                               | Threshold |
+| :---------- | :--------------------------------------------------------------------------------------------------------------------- | :-------- |
+| Fraxtal     | [`link`](https://safe.mainnet.frax.com/home?safe=fraxtal:0x5f25218ed9474b721d6a38c115107428E832fA2E)                   | 3 of 6    |
+| Ethereum    | [`link`](https://app.safe.global/home?safe=eth:0xB1748C79709f4Ba2Dd82834B8c82D4a505003f27)                             | 3 of 5    |
+| Abstract    | [`link`](https://abstract-safe.protofire.io/home?safe=abstract:0xcC20eAE3CdC554E96291708B362dF349CC443808)             | 3 of 6    |
+| Arbitrum    | [`link`](https://app.safe.global/home?safe=arb1:0x3da490b19F300E7cb2280426C8aD536dB2df445c)                            | 3 of 6    |
+| Avalanche   | [`link`](https://app.safe.global/home?safe=avax:0xBF1fF4D8B05F0871ca3f49e49fF1cA8AeeBD3b4b)                            | 3 of 6    |
+| Base        | [`link`](https://app.safe.global/home?safe=base:0xCBfd4Ef00a8cf91Fd1e1Fe97dC05910772c15E53)                            | 3 of 6    |
+| BSC         | [`link`](https://app.safe.global/home?safe=bnb:0xB1eff95B323D60cc04B1a44Ca1dBcbC935ae2C84)                             | 3 of 6    |
+| Hyperliquid | [`link`](https://safe.onchainden.com/home?safe=hyperevm:0x738ee62157f127C879Ff5c4B7102Eb0d166C7a6d)                    | 3 of 6    |
+| Ink         | [`link`](https://app.safe.global/home?safe=ink:0x91eBC17cD330DD694225133455583FBCA54b8eC8)                             | 3 of 6    |
+| Katana      | [`link`](https://app.safe.global/home?safe=katana:0x19A90b0476cdc8EC1239266663CA820175B9B527)                          | 3 of 6    |
+| Linea       | [`link`](https://safe.linea.build/home?safe=linea:0x0E5a5284820E350ffce7fe7ba3364FaC1C53eaFD)                          | 3 of 6    |
+| Monad       | [`link`](https://app.safe.global/home?safe=monad:0x47FF5bBAB981Ff022743AA4281D4d6Dd7Fb1a4D0)                           | 3 of 6    |
+| Optimism    | [`link`](https://app.safe.global/home?safe=oeth:0x419e672d625f998dd07a7ecf2E06B896F8717cb2)                            | 3 of 6    |
+| Plume       | [`link`](https://safe.onchainden.com/home?safe=plume:0x77dDd3EC570EEAf2c513de3c833c5E82A721978B)                       | 3 of 6    |
+| Polygon     | [`link`](https://app.safe.global/home?safe=matic:0xDbf59edA454679bB157b3B048Ba54C4D762b559E)                           | 3 of 6    |
+| Robinhood   | [`link`](https://app.safe.global/home?safe=robinhood:0xFA1224aDd725eb2708BA4d15F627F4027dAfcEde)                       | 3 of 6    |
+| Sei         | [`link`](https://sei-safe.protofire.io/home?safe=sei:0x0357D02fc95320b990322d3ff69204c3D251171b)                       | 3 of 6    |
+| Solana      | [`link`](https://app.squads.so/squads/FSRTW4KPGifKL8yKcZ8mfoR9mKtAjwZiTHbHwgix8AQo/home)                               | —         |
+| Somnia      | [`link`](https://safe.somnia.network/home?safe=somnia:0x9527e19F55d1afCE9F1e9Edcea79552bF41983F9)                      | 3 of 6    |
+| Sonic       | [`link`](https://app.safe.global/home?safe=sonic:0x87c7A1ef67c67cd57CBF101522a0c3B19D2C3aAc)                           | 3 of 6    |
+| Stable      | [`link`](https://app.safe.global/home?safe=stable:0x0C46f54BF9EF8fd58e2D294b8cEA488204EcB3D8)                          | 3 of 6    |
+| Tempo       | [`link`](https://app.safe.global/home?safe=tempo:0x1Ba19a54a01AE967f5E3895764Caaa6919FD2bEe)                           | 3 of 6    |
+| Unichain    | [`link`](https://app.safe.global/home?safe=unichain:0x6f8FDdfD4F6a1456BA5632C919bEF74b64DD032D)                        | 3 of 6    |
+| Worldchain  | [`link`](https://app.safe.global/home?safe=wc:0xf57d47c3EA11c12253dBc0BeAf097d5c206e8773)                              | 3 of 6    |
+| X-Layer     | [`link`](https://app.safe.global/home?safe=xlayer:0xe7Cc52f0C86f4FAB6630f1E26167B487fbF66a61)                          | 3 of 6    |
+| zkSync      | [`link`](https://app.safe.global/home?safe=zksync:0x66716ae60898dD4479B52aC4d92ef16C1821f420)                          | 3 of 6    |
+
+## HopV2 Contracts
+
+All cross-chain routes relay through the Fraxtal hub. Fraxtal runs `FraxtalHopV2`, and each other chain runs a `RemoteHopV2` and a `RemoteAdmin` contract (for Fraxtal-initiated admin operations). Every Hop runs version `2.0.1`, and Tempo runs the `RemoteHopV201Tempo` variant (see [Tempo](./tempo)). Before routing to a chain, check that it is registered on the Fraxtal Hop with `remoteHop(dstEid)`.
+
+| Chain       | `Hop`                                                                                                                                       | `RemoteAdmin`                                                                                                                               |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| Fraxtal     | [`0x00000000e18aFc20Afe54d4B2C8688bB60c06B36`](https://fraxscan.com/address/0x00000000e18aFc20Afe54d4B2C8688bB60c06B36)                     | [`0x34029e02821178B4387e12644896994f910D6E73`](https://fraxscan.com/address/0x34029e02821178B4387e12644896994f910D6E73)                     |
+| Abstract    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://abscan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                       | [`0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb`](https://abscan.org/address/0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb)                       |
+| Arbitrum    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://arbiscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                      | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://arbiscan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                      |
+| Avalanche   | [`0x0000006D38568b00B457580b734e0076C62de659`](https://routescan.io/address/0x0000006D38568b00B457580b734e0076C62de659/contract/43114/code) | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://routescan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9/contract/43114/code) |
+| Base        | [`0x0000006D38568b00B457580b734e0076C62de659`](https://basescan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                     | [`0x07dB789aD17573e5169eDEfe14df91CC305715AA`](https://basescan.org/address/0x07dB789aD17573e5169eDEfe14df91CC305715AA)                     |
+| BSC         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://bscscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                      | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://bscscan.com/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                      |
+| Ethereum    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://etherscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                     | [`0x181EBC9deA868ED8e5EeeAef7f767D43BF390dFa`](https://etherscan.io/address/0x181EBC9deA868ED8e5EeeAef7f767D43BF390dFa)                     |
+| Hyperliquid | [`0x0000006D38568b00B457580b734e0076C62de659`](https://hyperevmscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                  | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://hyperevmscan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                  |
+| Ink         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://routescan.io/address/0x0000006D38568b00B457580b734e0076C62de659/contract/57073/code) | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://routescan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9/contract/57073/code) |
+| Katana      | [`0x0000006D38568b00B457580b734e0076C62de659`](https://katanascan.com/address/0x0000006d38568b00b457580b734e0076c62de659)                   | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://katanascan.com/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                   |
+| Linea       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://lineascan.build/address/0x0000006D38568b00B457580b734e0076C62de659)                  | [`0xfa803b63DaACCa6CD953061BDBa4E3da6b177447`](https://lineascan.build/address/0xfa803b63DaACCa6CD953061BDBa4E3da6b177447)                  |
+| Monad       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://monadscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                    | [`0x4bE0942c2CbFd741DB5906CF2831c1AF29fcEa55`](https://monadscan.com/address/0x4bE0942c2CbFd741DB5906CF2831c1AF29fcEa55)                    |
+| Optimism    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://optimistic.etherscan.io/address/0x0000006d38568b00b457580b734e0076c62de659)          | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://optimistic.etherscan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)          |
+| Plume       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explorer.plume.org/address/0x0000006D38568b00B457580b734e0076C62de659)               | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://explorer.plume.org/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)               |
+| Polygon     | [`0x0000006D38568b00B457580b734e0076C62de659`](https://polygonscan.com/address/0x0000006D38568b00B457580b734e0076C62de659)                  | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://polygonscan.com/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                  |
+| Robinhood   | [`0x0000006D38568b00B457580b734e0076C62de659`](https://robinhoodchain.blockscout.com/address/0x0000006D38568b00B457580b734e0076C62de659)    | [`0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F`](https://robinhoodchain.blockscout.com/address/0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F)    |
+| Sei         | [`0x0000006D38568b00B457580b734e0076C62de659`](https://seitrace.com/address/0x0000006d38568b00b457580b734e0076c62de659)                     | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://seitrace.com/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                     |
+| Somnia      | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explorer.somnia.network/address/0x0000006D38568b00B457580b734e0076C62de659)          | [`0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F`](https://explorer.somnia.network/address/0xbfCb6F2f811a0DA4D54386458bF888B769EbFc5F)          |
+| Sonic       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://sonicscan.org/address/0x0000006d38568b00b457580b734e0076c62de659)                    | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://sonicscan.org/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                    |
+| Stable      | [`0x0000006D38568b00B457580b734e0076C62de659`](https://stablescan.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)                   | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://stablescan.xyz/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                   |
+| Tempo       | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explore.tempo.xyz/address/0x0000006D38568b00B457580b734e0076C62de659)                | [`0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f`](https://explore.tempo.xyz/address/0x05b4a311Aac6658C0FA1e0247Be898aae8a8581f)                |
+| Unichain    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://uniscan.xyz/address/0x0000006d38568b00b457580b734e0076c62de659)                      | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://uniscan.xyz/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                      |
+| Worldchain  | [`0x0000006D38568b00B457580b734e0076C62de659`](https://worldscan.org/address/0x0000006d38568b00b457580b734e0076c62de659)                    | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://worldscan.org/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                    |
+| X-Layer     | [`0x0000006D38568b00B457580b734e0076C62de659`](https://oklink.com/x-layer/address/0x0000006d38568b00b457580b734e0076c62de659)               | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://oklink.com/x-layer/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)               |
+| zkSync      | [`0x0000006D38568b00B457580b734e0076C62de659`](https://explorer.zksync.io/address/0x0000006D38568b00B457580b734e0076C62de659)               | [`0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb`](https://explorer.zksync.io/address/0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb)               |
+
+### Legacy Hops
+
+The first-generation hop contracts are paused and should not be used:
+
+- `RemoteHop` and `FraxtalHop` from [fraxtal-lz-hop](https://github.com/FraxFinance/fraxtal-lz-hop), including the Fraxtal hub [`0x2A2019b30C157dB6c1C01306b8025167dBe1803B`](https://fraxscan.com/address/0x2A2019b30C157dB6c1C01306b8025167dBe1803B)
+- The first HopV2 deployment, including the Fraxtal hub [`0xe8Cd13de17CeC6FCd9dD5E0a1465Da240f951536`](https://fraxscan.com/address/0xe8Cd13de17CeC6FCd9dD5E0a1465Da240f951536)
+
+The `MintRedeemHop` contracts from fraxtal-lz-hop remain live for cross-chain frxUSD and sfrxUSD conversions. Their addresses are listed under [Stake & Unstake Supported Networks](/frxusd/stake-and-unstake-supported-networks).
