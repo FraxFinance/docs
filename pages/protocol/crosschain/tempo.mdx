@@ -98,6 +98,17 @@ An FPI OFT also exists at `0x00000000bC4aEF4bA6363a437455Cb1af19e2aEb`, but it i
 - `Tempo -> any other mesh chain` relays through Fraxtal with HopV2 (`RemoteHopV201Tempo` on Tempo, `FraxtalHopV2` at `0x00000000e18aFc20Afe54d4B2C8688bB60c06B36` on Fraxtal).
 - Cross-chain stake/unstake and mint/redeem hops are **not available** on Tempo. Those hops pay fees in native `msg.value`, which `EndpointV2Alt` does not support.
 
+## LayerZero Configuration
+
+The Tempo ↔ Fraxtal pathway uses the same five required DVNs as the rest of the mesh (LayerZero Labs, Horizen, Nethermind, Canary, Frax). Two settings are specific to Tempo (see [Configuration](./configuration) for the full mesh settings):
+
+| Setting | Tempo | Most other chains |
+| :------ | :---- | :---------------- |
+| Confirmations, Tempo → Fraxtal | 20 Tempo blocks | Chain-specific |
+| Enforced gas, Fraxtal → Tempo (`SEND` / `SEND_AND_CALL`) | 2,000,000 / 2,500,000 | 200,000 / 250,000 |
+
+Deliveries on Tempo use more gas than on other EVM chains, so Frax enforces a higher minimum for them. Messages from Tempo to Fraxtal carry the standard 200,000 / 250,000 gas.
+
 ## Key Features
 
 ### Stablecoin-Denominated Gas
