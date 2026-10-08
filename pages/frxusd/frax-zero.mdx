@@ -19,14 +19,13 @@ FraxZero operates on a hub-and-spoke architecture where **Fraxtal**, Frax's nati
 
 ### Multi-Chain Asset Support
 
-FraxZero supports 6 Frax assets across 20+ blockchain networks, including:
+FraxZero supports 5 Frax assets across 20+ blockchain networks:
 
 - **frxUSD** - Frax's stablecoin
 - **sfrxUSD** - Frax's yield-bearing stablecoin
 - **WFRAX** - Frax's wrapped governance token
 - **frxETH** - Frax's liquid staking derivative
 - **sfrxETH** - Frax's staked liquid staking derivative
-- **FPI** - Frax's price index stablecoin
 
 ## Key Features
 
@@ -40,11 +39,11 @@ FraxZero implements a dual lockbox mechanism that:
 
 ### Flexible Security Model
 
-The platform features a **3 of 3 Data Validation Network (DVN) requirement** that includes:
+Every transfer must be verified by **five required Decentralized Verification Networks (DVNs)**: LayerZero Labs, Horizen, Nethermind, Canary, and Frax. Somnia transfers use four, because Canary does not operate on Somnia.
 
-- **Frax Team-Run DVN**: Direct oversight from Frax's security team
-- **Multi-Party Validation**: Distributed security across multiple validation networks
-- **Configurable Requirements**: Adaptable security parameters based on asset type and transfer size
+- **Frax Team-Run DVN**: Direct oversight from Frax's security team, as one of the required DVNs
+- **Multi-Party Validation**: Every required DVN must verify a transfer, so no single network can approve one on its own
+- **Explicit Configuration**: DVNs, block confirmations, and destination gas are set explicitly on every pathway, see [Crosschain Configuration](/protocol/crosschain/configuration)
 
 ### Cross-Chain Asset Swapping
 
