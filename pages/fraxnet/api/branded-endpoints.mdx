@@ -9,6 +9,8 @@ These endpoints handle Stablecoins as a Service (SaaS) operations: minting SaaS 
 
 > Branded stablecoin endpoints (`/branded/*`) only support EVM chains. Solana EIDs are not accepted.
 
+The `process*` endpoints behave the same way as their [standard frxUSD counterparts](/fraxnet/api/frxusd-endpoints): execution is handed to the orchestrator, responses include an `executionId`, calls are idempotent, and the [`pending`](/fraxnet/api/frxusd-endpoints#pending-response) and [`alreadyProcessed`](/fraxnet/api/frxusd-endpoints#already-processed-response) response shapes apply. Set your HTTP client timeout to at least 90 seconds.
+
 ---
 
 ## `GET /branded/fetchAddress`
@@ -62,9 +64,13 @@ Process a USDC deposit for a branded token. Mints frxUSD, mints the branded toke
   "processDepositTx": "0x...",
   "depositAddress": "0x...",
   "asset": "0x...",
-  "usdcAmount": "1000000"
+  "usdcAmount": "1000000",
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+  "orchestrator": "fn-orc"
 }
 ```
+
+The cross-chain delivery leg continues after the response returns — track it with [`GET /status?id=<executionId>`](/fraxnet/api/status).
 
 ---
 
@@ -86,19 +92,22 @@ Redeem a branded stablecoin back to frxUSD, then to USDC, and relay the USDC to 
 ```json
 {
   "ok": true,
-  "createFraxNetDepositTx": "0x...",
-  "contractAlreadyDeployed": false,
+  "createFraxNetDepositTx": "skipped - contract already deployed",
+  "contractAlreadyDeployed": true,
   "processRedemptionTx": "0x...",
   "depositAddress": "0x...",
   "asset": "0x...",
   "brandedTokenAmount": "1000000",
   "cctpRelay": {
-    "status": "pending_attestation",
-    "jobId": "0x...",
-    "destDomain": 13
-  }
+    "status": "delegated_to_orchestrator",
+    "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf"
+  },
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+  "orchestrator": "fn-orc"
 }
 ```
+
+The `cctpRelay` object follows the same semantics as [`/processRedemption`](/fraxnet/api/frxusd-endpoints#the-cctprelay-object): `delegated_to_orchestrator` means the USDC delivery is tracked through the `executionId`; `not_applicable` means the payout destination is Ethereum and no relay is needed. **The `processRedemptionTx` hash is no longer usable as a relay `jobId`** — use the `executionId`.
 
 ---
 
@@ -107,8 +116,9 @@ Redeem a branded stablecoin back to frxUSD, then to USDC, and relay the USDC to 
 1. Call `/branded/fetchAddress` to get the deposit address
 2. Send USDC to the deposit address on Ethereum via CCTP `depositForBurn` from the source chain
 3. Call `/scheduleCCTPRelay` to relay the CCTP message to Ethereum
-4. Poll `/jobStatus` until `complete`
+4. Poll `GET /status?id=<jobId>` until the relay job is `complete`
 5. Call `/branded/processDeposit` to mint frxUSD, mint the branded token, and send it cross-chain
+6. Poll `GET /status?id=<executionId>` until `execution.status` is `completed`
 
 ## Branded Redemption Flow (Branded Token → USDC)
 
@@ -116,4 +126,4 @@ Redeem a branded stablecoin back to frxUSD, then to USDC, and relay the USDC to 
 2. Approve and bridge branded tokens from the source chain to the deposit address on Ethereum via the `CrossChainRouter`
 3. Wait for LayerZero settlement (~1-5 minutes)
 4. Call `/branded/processRedemption` to redeem the branded token to frxUSD to USDC, and relay USDC via CCTP
-5. Poll `/jobStatus` until USDC arrives (~20+ minutes)
+5. Poll `GET /status?id=<executionId>` until `execution.status` is `completed` (~20+ minutes for USDC to arrive)

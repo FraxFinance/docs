@@ -1,0 +1,130 @@
+---
+title: Tracking & Status
+lang: en-US
+---
+
+# Tracking & Status
+
+The API hands out two kinds of tracking identifiers:
+
+| Identifier | Format | Issued by | Durability |
+| --- | --- | --- | --- |
+| `executionId` | UUID (e.g. `badfe4dc-1eb0-...`) | All `process*` endpoints | Durable — persisted by the orchestrator |
+| `jobId` | 66-character `0x` hash | `/scheduleCCTPRelay` (and legacy redemption responses) | Ephemeral — held in memory and lost if the service restarts |
+
+**Prefer the `executionId` wherever you have one.** It tracks the full operation — contract deployment, mint or redemption, confirmation, and the cross-chain delivery leg — and survives service restarts.
+
+---
+
+## `GET /status`
+
+Unified status lookup — the recommended endpoint for all tracking. Accepts either identifier type and dispatches automatically, so callers never need to know which subsystem produced an ID.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes | A relay `jobId` (`0x` + 64 hex chars) **or** an `executionId` (UUID) |
+
+### Response
+
+The top-level key tells you which subsystem answered. For a relay `jobId`:
+
+```json
+{
+  "ok": true,
+  "job": {
+    "job_id": "0x...",
+    "dest_domain": 13,
+    "status": "complete",
+    "relay_tx": "0x...",
+    "error": null,
+    "created_at": 1709500000
+  }
+}
+```
+
+For an `executionId`:
+
+```json
+{
+  "ok": true,
+  "orchestrator": "fn-orc",
+  "execution": {
+    "execution_id": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+    "status": "sleeping",
+    "flow": "REDEEM_RECEIVE_EVM",
+    "current_step": "wait_cctp_attestation",
+    "steps": { "completed": 4, "total": 6 },
+    "tx_hashes": {
+      "fraxnet_redemption_tx_hash": "0x...",
+      "cctp_receive_dest_tx_hash": "0x..."
+    },
+    "timeline": [
+      {
+        "sequence": 0,
+        "name": "wait_lz_inbound_delivery",
+        "status": "completed",
+        "tx_hash": "0x...",
+        "external_status": "DELIVERED"
+      }
+    ],
+    "attempts": 1,
+    "last_error": null,
+    "extended_wait": false,
+    "sleep_until": "2026-07-28T12:34:56+00:00"
+  }
+}
+```
+
+### Errors
+
+```json
+{ "ok": false, "error": "No relay job found for id '0x...'" }
+{ "ok": false, "error": "No execution found for executionId 'abc'" }
+```
+
+---
+
+## `GET /executionStatus`
+
+Orchestrator execution status by `executionId`. Equivalent to the execution branch of `/status`; kept as a dedicated endpoint for explicit lookups.
+
+### Parameters
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `executionId` | `uuid` | Yes | The `executionId` from a `process*` response |
+
+### Response
+
+Same `{ "ok": true, "orchestrator": "fn-orc", "execution": { ... } }` shape as `/status` above.
+
+---
+
+## Execution Status Lifecycle
+
+| Status | Terminal | Meaning |
+| --- | --- | --- |
+| `pending` | No | Queued, waiting for the executor to pick it up |
+| `running` | No | A step is executing right now |
+| `sleeping` | No | Waiting durably — for example, polling a CCTP attestation or a LayerZero delivery |
+| `completed` | Yes | All legs done, including the cross-chain delivery |
+| `failed` | Yes | Unrecoverable failure — contact support with the `executionId` |
+| `needs_review` | Yes | Parked for operator review — contact support with the `executionId` |
+
+Recommended polling cadence: every 10-15 seconds. On-chain legs typically confirm within a couple of minutes; cross-chain delivery legs (CCTP attestation, LayerZero) commonly take 15-35 minutes.
+
+## Execution Response Fields
+
+| Field | Description |
+| --- | --- |
+| `status` | Lifecycle status (table above) |
+| `flow` | Flow identifier, e.g. `REDEEM_RECEIVE_EVM` — which sequence of steps this execution runs |
+| `current_step` | The step currently executing or waiting |
+| `steps` | `{ completed, total }` progress counters (skipped legs are excluded) |
+| `tx_hashes` | Per-leg transaction hashes as they land: `deposit_deploy_tx_hash`, `fraxnet_mint_tx_hash`, `fraxnet_redemption_tx_hash`, `cctp_receive_tx_hash`, `cctp_receive_dest_tx_hash`, `lz_delivery_tx_hash` |
+| `timeline` | Ordered per-step entries (`name`, `status`, `tx_hash`, ...) — the authoritative progress record |
+| `last_error` | Most recent error message, if any |
+| `extended_wait` | `true` when a cross-chain wait has exceeded its normal budget and is being watched on a slower cadence — still in flight and self-healing, no action needed |
+| `sleep_until` | When the current durable wait next wakes |

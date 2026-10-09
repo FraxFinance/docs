@@ -5,7 +5,11 @@ lang: en-US
 
 # CCTP Relay
 
-The Orchestration API includes a built-in CCTP relay service that handles Circle attestation polling and message relay on destination chains. Relay jobs are automatically created by `/processRedemption` and `/branded/processRedemption`, or can be manually scheduled.
+The Orchestration API includes a built-in CCTP relay service that handles Circle attestation polling and message relay on destination chains. Use it to relay a `depositForBurn` transaction you submitted yourself — for example, moving USDC to Ethereum before calling a `process*` endpoint.
+
+> Cross-chain redemptions processed through the orchestrator do **not** create relay jobs — their USDC delivery is tracked through the `executionId` returned by `/processRedemption` and `/branded/processRedemption`. The endpoints on this page apply to manually scheduled relays.
+
+Relay `jobId`s are held in memory and do not survive a service restart. For anything with an `executionId`, prefer [`GET /status`](/fraxnet/api/status).
 
 ---
 
@@ -28,21 +32,35 @@ Manually schedule a CCTP relay for an existing `depositForBurn` transaction.
   "jobId": "0x...",
   "sourceDomain": 13,
   "destDomain": 0,
-  "status": "pending_attestation"
+  "status": "waiting_for_finality"
 }
 ```
+
+The `jobId` equals the `txHash`. If a job already exists for that transaction, the response instead includes `"alreadyScheduled": true` with the existing job's status:
+
+```json
+{
+  "ok": true,
+  "alreadyScheduled": true,
+  "jobId": "0x...",
+  "destDomain": 0,
+  "status": "PendingAttestation"
+}
+```
+
+(Note the `status` casing differs in the already-scheduled variant.)
 
 ---
 
 ## `GET /jobStatus`
 
-Check the status of a CCTP relay job.
+Check the status of a CCTP relay job. `GET /status?id=<jobId>` returns the same `job` object.
 
 ### Parameters
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `jobId` | `string` | Yes | Job ID returned by other endpoints |
+| `jobId` | `string` | Yes | Job ID returned by `/scheduleCCTPRelay` |
 
 ### Response
 
@@ -51,6 +69,7 @@ Check the status of a CCTP relay job.
   "ok": true,
   "job": {
     "job_id": "0x...",
+    "message_hex": "000000010000000d...",
     "dest_domain": 13,
     "status": "complete",
     "relay_tx": "0x...",
@@ -59,6 +78,8 @@ Check the status of a CCTP relay job.
   }
 }
 ```
+
+`message_hex` is the raw CCTP message parsed from the burn transaction's `MessageSent` event (informational, no `0x` prefix).
 
 ---
 
@@ -74,7 +95,8 @@ Summary of all CCTP relay jobs and their statuses. No parameters required.
   "total_jobs": 42,
   "total_active": 5,
   "counts": {
-    "pending_attestation": 3,
+    "waiting_for_finality": 1,
+    "pending_attestation": 2,
     "relaying": 2,
     "complete": 30,
     "already_relayed": 5,
@@ -87,9 +109,19 @@ Summary of all CCTP relay jobs and their statuses. No parameters required.
       "dest_domain": 0,
       "created_at": 1709729600
     }
+  ],
+  "failed_jobs": [
+    {
+      "job_id": "0x...",
+      "error": "receiveMessage submission failed: ...",
+      "dest_domain": 13,
+      "created_at": 1709729000
+    }
   ]
 }
 ```
+
+`total_active` counts jobs in `waiting_for_finality`, `pending_attestation`, and `relaying`.
 
 ---
 
@@ -97,10 +129,11 @@ Summary of all CCTP relay jobs and their statuses. No parameters required.
 
 | Status | Description |
 | --- | --- |
+| `waiting_for_finality` | Transient initial state at job creation |
 | `pending_attestation` | Polling Circle's attestation API for signature |
 | `relaying` | Submitting `receiveMessage()` on the destination chain |
 | `complete` | USDC delivered on destination |
 | `already_relayed` | Message was relayed by another party |
 | `failed` | Unrecoverable error |
 
-The relay worker polls Circle's attestation API every 15 seconds for up to ~25 minutes. Circle's attestation API handles finality internally, returning `pending_confirmations` until sufficient block finality is reached, then `complete` with the attestation signature.
+The relay worker polls Circle's attestation API every 15 seconds for up to ~35 minutes. Circle's attestation API handles finality internally, returning `pending_confirmations` until sufficient block finality is reached, then `complete` with the attestation signature. If attestation times out but the message was already relayed by another party, the job resolves to `already_relayed` rather than `failed`.
