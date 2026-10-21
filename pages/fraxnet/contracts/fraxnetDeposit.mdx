@@ -7,94 +7,115 @@ lang: en-US
 
 ## Overview
 
-`FraxNetDeposit` is a cross-chain deposit and redemption contract used in the FraxNet ecosystem. It enables the minting of `frxUSD` from `USDC`, and its transfer to another chain using LayerZero’s OFT mechanism. It also supports redemption of `frxUSD` to `USDC` using either a custodian or RWA-based redemption path.
+`FraxNetDeposit` is a cross-chain deposit and redemption contract used in the FraxNet ecosystem. It enables the minting of `frxUSD` from `USDC`, and its transfer to another chain using LayerZero’s OFT mechanism. It also supports redemption of `frxUSD` to `USDC` through the USDC custodian and the RWA redeemer, and sends the `USDC` to the target chain.
 
-This contract serves as the implementation for [EIP-1967](https://eips.ethereum.org/EIPS/eip-1967) Beacon Proxies deployed from the `FraxNetDeposit` Factory contract
+A branded deposit contract does the same for a [branded stablecoin](/fraxnet/branded-stablecoins): it mints the branded token instead of `frxUSD`, and redeems the branded token to `USDC`.
+
+This contract serves as the implementation for [EIP-1967](https://eips.ethereum.org/EIPS/eip-1967) Beacon Proxies deployed from the `FraxNetDeposit` Factory contract. The current implementation is `FraxNetDepositV4`, version `4.0.0`.
 
 ## Key Features
 
 - Deposits USDC to mint frxUSD
 - Sends frxUSD cross-chain via LayerZero
-- Redeems frxUSD back to USDC conditionally
-- Integrates with Circle’s CCTP
+- Redeems frxUSD back to USDC and sends it to the target chain
+- Integrates with Circle’s CCTP V2
+- Supports branded stablecoins
+- Anyone can process deposits and redemptions, and the factory can pause both
 
 ## Initialization
 
 ```solidity
 constructor(address _factory)
-function initialize(uint32 _targetEid, bytes32 _targetAddress)
+function initialize(uint32 _targetEid, bytes32 _targetAddress, bytes32 _targetUsdcAtaAddress) external
+function initialize(address _targetAsset, uint32 _targetEid, bytes32 _targetAddress, bytes32 _targetUsdcAtaAddress) public
 ```
 
-- Called once by the factory upon deployment.
-- Sets target LayerZero endpoint and target recipient address.
+- Called once by the factory upon deployment. Other callers get `Forbidden`, and a second call reverts with `AlreadyInitialized`.
+- Sets the target LayerZero endpoint ID, the target recipient address and, for Solana (`30168`), the recipient's USDC associated token account. It reverts with `AtaAccountNotInitialized` if the target is Solana and `_targetUsdcAtaAddress` is zero.
+- The factory uses the 3-argument form for frxUSD deposit contracts and the 4-argument form for branded ones. The 4-argument form stores `_targetAsset` and reads its `custodian` and `router` from the factory's `brandFactory`. It reverts with `NoAllowedForSiloed` if the asset uses a siloed custodian.
+- The constructor sets the immutable `factory` and marks the implementation itself as initialized.
 
 ## Constants
 
-| Name     | Type      | Description                      |
-| -------- | --------- | -------------------------------- |
-| `frxUSD` | `IERC20`  | frxUSD token address (immutable) |
-| `USDC`   | `IERC20`  | USDC token address (immutable)   |
-| `oft`    | `address` | LayerZero OFT address for frxUSD |
+| Name                  | Type      | Description                                    |
+| --------------------- | --------- | ---------------------------------------------- |
+| `frxUSD`              | `IERC20`  | frxUSD token address                           |
+| `USDC`                | `IERC20`  | USDC token address                             |
+| `oft`                 | `address` | LayerZero OFT address for frxUSD               |
+| `STARGATE_USDCE_POOL` | `address` | Stargate USDC pool used for Somnia redemptions |
 
 ## State Variables
 
-| Name             | Type                    | Description                                           |
-| ---------------- | ----------------------- | ----------------------------------------------------- |
-| `wasInitialized` | `bool`                  | Whether this contract has been initialized            |
-| `factory`        | `FraxNetDepositFactory` | The factory contract that deployed this instance      |
-| `targetEid`      | `uint32`                | Destination LayerZero endpoint ID                     |
-| `targetAddress`  | `bytes32`               | Target address in bytes32 format on destination chain |
+| Name                   | Type                     | Description                                                                       |
+| ---------------------- | ------------------------ | --------------------------------------------------------------------------------- |
+| `wasInitialized`       | `bool`                   | Whether this contract has been initialized                                        |
+| `factory`              | `IFraxNetDepositFactory` | The factory contract that deployed this instance (immutable)                      |
+| `targetEid`            | `uint32`                 | Destination LayerZero endpoint ID                                                 |
+| `targetAddress`        | `bytes32`                | Target address in bytes32 format on destination chain                             |
+| `targetUsdcAtaAddress` | `bytes32`                | Recipient's USDC associated token account if the target is Solana, otherwise zero |
+| `router`               | `address`                | Branded token's `CrossChainRouter`, zero for frxUSD deposit contracts             |
+| `custodian`            | `address`                | Branded token's `BrandedCustodian`, zero for frxUSD deposit contracts             |
 
 ## Events
 
-| Name                  | Description                                           |
-| --------------------- | ----------------------------------------------------- |
-| `ProcessedDepoist`    | Emitted after successful USDC deposit and frxUSD send |
-| `ProcessedRedemption` | Emitted after successful frxUSD redemption to USDC    |
+| Name                  | Description                                                              |
+| --------------------- | ------------------------------------------------------------------------ |
+| `ProcessedDeposit`    | Emitted after successful USDC deposit and frxUSD (or branded token) send |
+| `ProcessedRedemption` | Emitted after successful frxUSD (or branded token) redemption to USDC    |
 
 ## Custom Errors
 
-| Error                             | Description                                 |
-| --------------------------------- | ------------------------------------------- |
-| `Forbidden()`                     | Caller is not authorized                    |
-| `InsufficientBalance()`           | Not enough tokens to complete the operation |
-| `TransferFailed()`                | Native token transfer failed                |
-| `CCTPNotConfiguredForThisChain()` | No CCTP domain configured for target chain  |
-| `AlreadyInitialized()`            | Initialization was already performed        |
+| Error                             | Description                                                                                     |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `Forbidden()`                     | Caller is not authorized                                                                        |
+| `InsufficientBalance()`           | Not enough tokens to complete the operation                                                     |
+| `RefundFailed()`                  | Refunding ETH to the caller failed                                                              |
+| `CCTPNotConfiguredForThisChain()` | No CCTP V2 messenger or CCTP domain configured for target chain                                 |
+| `AlreadyInitialized()`            | Initialization was already performed                                                            |
+| `AtaAccountNotInitialized()`      | Target is Solana and the USDC token account is zero                                             |
+| `SizeTooLarge()`                  | Deposit above 1,000,000 USDC, or redemption above what the custodian and RWA redeemer can cover |
+| `Paused()`                        | The factory has paused processing                                                               |
+| `NoAllowedForSiloed()`            | Branded token uses a siloed custodian                                                           |
 
 ## Functions
 
 ### Deposit Flow
 
 ```solidity
-function processDeposit(uint256 amount) external payable
+function processDeposit(uint256 amount) external payable returns (uint256 frxUSDOut)
 ```
 
-- User must have previously sent USDC, or other stablecoin, to their `FraxNetDeposit` contract.
-- Caller must be an operator.
-- Transfers USDC from sender, mints `frxUSD` using custodian.
+- User must have previously sent USDC to their `FraxNetDeposit` contract. The contract does not pull USDC from the caller.
+- Anyone can call it. It reverts with `Paused` while the factory is paused, with `SizeTooLarge` if `amount` is above 1,000,000 USDC, and with `InsufficientBalance` if the contract holds less than `amount` USDC.
+- Deposits the USDC into the factory's `frxUSDCustodian` to mint `frxUSD`.
 - Sends frxUSD to `targetAddress` via:
 
   - Direct transfer (if Ethereum)
-  - LayerZero OFT (if other chains)
+  - LayerZero OFT through the factory's `remoteHop` (if other chains), with `msg.value` paying the fee from `quote`
+
+- Branded deposit contracts mint the branded token instead, through its `BrandedCustodian` to `targetAddress` (if Ethereum) or through its `CrossChainRouter`, which bridges the frxUSD and mints on the target chain (if other chains).
+- Refunds the contract's entire ETH balance to the caller.
 
 ### Redemption Flow
 
 ```solidity
-function processRedemption(uint256 amount) external
+function processRedemption(uint256 amount) external payable returns (uint256 usdcOut)
 ```
 
-- User must have previously sent frxUSD to their `FraxNetDeposit` contract.
-- Caller must be an operator.
+- User must have previously sent frxUSD, or the branded token, to their `FraxNetDeposit` contract.
+- Anyone can call it. It reverts with `Paused` while the factory is paused, and with `InsufficientBalance` if the contract holds less than `amount` frxUSD.
+- Branded deposit contracts first redeem `amount` of the branded token for frxUSD through its `BrandedCustodian`.
 - Redeems `frxUSD` for `USDC` using:
 
-  - USDC custodian (if amount < `rwaRedemptionThreshold` and sufficient liquidity exists)
-  - RWA redeemer otherwise
+  - The factory's `frxUSDCustodian`, up to the amount it can currently redeem
+  - The factory's `rwaRedeemer` ([RWA Redemption Coordinator](/fraxnet/contracts/rwaRedemptionCoordinator)) for the remainder
+  - It reverts with `SizeTooLarge` if the two together cannot cover `amount`
 
 - Sends USDC to target:
 
-  - Direct transfer (if Ethereum)
-  - Circle CCTP (if other chains)
+  - Direct transfer to `targetAddress` (if Ethereum)
+  - Stargate's USDC pool, `STARGATE_USDCE_POOL` (if Somnia, `30380`). `msg.value` pays the LayerZero fee, which the pool's `quoteSend` returns, and the pool refunds any excess to the caller.
+  - Circle CCTP V2 (if other chains): `depositForBurn` through the factory's `cctpTokenMessengerV2`, to the CCTP domain in `eidToCCTPDomain`. It is a standard transfer (`maxFee` 0, `minFinalityThreshold` 2000) with no `destinationCaller`, so anyone can complete the mint on the target chain. The mint recipient is `targetAddress`, or `targetUsdcAtaAddress` if the target is Solana (`30168`). It reverts with `CCTPNotConfiguredForThisChain` if the messenger or the domain is not set, or with `AtaAccountNotInitialized` if the recipient is zero, and refunds the contract's entire ETH balance to the caller.
 
 ### Quoting
 
@@ -102,35 +123,45 @@ function processRedemption(uint256 amount) external
 function quote(uint256 amount) external view returns (IRemoteHop.MessagingFee memory)
 ```
 
-- Uses RemoteHop to return a LayerZero quote for a given USDC amount.
+- Returns the LayerZero fee for `processDeposit(amount)` in `nativeFee`. It previews the frxUSD minted from `amount` USDC and quotes the factory's `remoteHop` or, for branded deposit contracts, the branded `CrossChainRouter`.
+- Deposits to Ethereum need no fee.
 
 ### Admin
 
 ```solidity
 function recoverERC20(address tokenAddress, uint256 tokenAmount, address recipient) external
+function setBrandedRouter(address _router) external
+function setBrandedCustodian(address _custodian) external
 ```
 
-- Allows factory owner to recover ERC20 tokens.
+- `recoverERC20` can only be called by the factory, which lets the factory owner recover ERC20 tokens.
+- `setBrandedRouter` and `setBrandedCustodian` let the factory owner replace the branded `router` and `custodian` set at initialization.
 
 ### Utility Functions
 
 ```solidity
+function asset() external view returns (address)
+function version() external pure returns (uint256 major, uint256 minor, uint256 patch)
 function scaleUpTo1e18(uint256 amount1e6) public pure returns (uint256)
 function scaleDownTo1e6(uint256 amount1e18) public pure returns (uint256)
 ```
 
+- `asset` returns the branded token for branded deposit contracts, and `frxUSD` otherwise.
+- `version` returns `4.0.0`.
 - Helper conversions between `1e6` and `1e18` decimal representations.
 
 ## Dependencies
 
-- [`FraxNetDepositFactory`](./FraxNetDepositFactory.sol)
-- `IRemoteHop`, `IFrxUSDCustodian`, `IRWAUSDCRedeemer`, `ITokenMessenger`
+- [`FraxNetDepositFactory`](/fraxnet/contracts/fraxnetDepositFactory)
+- `IRemoteHop`, `IFrxUSDCustodian`, `IRWAUSDCRedeemer`, `ITokenMessenger`, `IStargatePoolUSDC`
+- `IBrandedFactory`, `IBrandedCustodian`, `IRouter` for branded stablecoins
 
 ## Notes
 
-- Factory is used for access control (e.g. setting operators, recovering tokens)
-- Deposit vs redemption paths are optimized for cost and RWA handling
-- Emits events for every successful cross-chain or redemption operation
+- Factory is used for access control (e.g. pausing, recovering tokens) and holds the shared configuration: custodian, RemoteHop, RWA redeemer, CCTP V2 messenger and CCTP domains
+- Redemptions use the USDC custodian's liquidity first and the RWA redeemer for the rest
+- Emits an event for every processed deposit or redemption
+- Calls that refund ETH send the contract's entire ETH balance to the caller, so only send ETH as `msg.value` on a call that pays a fee
 
 ---
 

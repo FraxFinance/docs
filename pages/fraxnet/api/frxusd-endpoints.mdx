@@ -23,8 +23,8 @@ Retrieve a deterministic deposit address for a beneficiary and target chain.
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `beneficiary` | `address` | Yes | Destination wallet address |
-| `targetEid` | `u32` | Yes | LayerZero Endpoint ID of the target chain |
+| `beneficiary` | `address` | Yes | Destination EVM wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID of the target chain (EVM only) |
 
 ### Response
 
@@ -50,8 +50,8 @@ Process a USDC deposit at the deposit address on Ethereum. Mints frxUSD and send
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `depositAddress` | `address` | Yes | Address returned by `/fetchAddress` |
-| `beneficiary` | `address` | Yes | Destination wallet address |
-| `targetEid` | `u32` | Yes | LayerZero Endpoint ID |
+| `beneficiary` | `address` | Yes | Destination EVM wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID (EVM only) |
 
 ### Response
 
@@ -77,8 +77,8 @@ Redeem frxUSD at the deposit address on Ethereum to USDC, then relay the USDC to
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `depositAddress` | `address` | Yes | Address returned by `/fetchAddress` |
-| `beneficiary` | `address` | Yes | Destination wallet address |
-| `targetEid` | `u32` | Yes | LayerZero Endpoint ID |
+| `beneficiary` | `address` | Yes | Destination EVM wallet address |
+| `targetEid` | `u32` | Yes | LayerZero Endpoint ID (EVM only) |
 
 ### Response
 

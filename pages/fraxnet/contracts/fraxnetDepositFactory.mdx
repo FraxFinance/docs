@@ -25,72 +25,101 @@ The factory must be initialized once by calling the `initialize(...)` function w
 ```solidity
 function initialize(
     IFrxUSDCustodian _frxUSDCustodian,
+    IBrandedFactory _brandFactory,
     IRemoteHop _remoteHop,
     address _cctpTokenMessenger,
     IRWAUSDCRedeemer _rwaUsdcRedeemer
 ) external;
 ```
 
-This sets up dependencies and deploys the implementation contract for cloning.
+This sets up dependencies, deploys an initial `FraxNetDeposit` implementation with the `FraxBeacon` that deposit contracts read it from, and fills `eidToCCTPDomain` with default CCTP domains. It does not set `cctpTokenMessengerV2`, which the owner sets with `setCCTPTokenMessengerV2`. The Ethereum factory proxy is already initialized.
 
 ## Public Variables
 
-| Name                      | Type                        | Description                              |
-| ------------------------- | --------------------------- | ---------------------------------------- |
-| `wasInitialized`          | `bool`                      | Ensures factory is initialized only once |
-| `frxUSDCustodian`         | `IFrxUSDCustodian`          | Contract that mints frxUSD               |
-| `remoteHop`               | `IRemoteHop`                | Cross-chain communication interface      |
-| `fraxNetDepositContracts` | `FraxNetDeposit[]`          | All deployed contracts                   |
-| `isFraxNetDeposit`        | `mapping(address => bool)`  | Verifies FraxNetDeposit contract         |
-| `operators`               | `mapping(address => bool)`  | Authorized operator accounts             |
-| `rwaRedeemer`             | `IRWAUSDCRedeemer`          | RWA-based USDC redemption pathway        |
-| `cctpTokenMessenger`      | `address`                   | Circle CCTP token messenger address      |
-| `eidToCCTPDomain`         | `mapping(uint32 => uint32)` | L0 EID to CCTP domain mapping            |
-| `rwaRedemptionThreshold`  | `uint256`                   | Redemption threshold for using RWA       |
-| `beaconContract`          | `FraxBeacon`                | Beacon for `FraxNetDeposit` proxy logic  |
+| Name                      | Type                        | Description                                                                        |
+| ------------------------- | --------------------------- | ---------------------------------------------------------------------------------- |
+| `wasInitialized`          | `bool`                      | Ensures factory is initialized only once                                           |
+| `frxUSDCustodian`         | `IFrxUSDCustodian`          | Custodian that mints frxUSD from USDC and redeems it back to USDC                  |
+| `remoteHop`               | `IRemoteHop`                | Cross-chain communication interface                                                |
+| `fraxNetDepositContracts` | `IFraxNetDeposit[]`         | All deployed contracts                                                             |
+| `isFraxNetDeposit`        | `mapping(address => bool)`  | Verifies FraxNetDeposit contract                                                   |
+| `operators`               | `mapping(address => bool)`  | Accounts that can pause and unpause deposit processing                             |
+| `rwaRedeemer`             | `IRWAUSDCRedeemer`          | RWA-based USDC redemption pathway for amounts the custodian cannot cover           |
+| `cctpTokenMessenger`      | `address`                   | Circle CCTP V1 token messenger, not used by the current deposit implementation     |
+| `eidToCCTPDomain`         | `mapping(uint32 => uint32)` | L0 EID to CCTP domain mapping                                                      |
+| `rwaRedemptionThreshold`  | `uint256`                   | Redemption threshold for using RWA, not used by the current deposit implementation |
+| `beaconContract`          | `FraxBeacon`                | Beacon for `FraxNetDeposit` proxy logic                                            |
+| `cctpTokenMessengerV2`    | `address`                   | Circle CCTP V2 token messenger that redemptions burn USDC through                  |
+| `isPaused`                | `bool`                      | Pauses `processDeposit` and `processRedemption` on every deposit contract          |
+| `brandFactory`            | `IBrandedFactory`           | `BrandedFactory` that registers branded stablecoins                                |
 
 ## Events
 
-| Name                          | Description                                     |
-| ----------------------------- | ----------------------------------------------- |
-| `FraxNetDepositCreated`       | Emitted when a new deposit contract is deployed |
-| `FrxUSDCustodianSet`          | Emitted on custodian address update             |
-| `RemoteHopSet`                | Emitted on remote hop update                    |
-| `OperatorSet`                 | Emitted on operator permission change           |
-| `RwaRedemptionThresholdSet`   | Emitted on redemption threshold update          |
-| `CCTPTokenMessengerSet`       | Emitted on messenger update                     |
-| `RwaRedeemerSet`              | Emitted on redeemer update                      |
-| `LayerZeroEidToCCTPDomainSet` | Emitted on EID-to-domain mapping change         |
+| Name                          | Description                                           |
+| ----------------------------- | ----------------------------------------------------- |
+| `FraxNetDepositCreated`       | Emitted when a new deposit contract is deployed       |
+| `FrxUSDCustodianSet`          | Emitted on custodian address update                   |
+| `BrandedFactorySet`           | Emitted on branded factory update                     |
+| `RemoteHopSet`                | Emitted on remote hop update                          |
+| `OperatorSet`                 | Emitted on operator permission change                 |
+| `RwaRedemptionThresholdSet`   | Emitted on redemption threshold update                |
+| `CCTPTokenMessengerSet`       | Emitted on CCTP V1 messenger update                   |
+| `RwaRedeemerSet`              | Emitted on redeemer update                            |
+| `LayerZeroEidToCCTPDomainSet` | Emitted on EID-to-domain mapping change               |
+| `CCTPTokenMessengerV2Set`     | Emitted on CCTP V2 messenger update                   |
+| `IsPaused`                    | Emitted when deposit processing is paused or unpaused |
 
 ## Functions
 
 ### Deployment
 
 ```solidity
-function createFraxNetDeposit(uint32 _targetEid, bytes32 _targetAddress) external returns (FraxNetDeposit);
+function createFraxNetDeposit(uint32 _targetEid, bytes32 _targetAddress, bytes32 _targetUsdcAtaAddress) external returns (IFraxNetDeposit);
 ```
 
 Deploys a new `FraxNetDeposit` contract to a specific LayerZero destination.
 
 ```solidity
-function getDeploymentAddress(uint32 _targetEid, bytes32 _targetAddress) external view returns (address);
+function getDeploymentAddress(uint32 _targetEid, bytes32 _targetAddress, bytes32 _targetUsdcAtaAddress) external view returns (address);
 ```
 
 Predicts the deployment address of a future contract.
+
+`_targetUsdcAtaAddress` is the recipient's USDC associated token account when `_targetEid` is Solana (`30168`), and must be zero for every other chain. The call reverts with `AtaAccountNotInitialized` if it is zero for Solana, or `AtaAccountShouldBeNull` if it is set for another chain. The factory does not otherwise check the account, and the value cannot be changed after deployment. Redemptions to Solana pay USDC into it, so derive it from the recipient's wallet and the USDC mint, as shown in [Solana recipients](/frxusd/mint-and-redeem-routes#solana-recipients).
+
+```solidity
+function createBrandedFraxNetDeposit(address _asset, uint32 _targetEid, bytes32 _targetAddress, bytes32 _targetUsdcAtaAddress) external returns (IFraxNetDeposit);
+```
+
+Deploys a `FraxNetDeposit` contract for a [branded stablecoin](/fraxnet/branded-stablecoins): processed deposits deliver `_asset` instead of frxUSD, and redemptions take `_asset`. It reverts with `AssetNotRecognized` if `_asset` is not registered in the [`BrandedFactory`](/fraxnet/branded-stablecoins/brandedFactory), and with `NoAllowedForSiloed` if the asset uses a siloed custodian.
+
+```solidity
+function getBrandedDeploymentAddress(address _asset, uint32 _targetEid, bytes32 _targetAddress) external view returns (address);
+```
+
+Predicts the deployment address of a branded deposit contract. It does not check that `_asset` is registered.
 
 ### Configuration
 
 ```solidity
 function setFrxUSDCustodian(IFrxUSDCustodian _frxUSDCustodian) external onlyOwner;
+function setBrandedFactory(IBrandedFactory _brandFactory) external onlyOwner;
 function setRemoteHop(IRemoteHop _remoteHop) external onlyOwner;
 function setOperator(address operator, bool isOp) external onlyOwner;
 function setRwaRedemptionThreshold(uint256 newThreshold) external onlyOwner;
 function setRwaRedeemer(IRWAUSDCRedeemer newRwaRedeemer) external onlyOwner;
 function setCCTPTokenMessenger(address newTokenMessenger) external onlyOwner;
+function setCCTPTokenMessengerV2(address newTokenMessenger) external onlyOwner;
 function setEidToCCTPDomain(uint32 _eid, uint32 _cctpDomain) external onlyOwner;
 ```
 
-Admin functions to update contract dependencies and behavior.
+Admin functions to update contract dependencies and behavior. Redemptions burn USDC through the messenger set with `setCCTPTokenMessengerV2`. `setCCTPTokenMessenger` sets the CCTP V1 messenger, which the current deposit implementation does not use.
+
+```solidity
+function setPaused(bool state) external;
+```
+
+Pauses (`true`) or unpauses (`false`) `processDeposit` and `processRedemption` on every `FraxNetDeposit` contract. Only addresses enabled with `setOperator` can call it. Other callers get `NotOperator`, including the owner unless it is also set as an operator.
 
 ### Queries
 
@@ -98,9 +127,10 @@ Admin functions to update contract dependencies and behavior.
 function fraxNetDepositContractsLength() external view returns (uint256);
 function getCustodianAndHop() external view returns (IFrxUSDCustodian, IRemoteHop);
 function isOperator(address operator) external view returns (bool);
+function version() external pure returns (uint256 major, uint256 minor, uint256 patch);
 ```
 
-Useful queries for state inspection.
+Useful queries for state inspection. `isOperator` returns `true` for the owner as well as for operators.
 
 ### Emergency Recovery
 
@@ -108,7 +138,7 @@ Useful queries for state inspection.
 function recoverERC20(
     address tokenAddress,
     uint256 tokenAmount,
-    FraxNetDeposit fraxNetDepositContract,
+    IFraxNetDeposit fraxNetDepositContract,
     address recipient
 ) external onlyOwner;
 ```
@@ -117,31 +147,53 @@ Allows the owner to recover tokens stuck in a `FraxNetDeposit` contract.
 
 ## Errors
 
-| Name                   | Description                             |
-| ---------------------- | --------------------------------------- |
-| `Create2Failed()`      | Thrown when CREATE2 deployment fails    |
-| `AlreadyInitialized()` | Thrown on double initialization attempt |
+| Name                          | Description                                                                            |
+| ----------------------------- | -------------------------------------------------------------------------------------- |
+| `Create2Failed()`             | Thrown when CREATE2 deployment fails, such as when the deposit contract already exists |
+| `AlreadyInitialized()`        | Thrown on double initialization attempt                                                |
+| `AtaAccountNotInitialized()`  | Thrown when `_targetEid` is Solana and `_targetUsdcAtaAddress` is zero                 |
+| `AtaAccountShouldBeNull()`    | Thrown when `_targetEid` is not Solana and `_targetUsdcAtaAddress` is not zero         |
+| `NotOperator()`               | Thrown when `setPaused` is called by an address that is not an operator                |
+| `NotSupported()`              | Thrown when a branded deposit targets Solana                                           |
+| `AssetNotRecognized(address)` | Thrown when `_asset` is not a branded stablecoin registered in the `BrandedFactory`    |
 
 ## Deployment Behavior
 
-`FraxNetDeposit` contracts are deployed using the `CREATE2` opcode with the salt:
+`createFraxNetDeposit` deploys each `FraxNetDeposit` contract with the `CREATE2` opcode. The salt depends on `_targetEid`.
+
+For every chain except Solana, `_targetUsdcAtaAddress` must be zero and is not part of the salt:
 
 ```solidity
 keccak256(abi.encode(_targetEid, _targetAddress))
 ```
 
-This ensures deterministic address generation per target chain and address.
+For Solana (`_targetEid == 30168`), the recipient's USDC associated token account is also part of the salt:
+
+```solidity
+keccak256(abi.encode(abi.encode(_targetEid, _targetAddress), _targetUsdcAtaAddress))
+```
+
+Each deposit address is therefore deterministic: one per target chain and recipient, plus the USDC token account for Solana. `getDeploymentAddress` applies the same rules, so use it to get the address instead of computing it yourself.
+
+`createBrandedFraxNetDeposit` uses a separate salt that also covers the branded asset:
+
+```solidity
+keccak256(abi.encode(_asset, _targetEid, _targetAddress))
+```
+
+Branded deposits do not support Solana: `_targetEid` cannot be `30168` (`NotSupported`), and `_targetUsdcAtaAddress` must be zero (`AtaAccountShouldBeNull`). `getBrandedDeploymentAddress` applies the same salt. If the branded deposit contract already exists, `createBrandedFraxNetDeposit` reverts with no error data instead of `Create2Failed`.
 
 ## Dependencies
 
-* [`FraxNetDeposit`](./FraxNetDeposit.sol): Proxy child contract
-* [`FraxBeacon`](./FraxBeacon.sol): Beacon controlling logic
+* [`FraxNetDeposit`](/fraxnet/contracts/fraxnetDeposit): Proxy child contract
+* [`FraxBeacon`](/fraxnet/contracts/fraxBeacon): Beacon controlling logic
+* [`BrandedFactory`](/fraxnet/branded-stablecoins/brandedFactory): Registry of branded stablecoins
 * LayerZero + CCTP + RWA ecosystem interfaces
 
 ## Notes
 
 * The factory is Ownable and uses OpenZeppelin's `Ownable2Step` for ownership transfer
-* Redemptions can be routed via RWA or the standard custodian based on thresholds
+* Redemptions go through the USDC custodian first and the RWA redeemer for any remainder; `rwaRedemptionThreshold` is not used by the current deposit implementation
 * L0 EIDs and CCTP domains must match the same chain
 
 ---

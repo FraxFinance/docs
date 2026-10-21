@@ -69,7 +69,7 @@ Add `"type": "module"` to the `package.json` file:
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node cross-chain-mint.js"
+    "start": "node mint-and-redeem-frxusd.js"
   },
   "keywords": [],
   "author": "",
@@ -116,7 +116,7 @@ const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0xA3D62f83C433e2A56Af392E08a705A52DEd63
 const BASE_MAINNET_EID = 30184; // Base mainnet EID
 
 // Circle's CCTP V2 Information
-const BASE_SOURCE_DOMAIN_ID = 6; // Visit https://developers.circle.com/cctp/cctp-supported-blockchains for the source domain ID
+const ETHEREUM_SOURCE_DOMAIN_ID = 0; // Redeemed USDC is burned on Ethereum mainnet. Visit https://developers.circle.com/cctp/cctp-supported-blockchains for the domain IDs
 const BASE_MESSAGE_TRANSMITTER_ADDRESS = '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64'; // Visit https://developers.circle.com/cctp/evm-smart-contracts#messagetransmitterv2-mainnet for the message transmitter address
 
 // Token Addresses
@@ -134,7 +134,7 @@ const DESTINATION_ADDRESS_BYTES32 = `0x000000000000000000000000${DESTINATION_ADD
 
 ### 2. Set up wallet and public clients
 
-The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be deploying Fraxnet contracts on **Ethereum mainnet** to deposit USDC to mint frxUSD on **Base mainnet** and redeem frxUSD to receive USDC on **Ethereum mainnet**.
+The **wallet client** and **public client** configure the appropriate network settings using `viem`. In this example, the script will be deploying Fraxnet contracts on **Ethereum mainnet** to deposit USDC to mint frxUSD on **Base mainnet** and redeem frxUSD to receive USDC on **Base mainnet**.
 
 ```javascript
 // Set up wallet and public clients
@@ -165,15 +165,63 @@ const basePublicClient = createPublicClient({
 
 The following sections outline the cross-chain mint & redeem process using the FraxNet system. Follow the steps below to perform cross-chain frxUSD mint & redeem:
 
-### 1. Deploy FraxNet Contract
+### 1. Get FraxNet Contract Address
+
+Get the FraxNet contract address for the specific recipient and destination chain from the FraxNet factory. The address is deterministic, so you can get it before the contract is deployed:
+
+```javascript
+async function getFraxnetDepositAddress() {
+  console.log('Getting Fraxnet deposit contract address...');
+
+  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'uint32', name: '_targetEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_targetAddress', type: 'bytes32' },
+          {
+            internalType: 'bytes32',
+            name: '_targetUsdcAtaAddress',
+            type: 'bytes32',
+          },
+        ],
+        name: 'getDeploymentAddress',
+        outputs: [{ internalType: 'address', name: '', type: 'address' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'getDeploymentAddress',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID
+      DESTINATION_ADDRESS_BYTES32, // Recipient address
+      zeroHash, // Recipient's USDC token account: only used for Solana, zero for every other chain
+    ],
+  });
+
+  console.log(`FraxNet contract address: ${fraxnetDepositAddress}`);
+  return fraxnetDepositAddress;
+}
+```
+
+### 2. Deploy FraxNet Contract
 
 Each FraxNet contract must be deployed via the FraxNet factory contract on Ethereum mainnet. This contract enables minting and redeeming of frxUSD on other chains.
 
 **Important**: Each FraxNet contract deployed by the factory only has one recipient and one destination chain. Anyone can send USDC or frxUSD to the contract for minting or redeeming, but the actual minted frxUSD or redeemed USDC can only be sent to the address passed in when creating the FraxNet contract.
 
+Anyone can deploy the FraxNet contract, so the function first checks whether it already exists:
+
 ```javascript
-// 1) Deploy FraxNet contract to allow for the minting and redemption of frxUSD
-async function deployFraxnetDepositContract() {
+async function deployFraxnetDepositContract(fraxnetDepositAddress) {
+  // Anyone can deploy the FraxNet contract for a recipient, so it may already exist
+  const code = await ethereumPublicClient.getCode({ address: fraxnetDepositAddress });
+  if (code) {
+    console.log('FraxNet contract is already deployed, skipping...');
+    return;
+  }
+
   console.log('Deploying FraxNet contract...');
   const txHash = await ethereumWalletClient.sendTransaction({
     to: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
@@ -206,118 +254,23 @@ async function deployFraxnetDepositContract() {
         },
       ],
       functionName: 'createFraxNetDeposit',
-      args: [BASE_MAINNET_EID, DESTINATION_ADDRESS_BYTES32],
+      args: [
+        BASE_MAINNET_EID, // Destination chain EID
+        DESTINATION_ADDRESS_BYTES32, // Recipient address
+        zeroHash, // Recipient's USDC token account: only used for Solana, zero for every other chain
+      ],
     }),
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: txHash });
 
   console.log(`Fraxnet contract deployment Tx: ${txHash}`);
   return txHash;
 }
 ```
 
-### 2. Get FraxNet Contract Address
+### 3. Transfer USDC to FraxNet Contract
 
-After deployment, retrieve the deployed FraxNet contract address for the specific recipient and destination chain:
-
-```javascript
-async function getFraxnetDepositAddress() {
-  console.log('Getting Fraxnet deposit contract address...');
-
-  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
-    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
-    abi: [
-      {
-        inputs: [
-          { internalType: 'uint32', name: '_targetEid', type: 'uint32' },
-          { internalType: 'bytes32', name: '_targetAddress', type: 'bytes32' },
-          {
-            internalType: 'bytes32',
-            name: '_targetUsdcAtaAddress',
-            type: 'bytes32',
-          },
-        ],
-        name: 'getDeploymentAddress',
-        outputs: [{ internalType: 'address', name: '', type: 'address' }],
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ],
-    functionName: 'getDeploymentAddress',
-    args: [
-      BASE_MAINNET_EID, // Destination chain EID
-      DESTINATION_ADDRESS_BYTES32, // Recipient address
-      `0x000000000000000000000000${zeroAddress.slice(2)}`, // USDC ATA (only needed for Solana). Use zeroAddress for non-Solana chains.
-    ],
-  });
-
-  console.log(`FraxNet contract address: ${fraxnetDepositAddress}`);
-  return fraxnetDepositAddress;
-}
-```
-
-### 3. Approve USDC for FraxNet Contract
-
-Before minting, approve USDC for the deployed FraxNet contract so it can pull USDC from your wallet:
-
-```javascript
-async function approveUsdcForFraxnet(fraxnetDepositAddress) {
-  console.log('Approving USDC for Fraxnet contract...');
-  const approveTx = await ethereumWalletClient.sendTransaction({
-    to: ETHEREUM_MAINNET_USDC_ADDRESS,
-    data: encodeFunctionData({
-      abi: [
-        {
-          type: 'function',
-          name: 'approve',
-          stateMutability: 'nonpayable',
-          inputs: [
-            { name: 'spender', type: 'address' },
-            { name: 'amount', type: 'uint256' },
-          ],
-          outputs: [{ name: '', type: 'bool' }],
-        },
-      ],
-      functionName: 'approve',
-      args: [fraxnetDepositAddress, MINT_AMOUNT],
-    }),
-  });
-  console.log(`USDC Approval Tx: ${approveTx}`);
-}
-```
-
-### 4. Approve frxUSD for FraxNet Contract
-
-Before redeeming, approve frxUSD for the deployed FraxNet contract so it can pull frxUSD from your wallet:
-
-```javascript
-async function approveFrxUSDForFraxnet(fraxnetDepositAddress) {
-  console.log('Approving frxUSD for Fraxnet contract...');
-  const approveTx = await ethereumWalletClient.sendTransaction({
-    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-    data: encodeFunctionData({
-      abi: [
-        {
-          type: 'function',
-          name: 'approve',
-          stateMutability: 'nonpayable',
-          inputs: [
-            { name: 'spender', type: 'address' },
-            { name: 'amount', type: 'uint256' },
-          ],
-          outputs: [{ name: '', type: 'bool' }],
-        },
-      ],
-      functionName: 'approve',
-      args: [fraxnetDepositAddress, REDEEM_AMOUNT],
-    }),
-  });
-  console.log(`frxUSD Approval Tx: ${approveTx}`);
-}
-```
-
-### 5. Transfer USDC to FraxNet Contract
-
-Transfer USDC to the FraxNet contract to be used for minting frxUSD:
+Transfer USDC to the FraxNet contract to be used for minting frxUSD, and wait for the transfer to be confirmed:
 
 ```javascript
 async function transferUsdcToFraxnet(fraxnetDepositAddress) {
@@ -342,18 +295,22 @@ async function transferUsdcToFraxnet(fraxnetDepositAddress) {
       args: [fraxnetDepositAddress, MINT_AMOUNT],
     }),
   });
+  const transferReceipt = await ethereumPublicClient.waitForTransactionReceipt({
+    hash: transferTx,
+  });
 
   console.log(`USDC Transfer Tx: ${transferTx}`);
+  return transferReceipt;
 }
 ```
 
-### 6. Transfer frxUSD to FraxNet Contract
+### 4. Transfer frxUSD to FraxNet Contract
 
-Transfer frxUSD to the FraxNet contract to be used for redeeming frxUSD for USDC:
+Transfer frxUSD to the FraxNet contract to be used for redeeming frxUSD for USDC, and wait for the transfer to be confirmed:
 
 ```javascript
 async function transferFrxUSDToFraxnet(fraxnetDepositAddress) {
-  console.log('Transferring USDC to Fraxnet contract...');
+  console.log('Transferring frxUSD to Fraxnet contract...');
 
   const transferTx = await ethereumWalletClient.sendTransaction({
     to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
@@ -374,12 +331,16 @@ async function transferFrxUSDToFraxnet(fraxnetDepositAddress) {
       args: [fraxnetDepositAddress, REDEEM_AMOUNT],
     }),
   });
+  const transferReceipt = await ethereumPublicClient.waitForTransactionReceipt({
+    hash: transferTx,
+  });
 
   console.log(`frxUSD Transfer Tx: ${transferTx}`);
+  return transferReceipt;
 }
 ```
 
-### 7. Get Mint Quote
+### 5. Get Mint Quote
 
 Calculate the FraxZero native fee required to process the frxUSD mint:
 
@@ -413,20 +374,39 @@ async function getMintQuote(fraxnetDepositAddress) {
   });
 
   const nativeFee = quoteResult.nativeFee;
-  console.log(`Native fee required: ${nativeFee} ETH`);
+  console.log(`Native fee required: ${formatEther(nativeFee)} ETH`);
 
   return nativeFee;
 }
 ```
 
-### 8. Process USDC Deposit and Mint frxUSD to Base mainnet
+### 6. Process USDC Deposit and Mint frxUSD to Base mainnet
 
-Call `processDeposit` on the FraxNet contract to convert the deposited USDC to frxUSD 1:1:
+Call `processDeposit` on the FraxNet contract to convert the deposited USDC to frxUSD 1:1 and send it to Base mainnet. Anyone can call `processDeposit`, and FraxNet's relayer also processes funded FraxNet contracts, so the function skips the call if the USDC has already been processed:
 
 ```javascript
 async function processDepositAndMintFrxUSD(fraxnetDepositAddress, nativeFee) {
-  console.log('Processing deposit and minting frxUSD on Base mainnet...');
+  // Anyone can process the deposit, and FraxNet's relayer also processes funded FraxNet contracts
+  const usdcBalance = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'balanceOf',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [fraxnetDepositAddress],
+  });
+  if (usdcBalance < MINT_AMOUNT) {
+    console.log('The USDC has already been processed, skipping...');
+    return;
+  }
 
+  console.log('Processing deposit and minting frxUSD on Base mainnet...');
   const processMintTx = await ethereumWalletClient.sendTransaction({
     to: fraxnetDepositAddress,
     data: encodeFunctionData({
@@ -444,20 +424,51 @@ async function processDepositAndMintFrxUSD(fraxnetDepositAddress, nativeFee) {
     }),
     value: nativeFee,
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: processMintTx });
 
   console.log(`Process deposit Tx: ${processMintTx}`);
   return processMintTx;
 }
 ```
 
-### 9. Process the frxUSD Deposit and Redeem for USDC
+### 7. Process the frxUSD Deposit and Redeem for USDC
 
-Call `processRedemption` on the FraxNet contract to convert the deposited frxUSD to USDC 1:1:
+Call `processRedemption` on the FraxNet contract to convert the deposited frxUSD to USDC 1:1. The FraxNet contract then burns the USDC on Ethereum mainnet via Circle's CCTP V2 so it can be minted on Base mainnet. If the redemption has already been processed, the function returns the transaction that processed it:
 
 ```javascript
-async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress) {
-  console.log('Processing redemption...');
+async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress, fromBlock) {
+  // Anyone can process the redemption, and FraxNet's relayer also processes funded FraxNet contracts
+  const frxUsdBalance = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'balanceOf',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [fraxnetDepositAddress],
+  });
+  if (frxUsdBalance < REDEEM_AMOUNT) {
+    // Use the transaction that already processed the redemption
+    const [redemption] = await ethereumPublicClient.getLogs({
+      address: fraxnetDepositAddress,
+      event: parseAbiItem(
+        'event ProcessedRedemption(uint32 indexed targetEid, bytes32 indexed targetAddress, uint256 frxUSDIn, uint256 usdcOut)',
+      ),
+      fromBlock,
+    });
+    if (!redemption) {
+      throw new Error('The Fraxnet contract holds less frxUSD than REDEEM_AMOUNT');
+    }
+    console.log(`The frxUSD has already been redeemed in Tx: ${redemption.transactionHash}`);
+    return redemption.transactionHash;
+  }
 
+  console.log('Processing redemption...');
   const processRedemptionTx = await ethereumWalletClient.sendTransaction({
     to: fraxnetDepositAddress,
     data: encodeFunctionData({
@@ -474,32 +485,36 @@ async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress) {
       args: [REDEEM_AMOUNT],
     }),
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: processRedemptionTx });
 
-  console.log(`Process deposit Tx: ${processRedemptionTx}`);
+  console.log(`Process redemption Tx: ${processRedemptionTx}`);
   return processRedemptionTx;
 }
 ```
 
-### 10. Receive USDC from Base mainnet via Circle's CCTP V2
+### 8. Receive USDC on Base mainnet via Circle's CCTP V2
 
-Check if `receiveMessage` has already been called on the Circle's CCTP V2 contract to receive the USDC from Ethereum mainnet on Base mainnet. If not, call `receiveMessage` on the Circle's CCTP V2 contract to receive the USDC on Base mainnet:
+The USDC is burned on Ethereum mainnet, so the function looks up Circle's attestation under Ethereum's source domain (`0`). For a standard transfer, Circle attests after Ethereum finality, which takes about 15–20 minutes, so the function checks every 30 seconds until the attestation is ready. It then calls `receiveMessage` on Base mainnet to mint the USDC to the recipient.
 
-**Note:** Some chains such as **Base mainnet** have third-party bots that automatically call `receiveMessage` on behalf of users. Therefore, we need to check if `receiveMessage` has already been called via the `usedNonces` function.
+**Note:** Anyone can call `receiveMessage`, so the function first checks `usedNonces` in case it has already been called.
 
 ```javascript
-async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
-  processRedemptionTx,
-) {
-  const response = await fetch(
-    `https://iris-api.circle.com/v2/messages/${BASE_SOURCE_DOMAIN_ID}?transactionHash=${processRedemptionTx}`,
-  );
-  const messagesResponse = await response.json();
-  const messageResponse = messagesResponse?.messages?.[0];
+async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(processRedemptionTx) {
+  // The USDC is burned on Ethereum mainnet, so the message is looked up under Ethereum's source domain.
+  // Circle attests a standard transfer after Ethereum finality, which takes about 15-20 minutes.
+  console.log("Waiting for Circle's attestation...");
+  let message;
+  while (true) {
+    const response = await fetch(
+      `https://iris-api.circle.com/v2/messages/${ETHEREUM_SOURCE_DOMAIN_ID}?transactionHash=${processRedemptionTx}`,
+    );
+    message = response.ok ? (await response.json())?.messages?.[0] : undefined;
+    if (message?.status === 'complete') break;
+    console.log('Attestation is not ready yet, checking again in 30 seconds...');
+    await new Promise((resolve) => setTimeout(resolve, 30_000));
+  }
 
-  const messageBytes = messageResponse.message;
-  const attestation = messageResponse.attestation;
-  const eventNonce = messageResponse.eventNonce;
-
+  // Anyone can call receiveMessage, so check whether it has already been called
   const usedNonces = await basePublicClient.readContract({
     address: BASE_MESSAGE_TRANSMITTER_ADDRESS,
     abi: [
@@ -512,46 +527,45 @@ async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
       },
     ],
     functionName: 'usedNonces',
-    args: [eventNonce],
+    args: [message.eventNonce],
   });
-
-  if (usedNonces === 0n) {
-    console.log('receiveMessage has not been called yet, calling receiveMessage...');
-    const receiveMessageHash = await baseWalletClient.sendTransaction({
-      to: BASE_MESSAGE_TRANSMITTER_ADDRESS,
-      data: encodeFunctionData({
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: 'bytes',
-                name: 'message',
-                type: 'bytes',
-              },
-              {
-                internalType: 'bytes',
-                name: 'attestation',
-                type: 'bytes',
-              },
-            ],
-            name: 'receiveMessage',
-            outputs: [{ internalType: 'bool', name: 'success', type: 'bool' }],
-            stateMutability: 'nonpayable',
-            type: 'function',
-          },
-        ],
-        functionName: 'receiveMessage',
-        args: [messageBytes, attestation],
-      }),
-    });
-  } else {
+  if (usedNonces !== 0n) {
     console.log('receiveMessage has already been called, skipping...');
+    return;
   }
 
-  console.log(
-    `USDC transferred to Base mainnet via Circle's CCTP V2: ${receiveMessageHash}`,
-  );
-  return receiveMessageHash;
+  console.log('Calling receiveMessage on Base mainnet...');
+  const receiveMessageTx = await baseWalletClient.sendTransaction({
+    to: BASE_MESSAGE_TRANSMITTER_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'bytes',
+              name: 'message',
+              type: 'bytes',
+            },
+            {
+              internalType: 'bytes',
+              name: 'attestation',
+              type: 'bytes',
+            },
+          ],
+          name: 'receiveMessage',
+          outputs: [{ internalType: 'bool', name: 'success', type: 'bool' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'receiveMessage',
+      args: [message.message, message.attestation],
+    }),
+  });
+  await basePublicClient.waitForTransactionReceipt({ hash: receiveMessageTx });
+
+  console.log(`USDC transferred to Base mainnet via Circle's CCTP V2: ${receiveMessageTx}`);
+  return receiveMessageTx;
 }
 ```
 
@@ -568,8 +582,10 @@ import {
   createWalletClient,
   createPublicClient,
   http,
-  zeroAddress,
+  zeroHash,
   encodeFunctionData,
+  formatEther,
+  parseAbiItem,
   nonceManager,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -588,7 +604,7 @@ const FRAXNET_DEPOSIT_FACTORY_ADDRESS = '0xA3D62f83C433e2A56Af392E08a705A52DEd63
 const BASE_MAINNET_EID = 30184; // Base mainnet EID
 
 // Circle's CCTP V2 Information
-const BASE_SOURCE_DOMAIN_ID = 6; // Visit https://developers.circle.com/cctp/cctp-supported-blockchains for the source domain ID
+const ETHEREUM_SOURCE_DOMAIN_ID = 0; // Redeemed USDC is burned on Ethereum mainnet. Visit https://developers.circle.com/cctp/cctp-supported-blockchains for the domain IDs
 const BASE_MESSAGE_TRANSMITTER_ADDRESS = '0x81D40F21F12A8F0E3252Bccb954D722d4c464B64'; // Visit https://developers.circle.com/cctp/evm-smart-contracts#messagetransmitterv2-mainnet for the message transmitter address
 
 // Token Addresses
@@ -626,8 +642,50 @@ const basePublicClient = createPublicClient({
   transport: http(),
 });
 
-// 1) Deploy FraxNet contract to allow for the minting and redemption of frxUSD
-async function deployFraxnetDepositContract() {
+// 1) Get the Fraxnet contract address, which is known before the contract is deployed
+async function getFraxnetDepositAddress() {
+  console.log('Getting Fraxnet deposit contract address...');
+
+  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
+    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
+    abi: [
+      {
+        inputs: [
+          { internalType: 'uint32', name: '_targetEid', type: 'uint32' },
+          { internalType: 'bytes32', name: '_targetAddress', type: 'bytes32' },
+          {
+            internalType: 'bytes32',
+            name: '_targetUsdcAtaAddress',
+            type: 'bytes32',
+          },
+        ],
+        name: 'getDeploymentAddress',
+        outputs: [{ internalType: 'address', name: '', type: 'address' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'getDeploymentAddress',
+    args: [
+      BASE_MAINNET_EID, // Destination chain EID
+      DESTINATION_ADDRESS_BYTES32, // Recipient address
+      zeroHash, // Recipient's USDC token account: only used for Solana, zero for every other chain
+    ],
+  });
+
+  console.log(`FraxNet contract address: ${fraxnetDepositAddress}`);
+  return fraxnetDepositAddress;
+}
+
+// 2) Deploy the FraxNet contract to allow for the minting and redemption of frxUSD
+async function deployFraxnetDepositContract(fraxnetDepositAddress) {
+  // Anyone can deploy the FraxNet contract for a recipient, so it may already exist
+  const code = await ethereumPublicClient.getCode({ address: fraxnetDepositAddress });
+  if (code) {
+    console.log('FraxNet contract is already deployed, skipping...');
+    return;
+  }
+
   console.log('Deploying FraxNet contract...');
   const txHash = await ethereumWalletClient.sendTransaction({
     to: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
@@ -660,100 +718,20 @@ async function deployFraxnetDepositContract() {
         },
       ],
       functionName: 'createFraxNetDeposit',
-      args: [BASE_MAINNET_EID, DESTINATION_ADDRESS_BYTES32],
+      args: [
+        BASE_MAINNET_EID, // Destination chain EID
+        DESTINATION_ADDRESS_BYTES32, // Recipient address
+        zeroHash, // Recipient's USDC token account: only used for Solana, zero for every other chain
+      ],
     }),
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: txHash });
 
   console.log(`Fraxnet contract deployment Tx: ${txHash}`);
   return txHash;
 }
 
-// 2) Get Fraxnet contract address
-async function getFraxnetDepositAddress() {
-  console.log('Getting Fraxnet deposit contract address...');
-
-  const fraxnetDepositAddress = await ethereumPublicClient.readContract({
-    address: FRAXNET_DEPOSIT_FACTORY_ADDRESS,
-    abi: [
-      {
-        inputs: [
-          { internalType: 'uint32', name: '_targetEid', type: 'uint32' },
-          { internalType: 'bytes32', name: '_targetAddress', type: 'bytes32' },
-          {
-            internalType: 'bytes32',
-            name: '_targetUsdcAtaAddress',
-            type: 'bytes32',
-          },
-        ],
-        name: 'getDeploymentAddress',
-        outputs: [{ internalType: 'address', name: '', type: 'address' }],
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ],
-    functionName: 'getDeploymentAddress',
-    args: [
-      BASE_MAINNET_EID, // Destination chain EID
-      DESTINATION_ADDRESS_BYTES32, // Recipient address
-      `0x000000000000000000000000${zeroAddress.slice(2)}`, // USDC ATA (only needed for Solana)
-    ],
-  });
-
-  console.log(`FraxNet contract address: ${fraxnetDepositAddress}`);
-  return fraxnetDepositAddress;
-}
-
-// 3) Approve USDC for FraxNet contract to allow for the minting of frxUSD
-async function approveUsdcForFraxnet(fraxnetDepositAddress) {
-  console.log('Approving USDC for Fraxnet contract...');
-  const approveTx = await ethereumWalletClient.sendTransaction({
-    to: ETHEREUM_MAINNET_USDC_ADDRESS,
-    data: encodeFunctionData({
-      abi: [
-        {
-          type: 'function',
-          name: 'approve',
-          stateMutability: 'nonpayable',
-          inputs: [
-            { name: 'spender', type: 'address' },
-            { name: 'amount', type: 'uint256' },
-          ],
-          outputs: [{ name: '', type: 'bool' }],
-        },
-      ],
-      functionName: 'approve',
-      args: [fraxnetDepositAddress, MINT_AMOUNT],
-    }),
-  });
-  console.log(`USDC Approval Tx: ${approveTx}`);
-}
-
-// 4) Approve frxUSD for FraxNet contract to allow for the redemption of frxUSD for USDC
-async function approveFrxUSDForFraxnet(fraxnetDepositAddress) {
-  console.log('Approving frxUSD for Fraxnet contract...');
-  const approveTx = await ethereumWalletClient.sendTransaction({
-    to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
-    data: encodeFunctionData({
-      abi: [
-        {
-          type: 'function',
-          name: 'approve',
-          stateMutability: 'nonpayable',
-          inputs: [
-            { name: 'spender', type: 'address' },
-            { name: 'amount', type: 'uint256' },
-          ],
-          outputs: [{ name: '', type: 'bool' }],
-        },
-      ],
-      functionName: 'approve',
-      args: [fraxnetDepositAddress, REDEEM_AMOUNT],
-    }),
-  });
-  console.log(`frxUSD Approval Tx: ${approveTx}`);
-}
-
-// 5) Transfer USDC to FraxNet contract to allow for the minting of frxUSD on Base mainnet
+// 3) Transfer USDC to the FraxNet contract to allow for the minting of frxUSD on Base mainnet
 async function transferUsdcToFraxnet(fraxnetDepositAddress) {
   console.log('Transferring USDC to Fraxnet contract...');
 
@@ -776,13 +754,17 @@ async function transferUsdcToFraxnet(fraxnetDepositAddress) {
       args: [fraxnetDepositAddress, MINT_AMOUNT],
     }),
   });
+  const transferReceipt = await ethereumPublicClient.waitForTransactionReceipt({
+    hash: transferTx,
+  });
 
   console.log(`USDC Transfer Tx: ${transferTx}`);
+  return transferReceipt;
 }
 
-// 6) Transfer frxUSD to FraxNet contract to allow for the redemption of frxUSD for USDC on Base mainnet
+// 4) Transfer frxUSD to the FraxNet contract to allow for the redemption of frxUSD for USDC on Base mainnet
 async function transferFrxUSDToFraxnet(fraxnetDepositAddress) {
-  console.log('Transferring USDC to Fraxnet contract...');
+  console.log('Transferring frxUSD to Fraxnet contract...');
 
   const transferTx = await ethereumWalletClient.sendTransaction({
     to: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
@@ -803,11 +785,15 @@ async function transferFrxUSDToFraxnet(fraxnetDepositAddress) {
       args: [fraxnetDepositAddress, REDEEM_AMOUNT],
     }),
   });
+  const transferReceipt = await ethereumPublicClient.waitForTransactionReceipt({
+    hash: transferTx,
+  });
 
   console.log(`frxUSD Transfer Tx: ${transferTx}`);
+  return transferReceipt;
 }
 
-// 7) Get mint quote
+// 5) Get mint quote
 async function getMintQuote(fraxnetDepositAddress) {
   console.log('Getting mint quote...');
 
@@ -837,15 +823,34 @@ async function getMintQuote(fraxnetDepositAddress) {
   });
 
   const nativeFee = quoteResult.nativeFee;
-  console.log(`Native fee required: ${nativeFee} ETH`);
+  console.log(`Native fee required: ${formatEther(nativeFee)} ETH`);
 
   return nativeFee;
 }
 
-// 8) Process deposit and mint frxUSD on Base mainnet
+// 6) Process deposit and mint frxUSD on Base mainnet
 async function processDepositAndMintFrxUSD(fraxnetDepositAddress, nativeFee) {
-  console.log('Processing deposit and minting frxUSD on Base mainnet...');
+  // Anyone can process the deposit, and FraxNet's relayer also processes funded FraxNet contracts
+  const usdcBalance = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_USDC_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'balanceOf',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [fraxnetDepositAddress],
+  });
+  if (usdcBalance < MINT_AMOUNT) {
+    console.log('The USDC has already been processed, skipping...');
+    return;
+  }
 
+  console.log('Processing deposit and minting frxUSD on Base mainnet...');
   const processMintTx = await ethereumWalletClient.sendTransaction({
     to: fraxnetDepositAddress,
     data: encodeFunctionData({
@@ -863,15 +868,46 @@ async function processDepositAndMintFrxUSD(fraxnetDepositAddress, nativeFee) {
     }),
     value: nativeFee,
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: processMintTx });
 
   console.log(`Process deposit Tx: ${processMintTx}`);
   return processMintTx;
 }
 
-// 9) Process redemption and redeem frxUSD for USDC on Base mainnet
-async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress) {
-  console.log('Processing redemption...');
+// 7) Process redemption and redeem frxUSD for USDC on Base mainnet
+async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress, fromBlock) {
+  // Anyone can process the redemption, and FraxNet's relayer also processes funded FraxNet contracts
+  const frxUsdBalance = await ethereumPublicClient.readContract({
+    address: ETHEREUM_MAINNET_FRXUSD_ADDRESS,
+    abi: [
+      {
+        type: 'function',
+        name: 'balanceOf',
+        stateMutability: 'view',
+        inputs: [{ name: 'account', type: 'address' }],
+        outputs: [{ name: '', type: 'uint256' }],
+      },
+    ],
+    functionName: 'balanceOf',
+    args: [fraxnetDepositAddress],
+  });
+  if (frxUsdBalance < REDEEM_AMOUNT) {
+    // Use the transaction that already processed the redemption
+    const [redemption] = await ethereumPublicClient.getLogs({
+      address: fraxnetDepositAddress,
+      event: parseAbiItem(
+        'event ProcessedRedemption(uint32 indexed targetEid, bytes32 indexed targetAddress, uint256 frxUSDIn, uint256 usdcOut)',
+      ),
+      fromBlock,
+    });
+    if (!redemption) {
+      throw new Error('The Fraxnet contract holds less frxUSD than REDEEM_AMOUNT');
+    }
+    console.log(`The frxUSD has already been redeemed in Tx: ${redemption.transactionHash}`);
+    return redemption.transactionHash;
+  }
 
+  console.log('Processing redemption...');
   const processRedemptionTx = await ethereumWalletClient.sendTransaction({
     to: fraxnetDepositAddress,
     data: encodeFunctionData({
@@ -888,25 +924,29 @@ async function processRedemptionAndRedeemForUsdc(fraxnetDepositAddress) {
       args: [REDEEM_AMOUNT],
     }),
   });
+  await ethereumPublicClient.waitForTransactionReceipt({ hash: processRedemptionTx });
 
-  console.log(`Process deposit Tx: ${processRedemptionTx}`);
+  console.log(`Process redemption Tx: ${processRedemptionTx}`);
   return processRedemptionTx;
 }
 
-// 10) Complete the cross-chain transfer of the redeemed USDC to Base mainnet via Circle's CCTP
-async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
-  processRedemptionTx,
-) {
-  const response = await fetch(
-    `https://iris-api.circle.com/v2/messages/${BASE_SOURCE_DOMAIN_ID}?transactionHash=${processRedemptionTx}`,
-  );
-  const messagesResponse = await response.json();
-  const messageResponse = messagesResponse?.messages?.[0];
+// 8) Complete the cross-chain transfer of the redeemed USDC to Base mainnet via Circle's CCTP V2
+async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(processRedemptionTx) {
+  // The USDC is burned on Ethereum mainnet, so the message is looked up under Ethereum's source domain.
+  // Circle attests a standard transfer after Ethereum finality, which takes about 15-20 minutes.
+  console.log("Waiting for Circle's attestation...");
+  let message;
+  while (true) {
+    const response = await fetch(
+      `https://iris-api.circle.com/v2/messages/${ETHEREUM_SOURCE_DOMAIN_ID}?transactionHash=${processRedemptionTx}`,
+    );
+    message = response.ok ? (await response.json())?.messages?.[0] : undefined;
+    if (message?.status === 'complete') break;
+    console.log('Attestation is not ready yet, checking again in 30 seconds...');
+    await new Promise((resolve) => setTimeout(resolve, 30_000));
+  }
 
-  const messageBytes = messageResponse.message;
-  const attestation = messageResponse.attestation;
-  const eventNonce = messageResponse.eventNonce;
-
+  // Anyone can call receiveMessage, so check whether it has already been called
   const usedNonces = await basePublicClient.readContract({
     address: BASE_MESSAGE_TRANSMITTER_ADDRESS,
     abi: [
@@ -919,69 +959,69 @@ async function completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(
       },
     ],
     functionName: 'usedNonces',
-    args: [eventNonce],
+    args: [message.eventNonce],
   });
-
-  if (usedNonces === 0n) {
-    console.log('receiveMessage has not been called yet, calling receiveMessage...');
-    const receiveMessageHash = await ethereumWalletClient.sendTransaction({
-      to: BASE_MESSAGE_TRANSMITTER_ADDRESS,
-      data: encodeFunctionData({
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: 'bytes',
-                name: 'message',
-                type: 'bytes',
-              },
-              {
-                internalType: 'bytes',
-                name: 'attestation',
-                type: 'bytes',
-              },
-            ],
-            name: 'receiveMessage',
-            outputs: [{ internalType: 'bool', name: 'success', type: 'bool' }],
-            stateMutability: 'nonpayable',
-            type: 'function',
-          },
-        ],
-        functionName: 'receiveMessage',
-        args: [messageBytes, attestation],
-      }),
-    });
-  } else {
+  if (usedNonces !== 0n) {
     console.log('receiveMessage has already been called, skipping...');
+    return;
   }
 
-  console.log(
-    `USDC transferred to Base mainnet via Circle's CCTP V2: ${receiveMessageHash}`,
-  );
-  return receiveMessageHash;
+  console.log('Calling receiveMessage on Base mainnet...');
+  const receiveMessageTx = await baseWalletClient.sendTransaction({
+    to: BASE_MESSAGE_TRANSMITTER_ADDRESS,
+    data: encodeFunctionData({
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: 'bytes',
+              name: 'message',
+              type: 'bytes',
+            },
+            {
+              internalType: 'bytes',
+              name: 'attestation',
+              type: 'bytes',
+            },
+          ],
+          name: 'receiveMessage',
+          outputs: [{ internalType: 'bool', name: 'success', type: 'bool' }],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      functionName: 'receiveMessage',
+      args: [message.message, message.attestation],
+    }),
+  });
+  await basePublicClient.waitForTransactionReceipt({ hash: receiveMessageTx });
+
+  console.log(`USDC transferred to Base mainnet via Circle's CCTP V2: ${receiveMessageTx}`);
+  return receiveMessageTx;
 }
 
 async function main() {
   if (DESTINATION_ADDRESS === 'enter-your-recipient-wallet-address-here') {
     console.error(
-      'Destination address is not set. Please set the DESTINATION_ADDRESS variable in the transfer.js file.',
+      'Destination address is not set. Please set the DESTINATION_ADDRESS variable in the mint-and-redeem-frxusd.js file.',
     );
     process.exit(1);
   }
   const command = process.argv[2]; // Get command from CLI
 
   switch (command) {
-    case 'deploy-fraxnet-deposit-contract':
-      console.log('Deploying Fraxnet deposit contract...');
-      await deployFraxnetDepositContract();
+    case 'deploy-fraxnet-deposit-contract': {
+      const fraxnetDepositAddress = await getFraxnetDepositAddress();
+      await deployFraxnetDepositContract(fraxnetDepositAddress);
       break;
+    }
 
     case 'mint-frxusd': {
       console.log(
         'Depositing USDC on Ethereum mainnet to mint frxUSD on Base mainnet...',
       );
       const fraxnetDepositAddressForMint = await getFraxnetDepositAddress();
-      await approveUsdcForFraxnet(fraxnetDepositAddressForMint);
+      await deployFraxnetDepositContract(fraxnetDepositAddressForMint);
       await transferUsdcToFraxnet(fraxnetDepositAddressForMint);
       const nativeFee = await getMintQuote(fraxnetDepositAddressForMint);
       await processDepositAndMintFrxUSD(fraxnetDepositAddressForMint, nativeFee);
@@ -993,22 +1033,24 @@ async function main() {
         'Depositing frxUSD on Ethereum mainnet to redeem USDC on Base mainnet...',
       );
       const fraxnetDepositAddressForRedeem = await getFraxnetDepositAddress();
-      await approveFrxUSDForFraxnet(fraxnetDepositAddressForRedeem);
-      await transferFrxUSDToFraxnet(fraxnetDepositAddressForRedeem);
+      await deployFraxnetDepositContract(fraxnetDepositAddressForRedeem);
+      const transferReceipt = await transferFrxUSDToFraxnet(fraxnetDepositAddressForRedeem);
       const processRedemptionTx = await processRedemptionAndRedeemForUsdc(
         fraxnetDepositAddressForRedeem,
+        transferReceipt.blockNumber,
       );
       await completeCrossChainTransferOfRedeemedUsdcToBaseMainnet(processRedemptionTx);
       break;
     }
+
     default:
       console.error(
-        'Invalid command. Please use "ethereum-to-arbitrum" or "arbitrum-to-ethereum".',
+        'Invalid command. Please use "deploy-fraxnet-deposit-contract", "mint-frxusd" or "redeem-frxusd".',
       );
       process.exit(1);
   }
 
-  console.log('Transfer completed!');
+  console.log('Done!');
 }
 
 main().catch(console.error);
@@ -1016,19 +1058,25 @@ main().catch(console.error);
 
 ## Test the script
 
-To test minting frxUSD, run the following command:
+To deploy the FraxNet contract on its own, run the following command. The mint and redeem commands also deploy it if it does not exist yet:
+
+```shell
+node mint-and-redeem-frxusd.js deploy-fraxnet-deposit-contract
+```
+
+To test minting frxUSD, run the following command. The minted frxUSD reaches Base mainnet once the LayerZero transfer is delivered, which you can follow on [LayerZero Scan](https://layerzeroscan.com):
 
 ```shell
 node mint-and-redeem-frxusd.js mint-frxusd
 ```
 
-To test redeeming frxUSD, run the following command:
+To test redeeming frxUSD, run the following command. It waits for Circle's attestation before receiving the USDC on Base mainnet, which takes about 15–20 minutes:
 
 ```shell
 node mint-and-redeem-frxusd.js redeem-frxusd
 ```
 
-Once each script runs and the staking and unstaking operations are finalized, the **confirmation receipts** are logged in the console.
+Each command logs its transaction hashes once the transactions are confirmed.
 
 ## What's next
 
