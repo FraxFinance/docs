@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "swiftnodes",
+      "name": "SwiftNodes",
+      "url": "https://swiftnodes.io/fraxtal-rpc",
+      "description": "SwiftNodes provides flat-rate RPC endpoints for Fraxtal over HTTP and WebSocket - one API key across 75+ networks, a free tier, and archive access on paid plans. No compute-unit metering.",
+      "tags": [
+        "Infra"
+      ],
+      "imageUrl": "https://swiftnodes.io/icon-512.png"
+    },
+    {
       "key": "the-graph",
       "name": "The Graph",
       "url": "https://thegraph.com/docs/en/subgraphs/quick-start/",
