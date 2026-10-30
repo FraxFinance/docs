@@ -5,10 +5,21 @@ lang: en-US
 
 # Orchestration API
 
-The FraxNet Orchestration API enables cross-chain redemptions and branded stablecoin operations using [LayerZero OFT ↗](https://docs.layerzero.network) and [Circle CCTP v2 ↗](https://developers.circle.com/cctp). Two product lines are supported:
+The FraxNet Orchestration API enables cross-chain minting and redemptions for frxUSD and branded stablecoins using [LayerZero OFT ↗](https://docs.layerzero.network) and [Circle CCTP v2 ↗](https://developers.circle.com/cctp). Two product lines are supported:
 
-1. **Standard frxUSD** — Bridge frxUSD from remote chains to Ethereum, redeem to USDC, and relay to any CCTP-supported chain.
-2. **Stablecoins as a Service (SaaS)** — Deposit USDC to mint SaaS stablecoins or redeem them back to USDC.
+1. **Standard frxUSD** — Deposit USDC to mint frxUSD on any supported chain, or bridge frxUSD back to Ethereum, redeem to USDC, and relay to any CCTP-supported chain.
+2. **Stablecoins as a Service (SaaS)** — Deposit USDC to mint SaaS (branded) stablecoins or redeem them back to USDC.
+
+## Architecture
+
+Behind the API, all deposit and redemption processing is executed by the **FraxNet Orchestrator** — a durable backend service that runs every operation as an *execution*: an ordered set of persisted steps (deploy the deposit contract if needed, submit the mint or redemption, confirm it on-chain, then track the cross-chain delivery leg to completion). Execution state survives restarts, long cross-chain waits are handled with durable timers, and ambiguous outcomes are parked for operator review instead of being guessed at.
+
+What this means for integrators:
+
+- **Calls are idempotent.** Repeat calls, double-clicks, and webhook replays for the same deposit converge onto a single execution — you can safely retry any `process*` request.
+- **Every successful `process*` response includes an `executionId`** (and `"orchestrator": "fn-orc"`). Use it with [`GET /status`](/fraxnet/api/status) to track the operation end-to-end, including the cross-chain delivery leg.
+- **Deposits are also detected autonomously.** The orchestrator scans deposit addresses on-chain, so a funded deposit address is typically processed within seconds even without an API call. If the orchestrator got there first, your `process*` call simply returns the result of the existing execution — including the real transaction hash — instead of failing.
+- **Process calls are synchronous up to ~75 seconds.** If processing takes longer (for example, a first-time deposit that must also deploy the deposit contract), the API returns a `pending` response with the `executionId` so you can poll. Set your HTTP client timeout to at least 90 seconds for the `process*` endpoints.
 
 ## Base URL
 
@@ -21,6 +32,8 @@ https://api-net.frax.com
 All endpoints use **GET** requests with query parameters. No authentication is required.
 
 ## Response Format
+
+All endpoints return HTTP 200 with a JSON body (except `GET /health`, which returns plain text). Success and failure are signalled in the body, not the status code.
 
 Success responses include `"ok": true`:
 
@@ -40,17 +53,29 @@ Failure responses include `"ok": false` with an error message:
 }
 ```
 
+Two additional boolean flags can appear and should drive your handling logic:
+
+| Flag | Appears with | Meaning |
+| --- | --- | --- |
+| `"pending": true` | `"ok": false` | Processing was accepted and is still in progress — **not a failure**. Retry the same call or poll `/status` with the returned `executionId`. |
+| `"alreadyProcessed": true` | `"ok": true` | The deposit was already processed (for example, by the orchestrator's scanner). Treat as success; do not retry. |
+
+New response fields may be added over time — parsers should ignore unknown fields.
+
 ## Endpoint Summary
 
 | Endpoint | Description |
 | --- | --- |
 | `GET /health` | Health check |
+| `GET /rpcHealth` | RPC and attestation-service connectivity check |
 | `GET /fetchAddress` | Get deposit address for frxUSD operations |
 | `GET /processDeposit` | Process USDC deposit to mint frxUSD |
 | `GET /processRedemption` | Redeem frxUSD to USDC and relay via CCTP |
 | `GET /branded/fetchAddress` | Get deposit address for branded stablecoin operations |
 | `GET /branded/processDeposit` | Process USDC deposit to mint branded stablecoin |
 | `GET /branded/processRedemption` | Redeem branded stablecoin to USDC and relay via CCTP |
+| `GET /status` | Unified status lookup — accepts an `executionId` or a relay `jobId` |
+| `GET /executionStatus` | Orchestrator execution status by `executionId` |
 | `GET /scheduleCCTPRelay` | Manually schedule a CCTP relay |
 | `GET /jobStatus` | Check CCTP relay job status |
 | `GET /activeJobs` | Summary of all relay jobs |
@@ -61,7 +86,8 @@ Failure responses include `"ok": false` with an error message:
 
 | Contract | Address |
 | --- | --- |
-| FraxNet Factory | `0xA3D62f83C433e2A56Af392E08a705A52DEd63696` |
+| FraxNetDepositFactory | `0xA3D62f83C433e2A56Af392E08a705A52DEd63696` |
+| Branded Factory | `0x63E89638743a409e2389F06A3f778a4570314d7D` |
 | frxUSD Token | `0xcacd6fd266af91b8aed52accc382b4e165586e29` |
 | USDC | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` |
 

@@ -7,6 +7,8 @@ lang: en-US
 
 These endpoints handle standard frxUSD cross-chain operations: minting frxUSD from USDC deposits, and redeeming frxUSD back to USDC with cross-chain relay via CCTP.
 
+The `process*` endpoints hand execution to the [orchestrator](/fraxnet/api) and wait synchronously for up to ~75 seconds. Set your HTTP client timeout to at least 90 seconds, and handle the [`pending`](#pending-response) and [`alreadyProcessed`](#already-processed-response) response shapes described below. All `process*` calls are idempotent — retrying converges on the same execution.
+
 ## `GET /health`
 
 Health check returning plain text `ok`.
@@ -62,9 +64,15 @@ Process a USDC deposit at the deposit address on Ethereum. Mints frxUSD and send
   "contractAlreadyDeployed": false,
   "processDepositTx": "0x...",
   "depositAddress": "0x...",
-  "usdcAmount": "1000000"
+  "usdcAmount": "1000000",
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+  "orchestrator": "fn-orc"
 }
 ```
+
+When the deposit contract is already deployed, `createFraxNetDepositTx` is the literal string `"skipped - contract already deployed"` and `contractAlreadyDeployed` is `true`.
+
+`processDepositTx` is the confirmed mint transaction on Ethereum. The cross-chain LayerZero delivery leg continues after the response returns — track it to completion with [`GET /status?id=<executionId>`](/fraxnet/api/status).
 
 ---
 
@@ -85,18 +93,81 @@ Redeem frxUSD at the deposit address on Ethereum to USDC, then relay the USDC to
 ```json
 {
   "ok": true,
-  "createFraxNetDepositTx": "0x...",
-  "contractAlreadyDeployed": false,
+  "createFraxNetDepositTx": "skipped - contract already deployed",
+  "contractAlreadyDeployed": true,
   "processRedemptionTx": "0x...",
   "depositAddress": "0x...",
   "frxUSDAmount": "1000000000000000000",
   "cctpRelay": {
-    "status": "pending_attestation",
-    "jobId": "0x...",
-    "destDomain": 13
-  }
+    "status": "delegated_to_orchestrator",
+    "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf"
+  },
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+  "orchestrator": "fn-orc"
 }
 ```
+
+### The `cctpRelay` object
+
+| `cctpRelay.status` | Meaning |
+| --- | --- |
+| `delegated_to_orchestrator` | The USDC delivery to the destination chain is handled by the orchestrator as part of the same execution. Poll `GET /status?id=<executionId>` until `execution.status` is `completed`. |
+| `not_applicable` | The payout destination is Ethereum itself — no CCTP relay is needed. |
+| `waiting_for_finality` | Legacy (pre-orchestrator) shape: a local relay job was created and `cctpRelay.jobId` / `cctpRelay.destDomain` are present. Poll `GET /status?id=<jobId>`. |
+
+> **Breaking change for existing integrators:** cross-chain redemptions no longer create a local CCTP relay job, so the `processRedemptionTx` hash can no longer be used as a `jobId` — polling `/jobStatus` with it returns `"No job found"` even though delivery is proceeding normally. Track delivery with the `executionId` instead.
+
+---
+
+## Pending Response
+
+If processing takes longer than the synchronous wait window (~75 seconds) — most commonly a first-time deposit that must also deploy the deposit contract — the API returns:
+
+```json
+{
+  "ok": false,
+  "pending": true,
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf",
+  "orchestrator": "fn-orc",
+  "error": "Processing accepted and in progress; re-request to continue"
+}
+```
+
+This is **not a failure**: processing continues in the background. Either re-issue the identical call (it converges on the same execution and returns the final result once ready) or poll `GET /status?id=<executionId>`.
+
+## Already Processed Response
+
+The orchestrator also detects and processes funded deposit addresses autonomously. If the deposit you ask about was already processed, the API answers with the transaction that actually moved the funds:
+
+```json
+{
+  "ok": true,
+  "alreadyProcessed": true,
+  "processDepositTx": "0x...",
+  "depositAddress": "0x...",
+  "usdcAmount": "3000000",
+  "executionId": "badfe4dc-1eb0-49fb-9f44-1672260a76bf"
+}
+```
+
+Treat this as success and do not retry.
+
+---
+
+## Deposit Flow (USDC → frxUSD)
+
+1. Call `/fetchAddress` to get the deposit address for your beneficiary and target chain
+2. Send USDC to the deposit address on Ethereum (directly, or from another chain via CCTP `depositForBurn` + `/scheduleCCTPRelay`)
+3. Call `/processDeposit` to mint frxUSD and send it to the target chain via LayerZero
+4. Poll `GET /status?id=<executionId>` until `execution.status` is `completed`
+
+## Redemption Flow (frxUSD → USDC)
+
+1. Call `/fetchAddress` to get the deposit address
+2. Bridge frxUSD from the source chain to the deposit address on Ethereum (LayerZero OFT send)
+3. Wait for LayerZero settlement (~1-5 minutes)
+4. Call `/processRedemption` to redeem frxUSD to USDC and relay it to the target chain via CCTP
+5. Poll `GET /status?id=<executionId>` until `execution.status` is `completed` (~20+ minutes for cross-chain delivery)
 
 ---
 
@@ -117,3 +188,5 @@ const address = await factory.getDeploymentAddress(
   ethers.constants.HashZero // ATA (zero for EVM)
 );
 ```
+
+Solana targets (EID 30168) are not supported by the API — their address derivation requires the target's USDC associated token account (ATA) as the third parameter.

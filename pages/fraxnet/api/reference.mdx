@@ -23,6 +23,9 @@ lang: en-US
 | Unichain | 30320 |
 | Sonic | 30332 |
 | Ink | 30339 |
+| Somnia | 30380 |
+
+Solana (EID 30168) is **not supported** as a target by the API.
 
 ### CCTP Domain IDs
 
@@ -41,15 +44,29 @@ lang: en-US
 | Sei | 16 |
 | Ink | 21 |
 
+## Response Handling
+
+How to react to each response shape from the `process*` endpoints:
+
+| You observe | What to do |
+| --- | --- |
+| `"ok": true` | Success — track the delivery leg via `executionId` if needed |
+| `"ok": true, "alreadyProcessed": true` | Success — the deposit was already processed; do not retry |
+| `"ok": false, "pending": true` | In progress — retry the same call or poll `/status?id=<executionId>` |
+| `"ok": false` with a balance-is-0 or address-mismatch error | Fix the precondition (wait for funds to arrive, or use the correct deposit address) |
+| `"ok": false` with any other `error` and an `executionId` | Contact support with the `executionId` |
+
 ## Common Errors
 
 | Error | Cause | Solution |
 | --- | --- | --- |
 | `"Missing 'beneficiary' parameter"` | Invalid or missing address | Provide a valid 40-character hex address |
-| `"Deposit address mismatch"` | Address doesn't match on-chain calculation | Use the address returned by `/fetchAddress` or `/branded/fetchAddress` |
-| `"frxUSD balance at depositAddress is 0"` | Funds haven't arrived yet | Wait longer for LayerZero settlement |
-| `"USDC balance at depositAddress is 0"` | CCTP relay not complete | Wait for the relay job to reach `complete` status |
-| `"InsufficientFee"` | Not enough native ETH for LayerZero messaging | Ensure the relayer wallet is funded |
+| `"Deposit address mismatch. Provided: 0x..., Expected from on-chain: 0x..."` | Address doesn't match the on-chain CREATE2 derivation | Use the address returned by `/fetchAddress` or `/branded/fetchAddress` |
+| `"frxUSD balance at depositAddress 0x... is 0. Expected balance > 0."` | Funds haven't arrived yet | Wait longer for LayerZero settlement |
+| `"USDC balance at depositAddress 0x... is 0. Expected balance > 0."` | CCTP relay not complete | Wait for the relay job to reach `complete` status |
+| `"Processing accepted and in progress; re-request to continue"` | Processing outlived the ~75s synchronous window (`pending: true`) | Not an error — retry the same call or poll `/status` |
+| `"No job found for jobId '...'"` | Unknown or expired relay job ID — job IDs are in-memory and do not survive restarts; orchestrated redemptions never create one | Track via `executionId` where available |
+| `"No execution found for executionId '...'"` | Unknown execution ID | Check the ID against the `process*` response that issued it |
 
 ## Troubleshooting
 
@@ -62,12 +79,20 @@ https://layerzeroscan.com/tx/{your-bridge-tx-hash}
 
 ### CCTP relay stuck on `pending_attestation`?
 
-Circle's attestation API handles finality internally and can take 20+ minutes. This is normal behavior.
+Circle's attestation API handles finality internally and can take 20+ minutes; the relay worker polls for up to ~35 minutes. This is normal behavior.
+
+### Execution stuck in `sleeping`?
+
+`sleeping` means the orchestrator is durably waiting on an external leg — a CCTP attestation, a LayerZero delivery, or a bridge confirmation. Check `current_step` and `timeline` in the [`/status`](/fraxnet/api/status) response to see which leg is in flight. If `extended_wait` is `true`, the wait has exceeded its normal budget but is still being monitored and self-heals when the external service catches up.
+
+### Got `"ok": false` after a redemption but the transaction succeeded?
+
+If the response includes `pending: true` or an `executionId`, processing is continuing — poll `/status`. A repeat of the identical call is always safe: it converges on the existing execution rather than double-processing.
 
 ### How long does a full round-trip take?
 
-- **Deposit flow** (USDC → branded token): ~25-35 minutes (CCTP relay + processing)
-- **Redemption flow** (branded token → USDC): ~25-35 minutes (LayerZero settlement + CCTP relay)
+- **Deposit flow** (USDC → frxUSD/branded token): ~25-35 minutes (CCTP relay + processing)
+- **Redemption flow** (frxUSD/branded token → USDC): ~25-35 minutes (LayerZero settlement + CCTP relay)
 
 ## Resources
 
