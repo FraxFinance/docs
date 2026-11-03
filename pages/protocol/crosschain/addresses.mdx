@@ -40,7 +40,7 @@ Each address of these OFTs is unique:
 
 #### zkSync
 
-- zkSync Era, Abstract maintain the same addresses across all 5 OFTs. This is due to the ZK compiler.
+- zkSync Era has its own addresses for all 5 OFTs because of the ZK compiler.
 
 |                   | Semi-Deterministic                           | Linea                                                                                | Monad                                                                              | Base                                                                              | zkSync                                       |
 | :---------------- | :------------------------------------------- | :----------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- | :------------------------------------------- |
@@ -115,7 +115,7 @@ FPI has been retired from the mesh. The Fraxtal FPI lockbox has no peers, so FPI
 | OFT, Linea                       | `0xDaF72Aa849d3C4FAA8A9c8c99f240Cf33dA02fc4`                                                                            |
 | OFT, Monad                       | `0xba554f7a47f0792b9fa41a1256d4cf628bb1d028`                                                                            |
 | OFT, Base                        | `0xEEdd3A0DDDF977462A97C1F0eBb89C3fbe8D084B`                                                                            |
-| OFT, zkSync and Abstract         | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E`                                                                            |
+| OFT, zkSync                      | `0x580F2ee1476eDF4B1760bd68f6AaBaD57dec420E`                                                                            |
 | OFT, Solana                      | `8xKX8CRH9LxriRUNCPittu1jiovyQQr4EonWQjHZjWyH`                                                                          |
 
 ### Multisigs
@@ -126,7 +126,6 @@ Each multisig below is the LayerZero delegate of the chain's OFTs and lockboxes,
 | :---------- | :--------------------------------------------------------------------------------------------------------------------- | :-------- |
 | Fraxtal     | [`link`](https://safe.mainnet.frax.com/home?safe=fraxtal:0x5f25218ed9474b721d6a38c115107428E832fA2E)                   | 3 of 6    |
 | Ethereum    | [`link`](https://app.safe.global/home?safe=eth:0xB1748C79709f4Ba2Dd82834B8c82D4a505003f27)                             | 3 of 5    |
-| Abstract    | [`link`](https://abstract-safe.protofire.io/home?safe=abstract:0xcC20eAE3CdC554E96291708B362dF349CC443808)             | 3 of 6    |
 | Arbitrum    | [`link`](https://app.safe.global/home?safe=arb1:0x3da490b19F300E7cb2280426C8aD536dB2df445c)                            | 3 of 6    |
 | Avalanche   | [`link`](https://app.safe.global/home?safe=avax:0xBF1fF4D8B05F0871ca3f49e49fF1cA8AeeBD3b4b)                            | 3 of 6    |
 | Base        | [`link`](https://app.safe.global/home?safe=base:0xCBfd4Ef00a8cf91Fd1e1Fe97dC05910772c15E53)                            | 3 of 6    |
@@ -158,7 +157,6 @@ All cross-chain routes relay through the Fraxtal hub. Fraxtal runs `FraxtalHopV2
 | Chain       | `Hop`                                                                                                                                       | `RemoteAdmin`                                                                                                                               |
 | :---------- | :------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------ |
 | Fraxtal     | [`0x00000000e18aFc20Afe54d4B2C8688bB60c06B36`](https://fraxscan.com/address/0x00000000e18aFc20Afe54d4B2C8688bB60c06B36)                     | [`0x34029e02821178B4387e12644896994f910D6E73`](https://fraxscan.com/address/0x34029e02821178B4387e12644896994f910D6E73)                     |
-| Abstract    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://abscan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                       | [`0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb`](https://abscan.org/address/0x000000000E0E120FCAc7b4d98e9E35E1DE6fdadb)                       |
 | Arbitrum    | [`0x0000006D38568b00B457580b734e0076C62de659`](https://arbiscan.io/address/0x0000006D38568b00B457580b734e0076C62de659)                      | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://arbiscan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9)                      |
 | Avalanche   | [`0x0000006D38568b00B457580b734e0076C62de659`](https://routescan.io/address/0x0000006D38568b00B457580b734e0076C62de659/contract/43114/code) | [`0x954286118E93df807aB6f99aE0454f8710f0a8B9`](https://routescan.io/address/0x954286118E93df807aB6f99aE0454f8710f0a8B9/contract/43114/code) |
 | Base        | [`0x0000006D38568b00B457580b734e0076C62de659`](https://basescan.org/address/0x0000006D38568b00B457580b734e0076C62de659)                     | [`0x07dB789aD17573e5169eDEfe14df91CC305715AA`](https://basescan.org/address/0x07dB789aD17573e5169eDEfe14df91CC305715AA)                     |

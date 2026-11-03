@@ -82,7 +82,7 @@ Below are the supported chains you can receive newly minted frxUSD on:
 | **Mainnet**       | **EID** |
 | :---------------- | :------ |
 | **Ethereum**      | 30101   |
-| **Abstract**      | 30324   |
+| **Fraxtal**       | 30255   |
 | **Arbitrum**      | 30110   |
 | **Avalanche**     | 30106   |
 | **Base**          | 30184   |
@@ -94,13 +94,18 @@ Below are the supported chains you can receive newly minted frxUSD on:
 | **Optimism**      | 30111   |
 | **Plume**         | 30370   |
 | **Polygon**       | 30109   |
+| **Robinhood**     | 30416   |
 | **Sei**           | 30280   |
+| **Solana**        | 30168   |
+| **Somnia**        | 30380   |
 | **Sonic**         | 30332   |
 | **Stable**        | 30396   |
 | **Tempo**         | 30410   |
 | **Unichain**      | 30320   |
 | **XLayer**        | 30274   |
 | **zkSync**        | 30165   |
+
+**Note:** Deposit contracts for Solana also take the recipient's USDC token account. See [Solana recipients](#solana-recipients).
 
 ### Supported Chains for Redeeming
 
@@ -122,3 +127,32 @@ Below are the supported chains you can receive USDC on via [Circle's CCTP V2](ht
 | **Linea**       | 11         |
 | **Sonic**       | 13         |
 | **Sei**         | 16         |
+| **Ink**         | 21         |
+| **Plume**       | 22         |
+
+### Solana recipients
+
+For Solana (`30168`), `getDeploymentAddress` and `createFraxNetDeposit` take two 32-byte values:
+
+- `_targetAddress`: the recipient's wallet public key, which receives the minted frxUSD.
+- `_targetUsdcAtaAddress`: the recipient's USDC associated token account, which receives the USDC from redemptions.
+
+For every other chain, `_targetUsdcAtaAddress` must be zero.
+
+```javascript
+import { PublicKey } from '@solana/web3.js';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import { bytesToHex } from 'viem';
+
+const SOLANA_USDC_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+const recipient = new PublicKey('enter-your-solana-wallet-address-here');
+
+const targetAddress = bytesToHex(recipient.toBytes());
+const targetUsdcAtaAddress = bytesToHex(
+  getAssociatedTokenAddressSync(SOLANA_USDC_MINT, recipient).toBytes(),
+);
+```
+
+Both values are part of the deposit address and cannot be changed after the deposit contract is deployed. The factory only checks that `_targetUsdcAtaAddress` is not zero, so derive it as shown instead of passing the wallet address or another token account. Anyone can deploy a deposit contract for any recipient, so before sending frxUSD to one you did not deploy, check that its `targetUsdcAtaAddress()` is your token account.
+
+`processRedemption` redeems the frxUSD on Ethereum and burns the USDC through Circle's CCTP V2. To deliver it, fetch Circle's attestation for the burn (source domain `0`) and submit it with the `receive_message` instruction of Circle's CCTP V2 programs on Solana. Anyone can submit it, but the token account must already exist, so create it first if the wallet has never held USDC.
