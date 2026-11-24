@@ -12,7 +12,7 @@ import Image from 'next/image';
 
 ## Overview
 
-**Frax** is the scarce commodity asset of the Fraxtal blockchain. It is the **native gas** token of the Fraxtal blockchain ([North Star hardfork](https://gov.frax.finance/t/fip-428-frax-north-star-proposal-v2/3652/17)) and used to provide security to the network to run validators of the blockchain (upgraded in a future hardfork). Frax has a set, fixed emission schedule that cannot be changed. Thus, Frax is the only native monetary unit of the Fraxtal blockchain and Frax ecosystem.
+**Frax** is the scarce commodity asset of the Fraxtal blockchain. It is the **native gas** token of the Fraxtal blockchain ([North Star hardfork](https://gov.frax.finance/t/fip-428-frax-north-star-proposal-v2/3652/17)). Validator staking in FRAX is planned for a future hardfork; today Fraxtal uses a sequencer operated by the Frax core team. FRAX total supply is permanently capped at 143M per [FIP-441](https://gov.frax.finance/t/fip-441-frax-1-token-1-mission-1-vision/3826). Thus, Frax is the only native monetary unit of the Fraxtal blockchain and Frax ecosystem.
 
 <img
   src="/images/protocol/FRAX.png"
@@ -21,7 +21,7 @@ import Image from 'next/image';
   style={{ display: 'block', margin: 'auto', marginTop: '20px' }}
 />
 
-Frax is not a governance token. It is a **Commodity Asset** used as base money on Fraxtal. It is entirely issued natively on the Fraxtal L1 blockchain with no provenance on Ethereum or other blockchains (although wrapped bridged versions are available). While users and projects can build protocols that can use Frax as a staking and governance token, Frax itself is not a governance token. It is the sole asset of the Fraxtal blockchain.
+Frax is not a governance token. It is a **Commodity Asset** used as base money on Fraxtal. It is issued natively on Fraxtal, an OP Stack rollup that settles to Ethereum. FRAX originated as FXS on Ethereum, which upgrades 1:1 to native FRAX through the Fraxtal bridge. Wrapped, bridged versions are available on other chains. While users and projects can build protocols that can use Frax as a staking and governance token, Frax itself is not a governance token. It is the sole asset of the Fraxtal blockchain.
 
 Frax Finance’s DeFi stack uses Frax as a restakable asset that provides cryptoeconomic security and governance voting rights to manage certain parameters of various Frax Finance DeFi protocols (such as veFRAX). These contracts are built on top of the Frax asset and not the underlying utility of the Frax asset. This is similar to a project using restaked ETH as its governance rights token. The restaked ETH token provides voting rights, utility, and cryptoeconomic security to the protocol, but the underlying protocol does not have ETH minting rights nor control of the ETH asset. The protocol using restaked ETH cannot stabilize asset pegs or change the ETH supply as part of its protocol function. This is the same relationship between the Frax ($FRAX) asset and the DeFi protocols using Frax as cryptoeconomic security including Frax Finance’s DeFi protocols.
 
@@ -49,12 +49,19 @@ Users can wrap their native FRAX on Fraxtal to receive [WFRAX (an ERC20 represen
 Holding the asset is a store of value equal to all holders similar to BTC rather than being faced with dilution if not staked.
 
 ### Frax Burn Engine (FBE)
-The FBE burns a portion of Frax tokens permanently as a consumptive commodity within the Frax ecosystem. Current burn sources include:
-Contracts sending Frax to the FBE:
-- FNS Registrar
-- Fraxtal EIP1559 Base Fee
+The Frax Burn Engine (FBE) uses frxETH fee revenue to buy back FRAX and burn it, starting with Q4 2026 revenue. Burns go through the Frax Burner contract on Fraxtal at [`0x7fdeE482A2FEaF08344e1049F0951Eb2c07Fd9a7`](https://fraxscan.com/address/0x7fdeE482A2FEaF08344e1049F0951Eb2c07Fd9a7).
 
-*More contracts will be added as infrastructure is built in the Frax ecosystem. Projects that wish to contribute to the FBE can add their contract to the FBE infrastructure list by submitting a [pull request](https://github.com/FraxFinance/docs).*
+### Supply Cap
+FRAX total supply is permanently capped at 143,000,000 per [FIP-441](https://gov.frax.finance/t/fip-441-frax-1-token-1-mission-1-vision/3826). FIP-441 replaces the tail emission schedule from [FIP-428](https://gov.frax.finance/t/fip-428-frax-north-star-proposal-v2/3652/17) and eliminates the perpetual 3% tail emission that was planned after year six.
 
-### Tail Emission
-FRAX’s supply follows a tail emission schedule designed for sustainable growth. The token has an annual inflation of 8% initially ([FIP-428](https://gov.frax.finance/t/fip-428-frax-north-star-proposal-v2/3652/17)), which decreases by 1% each year until reaching a floor of 3% after 6 years. These controlled emissions are allocated to various purposes (such community initiatives, Fraxtal ecosystem growth, team expansion, and the DAO treasury) to continuously fund the ecosystem while gradually reducing inflation over time.
+The remaining supply is released under annual budgets. Each budget is a spending cap, not a required emission. Unused amounts roll over and can be reassigned through governance.
+
+| Emission Year | Period | Annual Cap (FRAX) | Cumulative Total Supply |
+| --- | --- | --- | --- |
+| Year 1 | Apr 2025 → Mar 2026 | 4,000,000 | 124,000,000 |
+| Year 2 | Apr 2026 → Mar 2027 | 4,000,000 | 128,000,000 |
+| Year 3 | Apr 2027 → Mar 2028 | 4,000,000 | 132,000,000 |
+| Year 4 | Apr 2028 → Mar 2029 | 3,500,000 | 135,500,000 |
+| Year 5 | Apr 2029 → Mar 2030 | 3,000,000 | 138,500,000 |
+| Year 6 | Apr 2030 → Mar 2031 | 2,500,000 | 141,000,000 |
+| Year 7 | Apr 2031 → Mar 2032 | 2,000,000 | 143,000,000 |
