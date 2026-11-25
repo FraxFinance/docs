@@ -1,6 +1,16 @@
 {
   "items": [
     {
+      "key": "rampnow",
+      "name": "Rampnow",
+      "url": "https://rampnow.io",
+      "description": "Rampnow is a global fiat on-ramp supporting 160+ countries, 50+ blockchains and 1500+ tokens, helping users buy crypto easily and enabling dApps to onboard faster.",
+      "tags": ["OnRamp"],
+      "imageUrl": "https://drive.google.com/file/d/1hSVjm9zXCocto4epaFvKE3TYAPOlBXrv/view?usp=sharing",
+      "twitterXUrl": "https://x.com/OfficialRampnow",
+      "discordUrl": "https://discord.com/invite/euKQmeCdbR"
+    },
+    {
       "key": "the-graph",
       "name": "The Graph",
       "url": "https://thegraph.com/docs/en/subgraphs/quick-start/",
