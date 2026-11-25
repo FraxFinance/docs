@@ -508,6 +508,17 @@
       "imageUrl": "https://drpc.org/_next/static/media/dRPC_fullcollor_white.0c615983.svg",
       "twitterXUrl": "https://x.com/drpcorg",
       "discordURL": "https://discord.gg/dcVQZxWM8r"
+    },
+    {
+      "key": "SecureDAPP",
+      "name": "SecureDApp",
+      "url": "https://securedapp.io/",
+      "description": "SecureDApp is an all-in-one platform safeguarding Web3 with audits, monitoring, identity, and forensics",
+      "tags": ["Infra"],
+      "imageUrl": "https://media.licdn.com/dms/image/v2/D560BAQGGd_PXlx0Osw/company-logo_200_200/company-logo_200_200/0/1730959484075/securedapp_logo?e=1766016000&v=beta&t=9ljtQevelqt5I6jH6G2bR3HHPXmO-w0gQ-aQYwt5gDo",
+      "twitterXUrl": "https://x.com/secure_dapp",
+      "telegramUrl": "https://telegram.me/securedappcommunity",
+      "discordUrl": "https://discord.com/invite/pqDC8ddnYQ"
     }
   ]
 }
